@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B4U Esports</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #0f172a;
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Snow/Drizzle Effect */
+        .snow {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .snow:after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(4px 4px at 50px 50px, #fff , transparent),
+                radial-gradient(3px 3px at 150px 150px, #fff, transparent),
+                radial-gradient(4px 4px at 250px 250px, #fff 50%, transparent),
+                radial-gradient(3px 3px at 350px 350px, #fff 50%, transparent),
+                radial-gradient(4px 4px at 450px 100px, #fff 50%, transparent),
+                radial-gradient(3px 3px at 100px 400px, #fff 50%, transparent),
+                radial-gradient(4px 4px at 200px 300px, #fff 50%, transparent),
+                radial-gradient(3px 3px at 300px 200px, #fff 50%, transparent),
+                radial-gradient(4px 4px at 400px 50px, #fff 50%, transparent),
+                radial-gradient(3px 3px at 500px 450px, #fff 50%, transparent),
+                radial-gradient(4px 4px at 50px 300px, #fff 50%, transparent),
+                radial-gradient(3px 3px at 150px 200px, #fff 50%, transparent);
+            animation: snowAnim 8s linear infinite;
+        }
+
+        @keyframes snowAnim {
+            from { transform: translateY(-100vh); }
+            to { transform: translateY(100vh); }
+        }
+
+        /* Header Styles */
+        .header {
+            background: #1e293b;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            height: 50px;
+        }
+
+        .hamburger {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 5px;
+            z-index: 1001;
+            display: block;
+        }
+
+        @media (min-width: 992px) {
+            .hamburger {
+                display: none;
+            }
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            height: 100%;
+            background: #1e293b;
+            transition: 0.3s ease;
+            padding: 20px;
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            left: 0;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.3);
+        }
+
+        .nav-menu {
+            list-style: none;
+            margin-top: 5rem;
+        }
+
+        .nav-menu li {
+            margin: 1.5rem 0;
+        }
+
+        .nav-menu a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .nav-menu a:hover {
+            background: #334155;
+        }
+
+        .nav-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 80px auto 0;
+            padding: 2rem;
+            flex: 1;
+        }
+
+        /* Ad Container Styles */
+        .ad-container {
+            width: 100%;
+            margin: 2rem auto;
+            display: flex;
+            justify-content: center;
+            background: transparent;
+            padding: 10px 0;
+        }
+
+        .ad-container#middle-ad {
+            margin: 3rem auto;
+        }
+
+        .ad-container#bottom-ad {
+            margin-bottom: 0;
+            background: #1e293b;
+            padding: 20px 0;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            padding: 4rem 1rem;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                        url('https://images.unsplash.com/photo-1538481199705-c710c4e965fc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') center/cover;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-text {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            color: #38bdf8;
+            text-shadow: 0 0 15px #38bdf8;
+            margin-bottom: 1rem;
+        }
+
+        .registration-note {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1.5rem auto;
+            max-width: 600px;
+            border: 2px solid #38bdf8;
+            animation: pulseBorder 2s infinite;
+        }
+
+        @keyframes pulseBorder {
+            0% { border-color: #38bdf8; }
+            50% { border-color: #60a5fa; }
+            100% { border-color: #38bdf8; }
+        }
+
+        .registration-note p {
+            color: white;
+            text-align: center;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .registration-note a {
+            color: #ffd700;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+            border-bottom: 2px dotted #ffd700;
+        }
+
+        /* Card Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.3s;
+            border: 1px solid #334155;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .card img.token-img {
+            object-fit: contain;
+            background: transparent;
+            height: 180px;
+            padding: 10px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            margin-top: 1rem;
+            gap: 8px;
+        }
+
+        .primary-btn {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .primary-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .secondary-btn {
+            background: #3b82f6;
+            color: #fff;
+        }
+
+        /* Tournament Section */
+        .tournament-header {
+            text-align: center;
+            margin: 4rem 0 2rem;
+        }
+
+        .tournament-header h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            margin-bottom: 1rem;
+        }
+
+        .tournament-header p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            color: #94a3b8;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .tournament-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .tournament-card {
+            background: #1e293b;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #334155;
+            transition: transform 0.3s;
+        }
+
+        .tournament-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .tournament-banner {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .tournament-banner::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.7));
+        }
+
+        .classic-banner {
+            background-image: url('https://images.unsplash.com/photo-1600861195091-690c92f1d2cc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+        }
+
+        .tdm-banner {
+            background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+        }
+
+        .tournament-content {
+            padding: 1.5rem;
+        }
+
+        .tournament-title {
+            font-size: 1.5rem;
+            color: #38bdf8;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Enhanced Prize Pool Animation */
+        .tournament-prize {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid transparent;
+            animation: prizeGlow 6s infinite alternate;
+        }
+
+        @keyframes prizeGlow {
+            0% { 
+                border-color: #ffd700;
+                box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+            }
+            25% { 
+                border-color: #38bdf8;
+                box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+            }
+            50% { 
+                border-color: #7c3aed;
+                box-shadow: 0 0 10px rgba(124, 58, 237, 0.3);
+            }
+            75% { 
+                border-color: #f43f5e;
+                box-shadow: 0 0 10px rgba(244, 63, 94, 0.3);
+            }
+            100% { 
+                border-color: #10b981;
+                box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+            }
+        }
+
+        .prize-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 0.3rem;
+        }
+
+        .prize-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffd700, #ff8c00, #ffd700);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: prizePulse 2s infinite alternate;
+        }
+
+        @keyframes prizePulse {
+            from { text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+            to { text-shadow: 0 0 15px rgba(255, 215, 0, 0.8); }
+        }
+
+        .tournament-details {
+            margin-bottom: 1.5rem;
+        }
+
+        .tournament-details p {
+            margin-bottom: 0.8rem;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tournament-modes {
+            margin-bottom: 1.5rem;
+        }
+
+        .mode-item {
+            background: #334155;
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .mode-item h4 {
+            color: #38bdf8;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .team-tag {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid #3b82f6;
+            border-radius: 4px;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .team-tag-example {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 0.3rem;
+            display: block;
+        }
+
+        .rules-list {
+            list-style-type: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .rules-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+            color: #cbd5e1;
+        }
+
+        .rules-list li::before {
+            content: '•';
+            color: #38bdf8;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .register-btn {
+            display: block;
+            text-align: center;
+            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+            color: #1e293b;
+            font-weight: 700;
+            padding: 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s;
+            margin-top: 1.5rem;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Footer Styles */
+        footer {
+            background: #1e293b;
+            padding: 3rem 2rem;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: #38bdf8;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin: 0.7rem 0;
+        }
+
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #38bdf8;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: #fff;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: #38bdf8;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+                margin-top: 70px;
+            }
+            
+            .hero-section {
+                padding: 3rem 1rem;
+            }
+            
+            .registration-note p {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .social-links {
+                justify-content: center;
+            }
+            
+            .tournament-title {
+                font-size: 1.3rem;
+            }
+            
+            .prize-amount {
+                font-size: 1.2rem;
+            }
+
+            .ad-container {
+                margin: 1rem auto;
+            }
+
+            .ad-container#middle-ad {
+                margin: 2rem auto;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="snow"></div>
+    
+    <!-- Header Section -->
+    <header class="header">
+        <div class="nav-container">
+            <img src="https://b4uesports.com/wp-content/uploads/2025/04/cropped-Black_and_Blue_Simple_Creative_Illustrative_Dragons_E-Sport_Logo_20240720_103229_0000-removebg-preview.png" 
+                 alt="B4U Esports Logo" 
+                 class="logo">
+            <button class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <ul class="nav-menu">
+            <li><a href="#" onclick="showDashboard()"><i class="fas fa-home"></i>Home</a></li>
+            <li><a href="https://b4uesports.com/my-account/"><i class="fas fa-user"></i>My Account</a></li>
+            <li><a href="https://b4uesports.com/shop/"><i class="fas fa-store"></i>Shop</a></li>
+            <li><a href="https://b4uesports.com/blogs/"><i class="fas fa-blog"></i>Blogs</a></li>
+            <li><a href="#tournaments"><i class="fas fa-trophy"></i>Tournaments</a></li>
+        </ul>
+    </nav>
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <section class="hero-section">
+            <h1 class="welcome-text">
+                <i class="fas fa-hand-peace"></i> KUZUZANGPOLA! <i class="fas fa-gamepad"></i>
+            </h1>
+            
+            <div class="registration-note">
+                <p>
+                    <i class="fas fa-exclamation-circle"></i>
+                    New users: Please 
+                    <a href="https://b4uesports.com/my-account/" target="_blank">
+                        REGISTER HERE
+                    </a> 
+                    to access all services!
+                </p>
+            </div>
+
+            <p class="text-lg">Your Ultimate Gaming Marketplace</p>
+        </section>
+
+        <div class="card-grid">
+            <div class="card">
+                <img src="https://b4uesports.com/wp-content/uploads/2025/04/ChatGPT-Image-Apr-22-2025-07_04_11-PM.png" 
+                     alt="Marketplace">
+                <h2><i class="fas fa-store"></i> Marketplace</h2>
+                <a href="https://b4uesports.com/advertisement/" class="btn primary-btn">
+                    <i class="fas fa-shopping-cart"></i> BUY
+                </a>
+                <a href="https://b4uesports.com/advertise-your-pubg-mobile-services/" class="btn secondary-btn">
+                    <i class="fas fa-hand-holding-usd"></i> SELL
+                </a>
+            </div>
+
+            <div class="card">
+                <img src="https://b4uesports.com/wp-content/uploads/2025/05/ucandmlbb-dias.png" 
+                     alt="In-game Tokens"
+                     class="token-img">
+                <h2><i class="fas fa-coins"></i> In-game Tokens</h2>
+                <p>Purchase various game currencies instantly</p>
+                <a href="https://b4uesports.com/shop/" class="btn primary-btn">
+                    <i class="fas fa-shopping-bag"></i> GET TOKENS
+                </a>
+            </div>
+
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1266&q=80" alt="Social Media">
+                <h2><i class="fas fa-rocket"></i> Social Boosting</h2>
+                <p>Boost your online presence</p>
+                <a href="https://b4uesports.com/shop/" class="btn primary-btn">
+                    <i class="fas fa-chart-line"></i> BOOST NOW
+                </a>
+            </div>
+        </div>
+
+        <!-- Middle Ad Container -->
+        <div class="ad-container" id="middle-ad">
+            <script async="async" data-cfasync="false" src="//pl26598588.profitableratecpm.com/3d3ca1dc69f144cec1c8db0f04bf2d14/invoke.js"></script>
+            <div id="container-3d3ca1dc69f144cec1c8db0f04bf2d14"></div>
+        </div>
+
+        <!-- PUBG Tournaments Section -->
+        <div class="tournament-header" id="tournaments">
+            <h1><i class="fas fa-trophy"></i> PUBG Mobile Tournaments</h1>
+            <p>Compete in our professional tournaments and win amazing prizes</p>
+        </div>
+
+        <div class="tournament-types">
+            <!-- Classic Tournament -->
+            <div class="tournament-card">
+                <div class="tournament-banner classic-banner"></div>
+                <div class="tournament-content">
+                    <h2 class="tournament-title">
+                        <i class="fas fa-map-marked-alt"></i> Classic Tournament
+                    </h2>
+                    
+                    <div class="tournament-prize">
+                        <div class="prize-label">Total Prize Pool</div>
+                        <div class="prize-amount">50,000 NU</div>
+                    </div>
+                    
+                    <div class="tournament-details">
+                        <p><i class="fas fa-users"></i> <strong>Squad Mode:</strong> 4-6 players per team</p>
+                        <p><i class="fas fa-tag"></i> <strong>Team Tag:</strong> [B4U] required in team name</p>
+                        <span class="team-tag-example">(e.g. [B4U]YourTeamName)</span>
+                        <p><i class="fas fa-map"></i> <strong>Maps:</strong> Erangel, Miramar, Sanhok</p>
+                        <p><i class="fas fa-calendar-alt"></i> <strong>Schedule:</strong> Weekly tournaments</p>
+                    </div>
+                    
+                    <div class="tournament-modes">
+                        <h3><i class="fas fa-gamepad"></i> Tournament Format:</h3>
+                        <div class="mode-item">
+                            <h4><i class="fas fa-users"></i> Squad Battle Royale</h4>
+                            <p>Classic PUBG rules with TPP perspective</p>
+                            <span class="team-tag">Team Tag: [B4U]YourTeamName</span>
+                        </div>
+                    </div>
+                    
+                    <h3><i class="fas fa-gavel"></i> Rules & Regulations:</h3>
+                    <ul class="rules-list">
+                        <li>Team name must include [B4U] tag (e.g. [B4U]Legends)</li>
+                        <li>No hacking or cheating of any kind</li>
+                        <li>Players must use their real PUBG IDs</li>
+                        <li>Teams must register 30 minutes before match</li>
+                        <li>Disconnections will not pause the game</li>
+                        <li>Top 3 teams by kills and placement will qualify</li>
+                    </ul>
+                    
+                    <a href="https://www.dc.gg/b4uesports" class="register-btn" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-user-plus"></i> Register Now
+                    </a>
+                </div>
+            </div>
+            
+            <!-- TDM Tournament -->
+            <div class="tournament-card">
+                <div class="tournament-banner tdm-banner"></div>
+                <div class="tournament-content">
+                    <h2 class="tournament-title">
+                        <i class="fas fa-crosshairs"></i> TDM Tournament
+                    </h2>
+                    
+                    <div class="tournament-prize">
+                        <div class="prize-label">Total Prize Pool</div>
+                        <div class="prize-amount">30,000 NU</div>
+                    </div>
+                    
+                    <div class="tournament-details">
+                        <p><i class="fas fa-user"></i> <strong>Modes:</strong> 1v1 Duel & 4v4 Team Battle</p>
+                        <p><i class="fas fa-map"></i> <strong>Maps:</strong> Warehouse, Ruins, Town</p>
+                        <p><i class="fas fa-calendar-alt"></i> <strong>Schedule:</strong> Daily quick matches</p>
+                    </div>
+                    
+                    <div class="tournament-modes">
+                        <h3><i class="fas fa-gamepad"></i> Tournament Modes:</h3>
+                        <div class="mode-item">
+                            <h4><i class="fas fa-user"></i> 1v1 Duel</h4>
+                            <p>First player to reach 20 kills wins the match</p>
+                        </div>
+                        <div class="mode-item">
+                            <h4><i class="fas fa-users"></i> 4v4 Team Battle</h4>
+                            <p>First team to reach 40 kills wins the match</p>
+                        </div>
+                    </div>
+                    
+                    <h3><i class="fas fa-gavel"></i> Rules & Regulations:</h3>
+                    <ul class="rules-list">
+                        <li>No holding position for more than 5 seconds</li>
+                        <li>No camping in spawn areas</li>
+                        <li>Only designated weapons allowed</li>
+                        <li>Players must maintain sportsmanship</li>
+                        <li>Disconnections result in automatic loss</li>
+                        <li>No grenades or throwables in 1v1 mode</li>
+                    </ul>
+                    
+                    <a href="https://www.dc.gg/b4uesports" class="register-btn" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-user-plus"></i> Register Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ABOUT US</h3>
+                <ul class="footer-links">
+                    <li><a href="https://b4uesports.com/our-history/" target="_blank">Our History</a></li>
+                    <li><a href="https://b4uesports.com/privacy-policy/" target="_blank">Privacy Policy</a></li>
+                    <li><a href="https://b4uesports.com/data-protection/" target="_blank">Data Protection</a></li>
+                    <li><a href="https://b4uesports.com/cookie-policy/" target="_blank">Cookie Policy</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>TERMS & CONDITIONS</h3>
+                <ul class="footer-links">
+                    <li><a href="https://b4uesports.com/terms-of-service/" target="_blank">Terms of Service</a></li>
+                    <li><a href="https://b4uesports.com/user-agreement/" target="_blank">User Agreement</a></li>
+                    <li><a href="https://b4uesports.com/refund_returns/" target="_blank">Refund & Returns</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>CONTACT US</h3>
+                <ul class="footer-links">
+                    <li><a href="https://b4uesports.com/support/" target="_blank">Support</a></li>
+                    <li><a href="https://b4uesports.com/faqs/" target="_blank">FAQs</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>FOLLOW US</h3>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/b4uesports" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="https://youtube.com/@b4uesports" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/b4uesports" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    <a href="https://www.instagram.com/b4uesports" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://discord.gg/m2EcGPx" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                    <a href="https://t.me/b4uesport" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-telegram"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/company/b4uesports/" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bottom Ad Container -->
+    <div class="ad-container" id="bottom-ad">
+        <script async="async" data-cfasync="false" src="//pl26598588.profitableratecpm.com/3d3ca1dc69f144cec1c8db0f04bf2d14/invoke.js"></script>
+        <div id="container-3d3ca1dc69f144cec1c8db0f04bf2d14"></div>
+    </div>
+
+    <script>
+        // Hamburger Menu Functionality
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        
+        hamburger.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            hamburger.innerHTML = sidebar.classList.contains('active') ? 
+                '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        });
+
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+        });
+
+        function showDashboard() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close sidebar if open
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                    hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
+        });
+
+        // Force external links to open in new tab
+        document.querySelectorAll('a[href^="http"]').forEach(link => {
+            if (link.hostname !== window.location.hostname) {
+                link.setAttribute('target', '_blank');
+                link.setAttribute('rel', 'noopener noreferrer');
+            }
+        });
+
+        // Enhanced snow/drizzle effect
+        function createSnowDrizzle() {
+            const container = document.querySelector('.snow');
+            const snowCount = window.innerWidth < 768 ? 30 : 50;
+            
+            for (let i = 0; i < snowCount; i++) {
+                const snow = document.createElement('div');
+                snow.style.position = 'absolute';
+                snow.style.width = Math.random() * 3 + 2 + 'px';
+                snow.style.height = snow.style.width;
+                snow.style.backgroundColor = 'rgba(255,255,255,' + (Math.random() * 0.7 + 0.3) + ')';
+                snow.style.borderRadius = '50%';
+                snow.style.top = '-10px';
+                snow.style.left = Math.random() * 100 + 'vw';
+                snow.style.opacity = Math.random() * 0.5 + 0.5;
+                snow.style.animation = `fall ${Math.random() * 5 + 5}s linear ${Math.random() * 5}s infinite`;
+                
+                const keyframes = `
+                    @keyframes fall {
+                        to {
+                            transform: translateY(100vh) translateX(${Math.random() * 100 - 50}px);
+                        }
+                    }
+                `;
+                
+                const style = document.createElement('style');
+                style.innerHTML = keyframes;
+                document.head.appendChild(style);
+                
+                container.appendChild(snow);
+            }
+        }
+
+        window.addEventListener('load', createSnowDrizzle);
+        window.addEventListener('resize', function() {
+            document.querySelectorAll('.snow div').forEach(el => el.remove());
+            createSnowDrizzle();
+        });
+    </script>
+</body>
+</html>
