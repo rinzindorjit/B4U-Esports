@@ -1,4 +1,3 @@
-html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -314,6 +313,7 @@ html
             z-index: 1100;
             justify-content: center;
             align-items: center;
+            overflow-y: auto;
         }
 
         .modal-content {
@@ -324,6 +324,8 @@ html
             max-width: 500px;
             box-shadow: 0 5px 30px rgba(0,0,0,0.5);
             position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .close-modal {
@@ -670,7 +672,7 @@ html
         }
 
         .rules-list {
-            list-style-type: none;
+            list-style: none;
             margin-bottom: 1.5rem;
         }
 
@@ -755,7 +757,7 @@ html
         .social-links a {
             color: #fff;
             font-size: 1.5rem;
-   transition: color 0.3s;
+            transition: color 0.3s;
         }
 
         .social-links a:hover {
@@ -900,7 +902,7 @@ html
                      class="token-img">
                 <h2><i class="fas fa-coins"></i> In-game Tokens</h2>
                 <p>Purchase various game currencies instantly</p>
-                <button class="btn primary-btn" onclick="openPaymentModal('UC Tokens', 10)">
+                <button class="btn primary-btn" onclick="openPaymentModal('UC Tokens', 0)">
                     <i class="fas fa-shopping-bag"></i> GET TOKENS
                 </button>
             </div>
@@ -909,7 +911,7 @@ html
                 <img src="https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1266&q=80" alt="Social Media">
                 <h2><i class="fas fa-rocket"></i> Social Boosting</h2>
                 <p>Boost your online presence</p>
-                <button class="btn primary-btn" onclick="openPaymentModal('Social Boost', 15)">
+                <button class="btn primary-btn" onclick="openPaymentModal('Social Boost', 0)">
                     <i class="fas fa-chart-line"></i> BOOST NOW
                 </button>
             </div>
@@ -1034,7 +1036,7 @@ html
     <!-- Payment Modal -->
     <div class="modal" id="paymentModal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closePaymentModal()">&times;</span>
+            <span class="close-modal" onclick="closePaymentModal()">×</span>
             <h2 class="modal-title" id="modalTitle">Payment</h2>
             
             <div id="paymentForm" class="payment-form">
@@ -1045,7 +1047,7 @@ html
                 
                 <div class="form-group">
                     <label for="piAmount">Amount (π):</label>
-                    <input type="number" id="piAmount" readonly>
+                    <input type="number" id="piAmount" min="0" step="0.01" placeholder="Enter amount in π" required>
                 </div>
                 
                 <div class="form-group">
@@ -1058,8 +1060,14 @@ html
                     <input type="email" id="userEmail" placeholder="Enter your email" required>
                 </div>
                 
-                <div class="form-group"><label for="userGameId">Game ID (if applicable):</label>
+                <div class="form-group" id="gameIdGroup">
+                    <label for="userGameId">Game ID:</label>
                     <input type="text" id="userGameId" placeholder="Enter your game ID">
+                </div>
+                
+                <div class="form-group" id="urlGroup" style="display: none;">
+                    <label for="userUrl">Your URL:</label>
+                    <input type="url" id="userUrl" placeholder="Enter your URL">
                 </div>
                 
                 <button id="piPayBtn" class="pi-pay-btn" disabled>
@@ -1128,7 +1136,9 @@ html
                 </div>
             </div>
         </div>
-    </footer><!-- Bottom Ad Container -->
+    </footer>
+
+    <!-- Bottom Ad Container -->
     <div class="ad-container" id="bottom-ad">
         <script type="text/javascript">
             atOptions = {
@@ -1213,7 +1223,7 @@ html
 
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
+            anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 
                 const targetId = this.getAttribute('href');
@@ -1355,23 +1365,69 @@ html
             currentPayment.memo = `Payment for ${product}`;
             
             document.getElementById('productName').value = product;
-            document.getElementById('piAmount').value = amount;
+            document.getElementById('piAmount').value = amount || '';
+            
+            // Show/hide appropriate input field based on product
+            const gameIdGroup = document.getElementById('gameIdGroup');
+            const urlGroup = document.getElementById('urlGroup');
+            
+            if (product === 'Social Boost') {
+                gameIdGroup.style.display = 'none';
+                urlGroup.style.display = 'block';
+            } else {
+                gameIdGroup.style.display = 'block';
+                urlGroup.style.display = 'none';
+            }
             
             // Reset form
             document.getElementById('userEmail').value = '';
             document.getElementById('userGameId').value = '';
+            document.getElementById('userUrl').value = '';
             document.getElementById('paymentStatus').style.display = 'none';
             
             // Show modal
             document.getElementById('paymentModal').style.display = 'flex';
+            
+            // Enable/disable pay button based on input
+            updatePayButtonState();
         }
 
         function closePaymentModal() {
             document.getElementById('paymentModal').style.display = 'none';
         }
 
+        // Update pay button state based on form inputs
+        function updatePayButtonState() {
+            const product = document.getElementById('productName').value;
+            const piAmount = document.getElementById('piAmount').value;
+            const userName = document.getElementById('userName').value;
+            const userEmail = document.getElementById('userEmail').value;
+            const userGameId = document.getElementById('userGameId').value;
+            const userUrl = document.getElementById('userUrl').value;
+            
+            const payButton = document.getElementById('piPayBtn');
+            
+            if (product === 'Social Boost') {
+                payButton.disabled = !(piAmount && userName && userEmail && userUrl);
+            } else {
+                payButton.disabled = !(piAmount && userName && userEmail);
+            }
+        }
+
         // Process Pi Payment
         function processPiPayment() {
+            const piAmountInput = document.getElementById('piAmount');
+            const amount = parseFloat(piAmountInput.value);
+            
+            if (isNaN(amount) || amount <= 0) {
+                document.getElementById('paymentStatus').textContent = "Please enter a valid amount";
+                document.getElementById('paymentStatus').className = "payment-status payment-error";
+                document.getElementById('paymentStatus').style.display = "block";
+                return;
+            }
+
+            currentPayment.amount = amount;
+            
             const paymentData = {
                 amount: currentPayment.amount,
                 memo: currentPayment.memo,
@@ -1379,7 +1435,9 @@ html
                     product: currentPayment.product,
                     userName: document.getElementById('userName').value,
                     userEmail: document.getElementById('userEmail').value,
-                    userGameId: document.getElementById('userGameId').value,
+                    userGameId: currentPayment.product === 'Social Boost' ? 
+                        document.getElementById('userUrl').value : 
+                        document.getElementById('userGameId').value,
                     timestamp: new Date().toISOString()
                 }
             };
@@ -1443,6 +1501,9 @@ html
                 .then(() => console.log("Payment created"))
                 .catch(error => console.error("Payment creation error:", error));
         }
+
+        // Add input event listeners for form validation
+        document.getElementById('paymentForm').addEventListener('input', updatePayButtonState);
 
         window.addEventListener('load', createSnowDrizzle);
         window.addEventListener('resize', function() {
