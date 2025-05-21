@@ -263,8 +263,7 @@
             box-shadow: 0 4px 15px rgba(20, 241, 149, 0.3);
         }
 
-        .pi-auth-btn:hover {
-            transform: translateY(-2px);
+        .pi-auth-btn:hover {transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(20, 241, 149, 0.4);
         }
 
@@ -301,7 +300,7 @@
             box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
         }
 
-        /* Payment Modal */
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -427,11 +426,87 @@
             color: #ef4444;
         }
 
+        /* Token Selection Modal */
+        .token-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .token-btn {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .token-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
+        }
+
+        /* Package Selection Modal */
+        .packages {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .package {
+            background: #334155;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .package:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .package-title {
+            font-size: 1.2rem;
+            color: #38bdf8;
+            margin-bottom: 0.5rem;
+        }
+
+        .package-price {
+            font-size: 1rem;
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+
+        .package-buy-btn {
+            background: linear-gradient(135deg, #14f195 0%, #14bff1 100%);
+            color: #000;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .package-buy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(20, 241, 149, 0.4);
+        }
+
         /* Card Grid */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;margin-top: 2rem;
+            gap: 1.5rem;
+            margin-top: 2rem;
         }
 
         .card {
@@ -764,8 +839,7 @@
             color: #38bdf8;
         }
 
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
+        /* Responsive Adjustments */@media (max-width: 768px) {
             .container {
                 padding: 1rem;
                 margin-top: 70px;
@@ -892,7 +966,8 @@
                 <a href="https://b4uesports.com/advertisement/" class="btn primary-btn">
                     <i class="fas fa-shopping-cart"></i> BUY
                 </a>
-                <a href="https://b4uesports.com/advertise-your-pubg-mobile-services/" class="btn secondary-btn">       <i class="fas fa-hand-holding-usd"></i> SELL
+                <a href="https://b4uesports.com/advertise-your-pubg-mobile-services/" class="btn secondary-btn">
+                    <i class="fas fa-hand-holding-usd"></i> SELL
                 </a>
             </div>
 
@@ -902,7 +977,7 @@
                      class="token-img">
                 <h2><i class="fas fa-coins"></i> In-game Tokens</h2>
                 <p>Purchase various game currencies instantly</p>
-                <button class="btn primary-btn" onclick="openPaymentModal('UC Tokens', 0)">
+                <button class="btn primary-btn" onclick="openTokenSelectionModal()">
                     <i class="fas fa-shopping-bag"></i> GET TOKENS
                 </button>
             </div>
@@ -911,7 +986,7 @@
                 <img src="https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1266&q=80" alt="Social Media">
                 <h2><i class="fas fa-rocket"></i> Social Boosting</h2>
                 <p>Boost your online presence</p>
-                <button class="btn primary-btn" onclick="openPaymentModal('Social Boost', 0)">
+                <button class="btn primary-btn" onclick="openPaymentModal('Social Boost', 15, 'social')">
                     <i class="fas fa-chart-line"></i> BOOST NOW
                 </button>
             </div>
@@ -978,7 +1053,7 @@
                         <li>Top 3 teams by kills and placement will qualify</li>
                     </ul>
                     
-                    <button class="register-btn" onclick="openPaymentModal('Classic Tournament Entry', 5)">
+                    <button class="register-btn" onclick="openPaymentModal('Classic Tournament Entry', 5, 'tournament')">
                         <i class="fas fa-user-plus"></i> Register Now
                     </button>
                 </div>
@@ -1025,11 +1100,32 @@
                         <li>No grenades or throwables in 1v1 mode</li>
                     </ul>
                     
-                    <button class="register-btn" onclick="openPaymentModal('TDM Tournament Entry', 3)">
+                    <button class="register-btn" onclick="openPaymentModal('TDM Tournament Entry', 3, 'tournament')">
                         <i class="fas fa-user-plus"></i> Register Now
                     </button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Token Selection Modal -->
+    <div class="modal" id="tokenSelectionModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeTokenSelectionModal()">×</span>
+            <h2 class="modal-title">Select Token Type</h2>
+            <div class="token-selection">
+                <button class="token-btn" onclick="openPackageModal('pubg')">PUBG Mobile UC</button>
+                <button class="token-btn" onclick="openPackageModal('mlbb')">MLBB Diamonds</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Package Selection Modal -->
+    <div class="modal" id="packageModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closePackageModal()">×</span>
+            <h2 class="modal-title" id="packageModalTitle">Select Package</h2>
+            <div class="packages" id="packageList"></div>
         </div>
     </div>
 
@@ -1047,27 +1143,37 @@
                 
                 <div class="form-group">
                     <label for="piAmount">Amount (π):</label>
-                    <input type="number" id="piAmount" min="0" step="0.01" placeholder="Enter amount in π" required>
+                    <input type="number" id="piAmount" min="0" step="0.01" placeholder="Enter PI amount">
                 </div>
                 
                 <div class="form-group">
-                    <label for="userName">Your Name:</label>
-                    <input type="text" id="userName" placeholder="Enter your name" required>
+                    <label for="piUsername">Pi Username:</label>
+                    <input type="text" id="piUsername" placeholder="Enter your Pi username" readonly>
+                </div>
+                
+                <div class="form-group" id="urlGroup" style="display: none;">
+                    <label for="socialUrl">Social Media URL:</label>
+                    <input type="url" id="socialUrl" placeholder="Enter your social media URL">
+                </div>
+                
+                <div class="form-group" id="pubgIdGroup" style="display: none;">
+                    <label for="pubgId">PUBG Mobile Player ID:</label>
+                    <input type="text" id="pubgId" placeholder="Enter your PUBG Mobile Player ID">
+                </div>
+                
+                <div class="form-group" id="mlbbUserIdGroup" style="display: none;">
+                    <label for="mlbbUserId">MLBB User ID:</label>
+                    <input type="text" id="mlbbUserId" placeholder="Enter your MLBB User ID">
+                </div>
+                
+                <div class="form-group" id="mlbbZoneIdGroup" style="display: none;">
+                    <label for="mlbbZoneId">MLBB Zone ID:</label>
+                    <input type="text" id="mlbbZoneId" placeholder="Enter your MLBB Zone ID">
                 </div>
                 
                 <div class="form-group">
                     <label for="userEmail">Your Email:</label>
                     <input type="email" id="userEmail" placeholder="Enter your email" required>
-                </div>
-                
-                <div class="form-group" id="gameIdGroup">
-                    <label for="userGameId">Game ID:</label>
-                    <input type="text" id="userGameId" placeholder="Enter your game ID">
-                </div>
-                
-                <div class="form-group" id="urlGroup" style="display: none;">
-                    <label for="userUrl">Your URL:</label>
-                    <input type="url" id="userUrl" placeholder="Enter your URL">
                 </div>
                 
                 <button id="piPayBtn" class="pi-pay-btn" disabled>
@@ -1079,8 +1185,7 @@
         </div>
     </div>
 
-    <!-- Footer Section -->
-    <footer>
+    <!-- Footer Section --><footer>
         <div class="footer-content">
             <div class="footer-section">
                 <h3>ABOUT US</h3>
@@ -1175,21 +1280,37 @@
 
         let currentUser = null;
 
+        // Package data
+        const pubgPackages = [
+            { uc: 60, price: 2, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
+            { uc: 325, price: 8, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
+            { uc: 660, price: 15, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
+            { uc: 1800, price: 25, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
+            { uc: 3850, price: 50, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
+            { uc: 8100, price: 92, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
+            { uc: 16200, price: 185, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
+            { uc: 24300, price: 275, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
+            { uc: 32400, price: 365, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
+            { uc: 45000, price: 455, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' }
+        ];
+
+        const mlbbPackages = [
+            { dias: 55, price: 2, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
+            { dias: 275, price: 8, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
+            { dias: 565, price: 12, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
+            { dias: 1155, price: 25, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
+            { dias: 1765, price: 35, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
+            { dias: 2975, price: 55, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
+            { dias: 6000, price: 105, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
+            { dias: 12000, price: 205, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' }
+        ];
+
         // Setup Pi Network buttons
         function setupPiButtons() {
-            // Authentication button
             document.getElementById('pi-auth-btn').addEventListener('click', authenticatePiUser);
-            
-            // Wallet address button
             document.getElementById('pi-wallet-btn')?.addEventListener('click', showWalletAddress);
-            
-            // Share button
             document.getElementById('pi-share-btn')?.addEventListener('click', openShareDialog);
-            
-            // Ad button
             document.getElementById('pi-ad-btn')?.addEventListener('click', showRewardedAd);
-            
-            // Payment button
             document.getElementById('piPayBtn')?.addEventListener('click', processPiPayment);
         }
 
@@ -1236,7 +1357,6 @@
                         behavior: 'smooth'
                     });
                     
-                    // Close sidebar if open
                     sidebar.classList.remove('active');
                     overlay.classList.remove('active');
                     hamburger.innerHTML = '<i class="fas fa-bars"></i>';
@@ -1305,15 +1425,13 @@
                 `<i class="fas fa-check-circle"></i> Signed in as ${authResult.user.username}`;
             document.getElementById('pi-auth-btn').disabled = true;
             
-            // Show additional Pi actions
             document.getElementById('pi-actions').style.display = 'flex';
             
-            // Enable payment button now that user is authenticated
             document.getElementById('piPayBtn').disabled = false;
             
-            // Pre-fill user details in payment form
             if (authResult.user.username) {
-                document.getElementById('userName').value = authResult.user.username;
+                document.getElementById('piUsername').value = authResult.user.username;
+                document.getElementById('piUsername').setAttribute('readonly', true);
             }
         }
 
@@ -1329,8 +1447,7 @@
                 return;
             }
             
-            // In a real app, you would get this from the authenticated user's wallet_address scope
-            const walletAddress = "GBGHA73VUPUEJBH76RDMJVWGJNZNRVGJLFLFUV2OO6DPIRFO5DS2NOER";
+            const walletAddress = "GBT4ZU7H5NJINYKPNDXTTQFXKK7BHBYAQBQEG4C2JWN5EX3I62K3OXOW";
             alert(`Your Pi Wallet Address:\n${walletAddress}`);
         }
 
@@ -1358,90 +1475,110 @@
                 });
         }
 
+        // Token Selection Modal Functions
+        function openTokenSelectionModal() {
+            document.getElementById('tokenSelectionModal').style.display = 'flex';
+        }
+
+        function closeTokenSelectionModal() {
+            document.getElementById('tokenSelectionModal').style.display = 'none';
+        }
+
+        // Package Modal Functions
+        function openPackageModal(type) {
+            const packageModal = document.getElementById('packageModal');
+            const packageList = document.getElementById('packageList');
+            const packageModalTitle = document.getElementById('packageModalTitle');
+            
+            packageList.innerHTML = '';
+            let packages = type === 'pubg' ? pubgPackages : mlbbPackages;
+            packageModalTitle.textContent = type === 'pubg' ? 'Select PUBG Mobile UC Package' : 'Select MLBB Diamonds Package';
+            
+            packages.forEach(pkg => {
+                const packageDiv = document.createElement('div');
+                packageDiv.className = 'package';
+                packageDiv.innerHTML = `
+                    <img src="${pkg.img}" alt="${type === 'pubg' ? pkg.uc + ' UC' : pkg.dias + ' DIAS'}" style="width: 100%; height: 100px; object-fit: contain;">
+                    <div class="package-title">${type === 'pubg' ? pkg.uc + ' UC' : pkg.dias + ' DIAS'}</div>
+                    <div class="package-price">${pkg.price} PI</div>
+                    <button class="package-buy-btn" onclick="openPaymentModal('${type === 'pubg' ? pkg.uc + ' UC' : pkg.dias + ' DIAS'}', ${pkg.price}, '${type}', ${type === 'pubg' ? pkg.uc : pkg.dias}); closePackageModal()">
+                        <i class="fas fa-coins"></i> Buy Now
+                    </button>
+                `;
+                packageList.appendChild(packageDiv);
+            });
+            
+            packageModal.style.display = 'flex';
+            closeTokenSelectionModal();
+        }
+
+        function closePackageModal() {
+            document.getElementById('packageModal').style.display = 'none';
+        }
+
         // Payment Modal Functions
-        function openPaymentModal(product, amount) {
+        function openPaymentModal(product, amount, type, quantity = null) {
             currentPayment.product = product;
             currentPayment.amount = amount;
             currentPayment.memo = `Payment for ${product}`;
+            currentPayment.type = type;
+            currentPayment.quantity = quantity;
             
             document.getElementById('productName').value = product;
-            document.getElementById('piAmount').value = amount || '';
+            document.getElementById('piAmount').value = amount;
             
-            // Show/hide appropriate input field based on product
-            const gameIdGroup = document.getElementById('gameIdGroup');
-            const urlGroup = document.getElementById('urlGroup');
+            document.getElementById('urlGroup').style.display = type === 'social' ? 'block' : 'none';
+            document.getElementById('pubgIdGroup').style.display = type === 'pubg' ? 'block' : 'none';
+            document.getElementById('mlbbUserIdGroup').style.display = type === 'mlbb' ? 'block' : 'none';
+            document.getElementById('mlbbZoneIdGroup').style.display = type === 'mlbb' ? 'block' : 'none';
             
-            if (product === 'Social Boost') {
-                gameIdGroup.style.display = 'none';
-                urlGroup.style.display = 'block';
-            } else {
-                gameIdGroup.style.display = 'block';
-                urlGroup.style.display = 'none';
-            }
-            
-            // Reset form
             document.getElementById('userEmail').value = '';
-            document.getElementById('userGameId').value = '';
-            document.getElementById('userUrl').value = '';
+            document.getElementById('socialUrl').value = '';
+            document.getElementById('pubgId').value = '';
+            document.getElementById('mlbbUserId').value = '';
+            document.getElementById('mlbbZoneId').value = '';
             document.getElementById('paymentStatus').style.display = 'none';
             
-            // Show modal
             document.getElementById('paymentModal').style.display = 'flex';
-            
-            // Enable/disable pay button based on input
-            updatePayButtonState();
         }
 
         function closePaymentModal() {
             document.getElementById('paymentModal').style.display = 'none';
         }
 
-        // Update pay button state based on form inputs
-        function updatePayButtonState() {
-            const product = document.getElementById('productName').value;
-            const piAmount = document.getElementById('piAmount').value;
-            const userName = document.getElementById('userName').value;
-            const userEmail = document.getElementById('userEmail').value;
-            const userGameId = document.getElementById('userGameId').value;
-            const userUrl = document.getElementById('userUrl').value;
-            
-            const payButton = document.getElementById('piPayBtn');
-            
-            if (product === 'Social Boost') {
-                payButton.disabled = !(piAmount && userName && userEmail && userUrl);
-            } else {
-                payButton.disabled = !(piAmount && userName && userEmail);
-            }
-        }
-
         // Process Pi Payment
         function processPiPayment() {
-            const piAmountInput = document.getElementById('piAmount');
-            const amount = parseFloat(piAmountInput.value);
-            
-            if (isNaN(amount) || amount <= 0) {
-                document.getElementById('paymentStatus').textContent = "Please enter a valid amount";
+            const piAmount = parseFloat(document.getElementById('piAmount').value);
+            if (!piAmount || piAmount < 0) {
+                document.getElementById('paymentStatus').textContent = "Please enter a valid PI amount (minimum 0)";
                 document.getElementById('paymentStatus').className = "payment-status payment-error";
                 document.getElementById('paymentStatus').style.display = "block";
                 return;
             }
 
-            currentPayment.amount = amount;
-            
             const paymentData = {
-                amount: currentPayment.amount,
+                amount: piAmount,
                 memo: currentPayment.memo,
                 metadata: {
                     product: currentPayment.product,
-                    userName: document.getElementById('userName').value,
+                    piUsername: document.getElementById('piUsername').value,
                     userEmail: document.getElementById('userEmail').value,
-                    userGameId: currentPayment.product === 'Social Boost' ? 
-                        document.getElementById('userUrl').value : 
-                        document.getElementById('userGameId').value,
+                    type: currentPayment.type,
                     timestamp: new Date().toISOString()
                 }
             };
-            
+
+            if (currentPayment.type === 'social') {
+                paymentData.metadata.socialUrl = document.getElementById('socialUrl').value;
+            } else if (currentPayment.type === 'pubg') {
+                paymentData.metadata.pubgId = document.getElementById('pubgId').value;
+                paymentData.metadata.ucAmount = currentPayment.quantity;
+            } else if (currentPayment.type === 'mlbb') {
+                paymentData.metadata.mlbbUserId = document.getElementById('mlbbUserId').value;
+                paymentData.metadata.mlbbZoneId = document.getElementById('mlbbZoneId').value;
+                paymentData.metadata.diasAmount = currentPayment.quantity;
+            }
+
             const paymentCallbacks = {
                 onReadyForServerApproval: function(paymentId) {
                     console.log("Ready for server approval with paymentId:", paymentId);
@@ -1449,8 +1586,6 @@
                     document.getElementById('paymentStatus').className = "payment-status";
                     document.getElementById('paymentStatus').style.display = "block";
                     
-                    // In a real app, you would send paymentId to your server for approval
-                    // For demo purposes, we'll simulate server approval
                     setTimeout(() => {
                         Pi.approvePayment(paymentId, paymentCallbacks)
                             .then(() => console.log("Payment approved"))
@@ -1460,19 +1595,17 @@
                 onReadyForServerCompletion: function(paymentId, txid) {
                     console.log("Ready for server completion with paymentId and txid:", paymentId, txid);
                     document.getElementById('paymentStatus').textContent = "Completing payment...";
+   
                     
-                    // In a real app, you would send paymentId and txid to your server for completion
-                    // For demo purposes, we'll simulate server completion
                     setTimeout(() => {
                         Pi.completePayment(paymentId, txid, paymentCallbacks)
                             .then(() => {
                                 console.log("Payment completed");
-                                document.getElementById('paymentStatus').textContent = "Payment successful!";
+                                document.getElementById('paymentStatus').textContent = "Payment successful! Please send the transaction screenshot to info@b4uesports.com or WhatsApp: +97517875099.";
                                 document.getElementById('paymentStatus').className = "payment-status payment-success";
                                 document.getElementById('paymentStatus').style.display = "block";
                                 
-                                // Close modal after 3 seconds
-                                setTimeout(closePaymentModal, 3000);
+                                setTimeout(closePaymentModal, 5000);
                             })
                             .catch(error => {
                                 console.error("Payment completion error:", error);
@@ -1496,14 +1629,10 @@
                 }
             };
             
-            // Create the payment
             Pi.createPayment(paymentData, paymentCallbacks)
                 .then(() => console.log("Payment created"))
                 .catch(error => console.error("Payment creation error:", error));
         }
-
-        // Add input event listeners for form validation
-        document.getElementById('paymentForm').addEventListener('input', updatePayButtonState);
 
         window.addEventListener('load', createSnowDrizzle);
         window.addEventListener('resize', function() {
