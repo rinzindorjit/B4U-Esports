@@ -37,7 +37,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background-image: 
+            background-image:
                 radial-gradient(4px 4px at 50px 50px, #fff , transparent),
                 radial-gradient(3px 3px at 150px 150px, #fff, transparent),
                 radial-gradient(4px 4px at 250px 250px, #fff 50%, transparent),
@@ -508,7 +508,9 @@
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
             margin-top: 2rem;
-        }     .card {
+        }
+
+        .card {
             background: #1e293b;
             border-radius: 12px;
             padding: 1.5rem;
@@ -654,23 +656,23 @@
         }
 
         @keyframes prizeGlow {
-            0% { 
+            0% {
                 border-color: #ffd700;
                 box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
             }
-            25% { 
+            25% {
                 border-color: #38bdf8;
                 box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
             }
-            50% { 
+            50% {
                 border-color: #7c3aed;
                 box-shadow: 0 0 10px rgba(124, 58, 237, 0.3);
             }
-            75% { 
+            75% {
                 border-color: #f43f5e;
                 box-shadow: 0 0 10px rgba(244, 63, 94, 0.3);
             }
-            100% { 
+            100% {
                 border-color: #10b981;
                 box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
             }
@@ -742,544 +744,47 @@
             font-size: 0.8rem;
             color: #94a3b8;
             margin-top: 0.3rem;
-            display: block;
+            displa    <script>
+        // Wait for SDK to load
+        function waitForPiSDK() {
+            return new Promise((resolve, reject) => {
+                if (typeof Pi !== 'undefined') {
+                    resolve();
+                } else {
+                    const timeout = setTimeout(() => {
+                        reject(new Error("Pi SDK failed to load within timeout"));
+                    }, 10000); // 10 seconds timeout
+                    window.addEventListener('load', () => {
+                        if (typeof Pi !== 'undefined') {
+                            clearTimeout(timeout);
+                            resolve();
+                        }
+                    });
+                }
+            });
         }
 
-        .rules-list {
-            list-style: none;
-            margin-bottom: 1.5rem;
-        }
-
-        .rules-list li {
-            margin-bottom: 0.5rem;
-            padding-left: 1.5rem;
-            position: relative;
-            color: #cbd5e1;
-        }
-
-        .rules-list li::before {
-            content: '•';
-            color: #38bdf8;
-            font-weight: bold;
-            position: absolute;
-            left: 0;
-        }
-
-        .register-btn {
-            display: block;
-            text-align: center;
-            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
-            color: #1e293b;
-            font-weight: 700;
-            padding: 1rem;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: all 0.3s;
-            margin-top: 1.5rem;
-        }
-
-        .register-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
-        }
-
-        /* Footer Styles */
-        footer {
-            background: #1e293b;
-            padding: 3rem 2rem;
-            margin-top: auto;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-        }
-
-        .footer-section {
-            text-align: left;
-        }
-
-        .footer-section h3 {
-            color: #38bdf8;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin: 0.7rem 0;
-        }
-
-        .footer-links a {
-            color: #94a3b8;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: #38bdf8;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            justify-content: center;
-        }
-
-        .social-links a {
-            color: #fff;
-            font-size: 1.5rem;
-            transition: color 0.3s;
-        }
-
-        .social-links a:hover {
-            color: #38bdf8;
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-                margin-top: 70px;
-            }
-            
-            .hero-section {
-                padding: 3rem 1rem;
-            }
-            
-            .registration-note p {
-                flex-direction: column;
-                gap: 5px;
-            }
-            
-            .card-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-            
-            .social-links {
-                justify-content: center;
-            }
-            
-            .tournament-title {
-                font-size: 1.3rem;
-            }
-            
-            .prize-amount {
-                font-size: 1.2rem;
-            }
-
-            .ad-container {
-                margin: 1rem auto;
-            }
-
-            .ad-container#middle-ad {
-                margin: 2rem auto;
-            }
-        }
-
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .container {
-                padding: 1.5rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="snow"></div>
-    
-    <!-- Header Section -->
-    <header class="header">
-        <div class="nav-container">
-            <img src="https://b4uesports.com/wp-content/uploads/2025/04/cropped-Black_and_Blue_Simple_Creative_Illustrative_Dragons_E-Sport_Logo_20240720_103229_0000-removebg-preview.png" 
-                 alt="B4U Esports Logo" 
-                 class="logo">
-            <button class="hamburger" id="hamburger">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </header>
-    <!-- Mobile Sidebar -->
-    <nav class="sidebar" id="sidebar">
-        <ul class="nav-menu">
-            <li><a href="#" onclick="showDashboard()"><i class="fas fa-home"></i>Home</a></li>
-            <li><a href="https://b4uesports.com/my-account/"><i class="fas fa-user"></i>My Account</a></li>
-            <li><a href="https://b4uesports.com/shop/"><i class="fas fa-store"></i>Shop</a></li>
-            <li><a href="https://b4uesports.com/blogs/"><i class="fas fa-blog"></i>Blogs</a></li>
-            <li><a href="#tournaments"><i class="fas fa-trophy"></i>Tournaments</a></li>
-            <li><a href="https://b4uesports.com/purchase-in-game-tokens-and-social-media-boosting-services-with-pi/"><i class="fas fa-coins"></i>Buy with PI</a></li>
-        </ul>
-    </nav>
-    <div class="overlay" id="overlay"></div>
-
-    <!-- Main Content -->
-    <div class="container">
-        <section class="hero-section">
-            <h1 class="welcome-text">
-                <i class="fas fa-hand-peace"></i> KUZUZANGPOLA! <i class="fas fa-gamepad"></i>
-            </h1>
-            
-            <div class="registration-note">
-                <p>
-                    <i class="fas fa-exclamation-circle"></i>
-                    New users: Please 
-                    <a href="https://b4uesports.com/my-account/" target="_blank">
-                        REGISTER HERE
-                    </a> 
-                    to access all services!
-                </p>
-            </div>
-
-            <!-- Pi Network Auth Button -->
-            <button id="pi-auth-btn" class="pi-auth-btn">
-                <i class="fas fa-sign-in-alt"></i> Sign In with Pi Network
-            </button>
-
-            <!-- Pi Network Actions (shown after auth) -->
-            <div id="pi-actions" class="pi-actions" style="display: none;">
-                <button id="pi-wallet-btn" class="pi-action-btn">
-                    <i class="fas fa-wallet"></i> Wallet Address
-                </button>
-                <button id="pi-share-btn" class="pi-action-btn">
-                    <i class="fas fa-share-alt"></i> Share
-                </button>
-                <button id="pi-ad-btn" class="pi-action-btn">
-                    <i class="fas fa-ad"></i> Watch Ad
-                </button>
-            </div>
-
-            <p class="text-lg">Your Ultimate Gaming Marketplace</p>
-        </section>
-
-        <div class="card-grid">
-            <div class="card">
-                <img src="https://b4uesports.com/wp-content/uploads/2025/04/ChatGPT-Image-Apr-22-2025-07_04_11-PM.png" 
-                     alt="Marketplace">
-                <h2><i class="fas fa-store"></i> Marketplace</h2>
-                <a href="https://b4uesports.com/advertisement/" class="btn primary-btn">
-                    <i class="fas fa-shopping-cart"></i> BUY
-                </a>
-                <a href="https://b4uesports.com/advertise-your-pubg-mobile-services/" class="btn secondary-btn">
-                    <i class="fas fa-hand-holding-usd"></i> SELL
-                </a>
-            </div>
-
-            <div class="card">
-                <img src="https://b4uesports.com/wp-content/uploads/2025/05/ucandmlbb-dias.png" 
-                     alt="In-game Tokens"
-                     class="token-img">
-                <h2><i class="fas fa-coins"></i> In-game Tokens</h2>
-                <p>Purchase various game currencies instantly</p>
-                <button class="btn primary-btn" onclick="openTokenSelectionModal()">
-                    <i class="fas fa-shopping-bag"></i> GET TOKENS
-                </button>
-            </div>
-
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1266&q=80" alt="Social Media">
-                <h2><i class="fas fa-rocket"></i> Social Boosting</h2>
-                <p>Boost your online presence</p>
-                <button class="btn primary-btn" onclick="openPaymentModal('Social Boost', 15, 'social')">
-                    <i class="fas fa-chart-line"></i> BOOST NOW
-                </button>
-            </div>
-        </div>
-
-        <!-- Middle Ad Container -->
-        <div class="ad-container" id="middle-ad">
-            <script type="text/javascript">
-                atOptions = {
-                    'key' : '71e8bc5e4f46d4cf2a0214ad18d11df0',
-                    'format' : 'iframe',
-                    'height' : 50,
-                    'width' : 320,
-                    'params' : {}
-                };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/71e8bc5e4f46d4cf2a0214ad18d11df0/invoke.js"></script>
-        </div>
-
-        <!-- PUBG Tournaments Section -->
-        <div class="tournament-header" id="tournaments">
-            <h1><i class="fas fa-trophy"></i> PUBG Mobile Tournaments</h1>
-            <p>Compete in our professional tournaments and win amazing prizes</p>
-        </div>
-
-        <div class="tournament-types">
-            <!-- Classic Tournament -->
-            <div class="tournament-card">
-                <div class="tournament-banner classic-banner"></div>
-                <div class="tournament-content">
-                    <h2 class="tournament-title">
-                        <i class="fas fa-map-marked-alt"></i> Classic Tournament
-                    </h2>
-                    
-                    <div class="tournament-prize">
-                        <div class="prize-label">Total Prize Pool</div>
-                        <div class="prize-amount">50,000 NU</div>
-                    </div>
-                    
-                    <div class="tournament-details">
-                        <p><i class="fas fa-users"></i> <strong>Squad Mode:</strong> 4-6 players per team</p>
-                        <p><i class="fas fa-tag"></i> <strong>Team Tag:</strong> [B4U] required in team name</p>
-                        <span class="team-tag-example">(e.g. [B4U]YourTeamName)</span>
-                        <p><i class="fas fa-map"></i> <strong>Maps:</strong> Erangel, Miramar, Sanhok</p>
-                        <p><i class="fas fa-calendar-alt"></i> <strong>Schedule:</strong> Weekly tournaments</p>
-                    </div>
-                    
-                    <div class="tournament-modes">
-                        <h3><i class="fas fa-gamepad"></i> Tournament Format:</h3>
-                        <div class="mode-item">
-                            <h4><i class="fas fa-users"></i> Squad Battle Royale</h4>
-                            <p>Classic PUBG rules with TPP perspective</p>
-                            <span class="team-tag">Team Tag: [B4U]YourTeamName</span>
-                        </div>
-                    </div>
-                    
-                    <h3><i class="fas fa-gavel"></i> Rules & Regulations:</h3>
-                    <ul class="rules-list">
-                        <li>Team name must include [B4U] tag (e.g. [B4U]Legends)</li>
-                        <li>No hacking or cheating of any kind</li>
-                        <li>Players must use their real PUBG IDs</li>
-                        <li>Teams must register 30 minutes before match</li>
-                        <li>Disconnections will not pause the game</li>
-                        <li>Top 3 teams by kills and placement will qualify</li>
-                    </ul>
-                    
-                    <button class="register-btn" onclick="openPaymentModal('Classic Tournament Entry', 5, 'tournament')">
-                        <i class="fas fa-user-plus"></i> Register Now
-                    </button>
-                </div>
-            </div>
-            
-            <!-- TDM Tournament -->
-            <div class="tournament-card">
-                <div class="tournament-banner tdm-banner"></div>
-                <div class="tournament-content">
-                    <h2 class="tournament-title">
-                        <i class="fas fa-crosshairs"></i> TDM Tournament
-                    </h2>
-                    
-                    <div class="tournament-prize">
-                        <div class="prize-label">Total Prize Pool</div>
-                        <div class="prize-amount">30,000 NU</div>
-                    </div>
-                    
-                    <div class="tournament-details">
-                        <p><i class="fas fa-user"></i> <strong>Modes:</strong> 1v1 Duel & 4v4 Team Battle</p>
-                        <p><i class="fas fa-map"></i> <strong>Maps:</strong> Warehouse, Ruins, Town</p>
-                        <p><i class="fas fa-calendar-alt"></i> <strong>Schedule:</strong> Daily quick matches</p>
-                    </div>
-                    
-                    <div class="tournament-modes">
-                        <h3><i class="fas fa-gamepad"></i> Tournament Modes:</h3>
-                        <div class="mode-item">
-                            <h4><i class="fas fa-user"></i> 1v1 Duel</h4>
-                            <p>First player to reach 20 kills wins the match</p>
-                        </div>
-                        <div class="mode-item">
-                            <h4><i class="fas fa-users"></i> 4v4 Team Battle</h4>
-                            <p>First team to reach 40 kills wins the match</p>
-                        </div>
-                    </div>
-                    
-                    <h3><i class="fas fa-gavel"></i> Rules & Regulations:</h3>
-                    <ul class="rules-list">
-                        <li>No holding position for more than 5 seconds</li>
-                        <li>No camping in spawn areas</li>
-                        <li>Only designated weapons allowed</li>
-                        <li>Players must maintain sportsmanship</li>
-                        <li>Disconnections result in automatic loss</li>
-                        <li>No grenades or throwables in 1v1 mode</li>
-                    </ul>
-                    
-                    <button class="register-btn" onclick="openPaymentModal('TDM Tournament Entry', 3, 'tournament')">
-                        <i class="fas fa-user-plus"></i> Register Now
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Token Selection Modal -->
-    <div class="modal" id="tokenSelectionModal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeTokenSelectionModal()">×</span>
-            <h2 class="modal-title">Select Token Type</h2>
-            <div class="token-selection">
-                <button class="token-btn" onclick="openPackageModal('pubg')">PUBG Mobile UC</button>
-                <button class="token-btn" onclick="openPackageModal('mlbb')">MLBB Diamonds</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Package Selection Modal -->
-    <div class="modal" id="packageModal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closePackageModal()">×</span>
-            <h2 class="modal-title" id="packageModalTitle">Select Package</h2>
-            <div class="packages" id="packageList"></div>
-        </div>
-    </div>
-
-    <!-- Payment Modal -->
-    <div class="modal" id="paymentModal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closePaymentModal()">×</span>
-            <h2 class="modal-title" id="modalTitle">Payment</h2>
-            
-            <div id="paymentForm" class="payment-form">
-                <div class="form-group">
-                    <label for="productName">Product:</label>
-                    <input type="text" id="productName" readonly>
-                </div>
-                
-                <div class="form-group">
-                    <label for="piAmount">Amount (π):</label>
-                    <input type="number" id="piAmount" min="0" step="0.01" placeholder="Enter PI amount">
-                </div>
-                
-                <div class="form-group">
-                    <label for="piUsername">Pi Username:</label>
-                    <input type="text" id="piUsername" placeholder="Enter your Pi username" readonly>
-                </div>
-                
-                <div class="form-group" id="urlGroup" style="display: none;">
-                    <label for="socialUrl">Social Media URL:</label>
-                    <input type="url" id="socialUrl" placeholder="Enter your social media URL">
-                </div>
-                
-                <div class="form-group" id="pubgIdGroup" style="display: none;">
-                    <label for="pubgId">PUBG Mobile Player ID:</label>
-                    <input type="text" id="pubgId" placeholder="Enter your PUBG Mobile Player ID">
-                </div>
-                
-                <div class="form-group" id="mlbbUserIdGroup" style="display: none;">
-                    <label for="mlbbUserId">MLBB User ID:</label>
-                    <input type="text" id="mlbbUserId" placeholder="Enter your MLBB User ID">
-                </div>
-                
-                <div class="form-group" id="mlbbZoneIdGroup" style="display: none;">
-                    <label for="mlbbZoneId">MLBB Zone ID:</label>
-                    <input type="text" id="mlbbZoneId" placeholder="Enter your MLBB Zone ID">
-                </div>
-                
-                <div class="form-group">
-                    <label for="userEmail">Your Email:</label>
-                    <input type="email" id="userEmail" placeholder="Enter your email" required>
-                </div>
-                
-                <button id="piPayBtn" class="pi-pay-btn" disabled>
-                    <i class="fas fa-coins"></i> Pay with Pi
-                </button>
-                
-                <div id="paymentStatus" class="payment-status"></div>
-            </div>
-        </div>
-    </div>
-    <!-- Footer Section -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>ABOUT US</h3>
-                <ul class="footer-links">
-                    <li><a href="https://b4uesports.com/our-history/" target="_blank">Our History</a></li>
-                    <li><a href="https://b4uesports.com/privacy-policy/" target="_blank">Privacy Policy</a></li>
-                    <li><a href="https://b4uesports.com/data-protection/" target="_blank">Data Protection</a></li>
-                    <li><a href="https://b4uesports.com/cookie-policy/" target="_blank">Cookie Policy</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <h3>TERMS & CONDITIONS</h3>
-                <ul class="footer-links">
-                    <li><a href="https://b4uesports.com/terms-of-service/" target="_blank">Terms of Service</a></li>
-                    <li><a href="https://b4uesports.com/user-agreement/" target="_blank">User Agreement</a></li>
-                    <li><a href="https://b4uesports.com/refund_returns/" target="_blank">Refund & Returns</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <h3>CONTACT US</h3>
-                <ul class="footer-links">
-                    <li><a href="https://b4uesports.com/support/" target="_blank">Support</a></li>
-                    <li><a href="https://b4uesports.com/faqs/" target="_blank">FAQs</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <h3>FOLLOW US</h3>
-                <div class="social-links">
-                    <a href="https://www.facebook.com/b4uesports" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-facebook"></i>
-                    </a>
-                    <a href="https://youtube.com/@b4uesports" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                    <a href="https://www.tiktok.com/b4uesports" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-tiktok"></i>
-                    </a>
-                    <a href="https://www.instagram.com/b4uesports" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://discord.gg/m2EcGPx" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-discord"></i>
-                    </a>
-                    <a href="https://t.me/b4uesport" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-telegram"></i>
-                    </a>
-                    <a href="https://www.linkedin.com/company/b4uesports/" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-linkedin"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Bottom Ad Container -->
-    <div class="ad-container" id="bottom-ad">
-        <script type="text/javascript">
-            atOptions = {
-                'key' : '71e8bc5e4f46d4cf2a0214ad18d11df0',
-                'format' : 'iframe',
-                'height' : 50,
-                'width' : 320,
-                'params' : {}
-            };
-        </script>
-        <script type="text/javascript" src="//www.highperformanceformat.com/71e8bc5e4f46d4cf2a0214ad18d11df0/invoke.js"></script>
-    </div>
-
-    <!-- Pi Network SDK -->
-    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-    <script>
         // Initialize Pi Network SDK in sandbox mode
-        Pi.init({
-            version: "2.0",
-            appId: "b4u-esports",
-            network: "testnet",
-            apiKey: "9f5hgo2zonuxxjbteqbldd6getgsykewge603yu63thkeuh4uopgjlo6t6eo0mdl",
-            sandbox: true
-        })
-            .then(() => {
+        async function initializePiSDK() {
+            try {
+                await waitForPiSDK();
+                await Pi.init({
+                    version: "2.0",
+                    appId: "b4u-esports",
+                    network: "testnet",
+                    apiKey: "9f5hgo2zonuxxjbteqbldd6getgsykewge603yu63thkeuh4uopgjlo6t6eo0mdl",
+                    sandbox: true
+                });
                 console.log("Pi SDK initialized successfully in sandbox mode");
                 setupPiButtons();
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error("Error initializing Pi SDK:", error);
                 alert("Failed to initialize Pi SDK: " + error.message);
-            });
+                document.getElementById('pi-auth-btn').innerHTML =
+                    '<i class="fas fa-exclamation-circle"></i> Retry Sign In';
+                document.getElementById('pi-auth-btn').disabled = false;
+            }
+        }
 
         // Global variables for payment
         let currentPayment = {
@@ -1318,22 +823,36 @@
 
         // Setup Pi Network buttons
         function setupPiButtons() {
-            document.getElementById('pi-auth-btn').addEventListener('click', authenticatePiUser);
-            document.getElementById('pi-wallet-btn')?.addEventListener('click', showWalletAddress);
-            document.getElementById('pi-share-btn')?.addEventListener('click', openShareDialog);
-            document.getElementById('pi-ad-btn')?.addEventListener('click', showRewardedAd);
-            document.getElementById('piPayBtn')?.addEventListener('click', processPiPayment);
+            const authBtn = document.getElementById('pi-auth-btn');
+            authBtn.removeEventListener('click', authenticatePiUser); // Prevent multiple bindings
+            authBtn.addEventListener('click', authenticatePiUser);
+
+            const walletBtn = document.getElementById('pi-wallet-btn');
+            walletBtn?.removeEventListener('click', showWalletAddress);
+            walletBtn?.addEventListener('click', showWalletAddress);
+
+            const shareBtn = document.getElementById('pi-share-btn');
+            shareBtn?.removeEventListener('click', openShareDialog);
+            shareBtn?.addEventListener('click', openShareDialog);
+
+            const adBtn = document.getElementById('pi-ad-btn');
+            adBtn?.removeEventListener('click', showRewardedAd);
+            adBtn?.addEventListener('click', showRewardedAd);
+
+            const payBtn = document.getElementById('piPayBtn');
+            payBtn?.removeEventListener('click', processPiPayment);
+            payBtn?.addEventListener('click', processPiPayment);
         }
 
         // Hamburger Menu Functionality
         const hamburger = document.getElementById('hamburger');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
-        
+       
         hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
-            hamburger.innerHTML = sidebar.classList.contains('active') ? 
+            hamburger.innerHTML = sidebar.classList.contains('active') ?
                 '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
         });
 
@@ -1357,17 +876,17 @@
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
-                
+               
                 const targetId = this.getAttribute('href');
                 if (targetId === '#') return;
-                
+               
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
                     window.scrollTo({
                         top: targetElement.offsetTop - 80,
                         behavior: 'smooth'
                     });
-                    
+                   
                     sidebar.classList.remove('active');
                     overlay.classList.remove('active');
                     hamburger.innerHTML = '<i class="fas fa-bars"></i>';
@@ -1387,7 +906,7 @@
         function createSnowDrizzle() {
             const container = document.querySelector('.snow');
             const snowCount = window.innerWidth < 768 ? 30 : 50;
-            
+           
             for (let i = 0; i < snowCount; i++) {
                 const snow = document.createElement('div');
                 snow.style.position = 'absolute';
@@ -1399,7 +918,7 @@
                 snow.style.left = Math.random() * 100 + 'vw';
                 snow.style.opacity = Math.random() * 0.5 + 0.5;
                 snow.style.animation = `fall ${Math.random() * 5 + 5}s linear ${Math.random() * 5}s infinite`;
-                
+               
                 const keyframes = `
                     @keyframes fall {
                         to {
@@ -1407,38 +926,59 @@
                         }
                     }
                 `;
-                
+               
                 const style = document.createElement('style');
                 style.innerHTML = keyframes;
                 document.head.appendChild(style);
-                
+               
                 container.appendChild(snow);
             }
         }
 
-        // Pi Network Authentication
-        function authenticatePiUser() {
+        // Pi Network Authentication with retry logic
+        async function authenticatePiUser() {
+            const authBtn = document.getElementById('pi-auth-btn');
+            authBtn.disabled = true;
+            authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
+
             const scopes = ['username', 'payments', 'wallet_address'];
-            Pi.authenticate(scopes, onIncompletePaymentFound)
-                .then(authResult => {
+            let attempts = 0;
+            const maxAttempts = 3;
+
+            async function tryAuthenticate() {
+                try {
+                    const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound);
                     console.log("Pi user authenticated:", authResult);
                     currentUser = authResult.user;
                     handleSuccessfulAuth(authResult);
-                })
-                .catch(error => {
-                    console.error("Pi authentication error:", error);
-                    alert("Authentication failed: " + error.message);
-                });
+                } catch (error) {
+                    console.error("Authentication attempt failed:", error);
+                    attempts++;
+                    if (attempts < maxAttempts) {
+                        console.log(`Retrying authentication... Attempt ${attempts + 1}`);
+                        await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds before retry
+                        return tryAuthenticate();
+                    } else {
+                        console.error("Max authentication attempts reached:", error);
+                        alert("Authentication failed after multiple attempts: " + error.message);
+                        authBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Retry Sign In';
+                        authBtn.disabled = false;
+                    }
+                }
+            }
+
+            await tryAuthenticate();
         }
 
         function handleSuccessfulAuth(authResult) {
-            document.getElementById('pi-auth-btn').innerHTML = 
-                `<i class="fas fa-check-circle"></i> Signed in as ${authResult.user.username}`;
-            document.getElementById('pi-auth-btn').disabled = true;
-            
-            document.getElementById('pi-actions').style.display = 'flex';            
+            const authBtn = document.getElementById('pi-auth-btn');
+            authBtn.innerHTML = `<i class="fas fa-check-circle"></i> Signed in as ${authResult.user.username}`;
+            authBtn.disabled = true;
+           
+            document.getElementById('pi-actions').style.display = 'flex';
+           
             document.getElementById('piPayBtn').disabled = false;
-            
+           
             if (authResult.user.username) {
                 document.getElementById('piUsername').value = authResult.user.username;
                 document.getElementById('piUsername').setAttribute('readonly', true);
@@ -1456,7 +996,7 @@
                 alert("Please authenticate first");
                 return;
             }
-            
+           
             const walletAddress = "GCJZEOVAODSADUFWNEYFBYFASNUFASPZOLR53CIU54SQZIJT6WF62SPE";
             alert(`Your Pi Wallet Address:\n${walletAddress}`);
         }
@@ -1499,11 +1039,11 @@
             const packageModal = document.getElementById('packageModal');
             const packageList = document.getElementById('packageList');
             const packageModalTitle = document.getElementById('packageModalTitle');
-            
+           
             packageList.innerHTML = '';
             let packages = type === 'pubg' ? pubgPackages : mlbbPackages;
             packageModalTitle.textContent = type === 'pubg' ? 'Select PUBG Mobile UC Package' : 'Select MLBB Diamonds Package';
-            
+           
             packages.forEach(pkg => {
                 const packageDiv = document.createElement('div');
                 packageDiv.className = 'package';
@@ -1517,7 +1057,7 @@
                 `;
                 packageList.appendChild(packageDiv);
             });
-            
+           
             packageModal.style.display = 'flex';
             closeTokenSelectionModal();
         }
@@ -1533,22 +1073,23 @@
             currentPayment.memo = `Payment for ${product}`;
             currentPayment.type = type;
             currentPayment.quantity = quantity;
-            
+           
             document.getElementById('productName').value = product;
             document.getElementById('piAmount').value = amount;
-            
+           
             document.getElementById('urlGroup').style.display = type === 'social' ? 'block' : 'none';
             document.getElementById('pubgIdGroup').style.display = type === 'pubg' ? 'block' : 'none';
             document.getElementById('mlbbUserIdGroup').style.display = type === 'mlbb' ? 'block' : 'none';
             document.getElementById('mlbbZoneIdGroup').style.display = type === 'mlbb' ? 'block' : 'none';
-            
+           
             document.getElementById('userEmail').value = '';
+            document.getElementById('piPayBtn').disabled = !currentUser;
             document.getElementById('socialUrl').value = '';
             document.getElementById('pubgId').value = '';
             document.getElementById('mlbbUserId').value = '';
             document.getElementById('mlbbZoneId').value = '';
             document.getElementById('paymentStatus').style.display = 'none';
-            
+           
             document.getElementById('paymentModal').style.display = 'flex';
         }
 
@@ -1630,7 +1171,7 @@
                     document.getElementById('paymentStatus').textContent = "Processing payment...";
                     document.getElementById('paymentStatus').className = "payment-status";
                     document.getElementById('paymentStatus').style.display = "block";
-                    
+                   
                     // Simulate server-side approval for sandbox
                     setTimeout(() => {
                         Pi.approvePayment(paymentId, paymentCallbacks)
@@ -1646,7 +1187,7 @@
                 onReadyForServerCompletion: function(paymentId, txid) {
                     console.log("Ready for server completion with paymentId and txid:", paymentId, txid);
                     document.getElementById('paymentStatus').textContent = "Completing payment...";
-                    
+                   
                     // Simulate server-side completion for sandbox
                     setTimeout(() => {
                         Pi.completePayment(paymentId, txid, paymentCallbacks)
@@ -1655,7 +1196,7 @@
                                 document.getElementById('paymentStatus').textContent = "Payment successful! Please send the transaction screenshot to info@b4uesports.com or WhatsApp: +97517875099.";
                                 document.getElementById('paymentStatus').className = "payment-status payment-success";
                                 document.getElementById('paymentStatus').style.display = "block";
-                                
+                               
                                 setTimeout(closePaymentModal, 5000);
                             })
                             .catch(error => {
@@ -1671,14 +1212,15 @@
                     document.getElementById('paymentStatus').textContent = "Payment cancelled";
                     document.getElementById('paymentStatus').className = "payment-status payment-error";
                     document.getElementById('paymentStatus').style.display = "block";
-                },                onError: function(error, payment) {
+                },
+                onError: function(error, payment) {
                     console.error("Payment error:", error, payment);
                     document.getElementById('paymentStatus').textContent = "Error: " + error.message;
                     document.getElementById('paymentStatus').className = "payment-status payment-error";
                     document.getElementById('paymentStatus').style.display = "block";
                 }
             };
-            
+           
             Pi.createPayment(paymentData, paymentCallbacks)
                 .then(() => {
                     console.log("Payment creation initiated");
@@ -1694,7 +1236,11 @@
                 });
         }
 
-        window.addEventListener('load', createSnowDrizzle);
+        window.addEventListener('load', () => {
+            createSnowDrizzle();
+            initializePiSDK();
+        });
+
         window.addEventListener('resize', function() {
             document.querySelectorAll('.snow div').forEach(el => el.remove());
             createSnowDrizzle();
