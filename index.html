@@ -263,7 +263,8 @@
             box-shadow: 0 4px 15px rgba(20, 241, 149, 0.3);
         }
 
-        .pi-auth-btn:hover {transform: translateY(-2px);
+        .pi-auth-btn:hover {
+            transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(20, 241, 149, 0.4);
         }
 
@@ -507,9 +508,7 @@
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
             margin-top: 2rem;
-        }
-
-        .card {
+        }     .card {
             background: #1e293b;
             border-radius: 12px;
             padding: 1.5rem;
@@ -799,6 +798,10 @@
             gap: 2rem;
         }
 
+        .footer-section {
+            text-align: left;
+        }
+
         .footer-section h3 {
             color: #38bdf8;
             margin-bottom: 1rem;
@@ -827,6 +830,7 @@
             display: flex;
             gap: 1rem;
             margin-top: 1rem;
+            justify-content: center;
         }
 
         .social-links a {
@@ -839,7 +843,8 @@
             color: #38bdf8;
         }
 
-        /* Responsive Adjustments */@media (max-width: 768px) {
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
             .container {
                 padding: 1rem;
                 margin-top: 70px;
@@ -905,7 +910,6 @@
             </button>
         </div>
     </header>
-
     <!-- Mobile Sidebar -->
     <nav class="sidebar" id="sidebar">
         <ul class="nav-menu">
@@ -1184,8 +1188,8 @@
             </div>
         </div>
     </div>
-
-    <!-- Footer Section --><footer>
+    <!-- Footer Section -->
+    <footer>
         <div class="footer-content">
             <div class="footer-section">
                 <h3>ABOUT US</h3>
@@ -1261,13 +1265,20 @@
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <script>
         // Initialize Pi Network SDK in sandbox mode
-        Pi.init({ version: "2.0", sandbox: true })
+        Pi.init({
+            version: "2.0",
+            appId: "b4u-esports",
+            network: "testnet",
+            apiKey: "9f5hgo2zonuxxjbteqbldd6getgsykewge603yu63thkeuh4uopgjlo6t6eo0mdl",
+            sandbox: true
+        })
             .then(() => {
-                console.log("Pi SDK initialized successfully");
+                console.log("Pi SDK initialized successfully in sandbox mode");
                 setupPiButtons();
             })
             .catch(error => {
                 console.error("Error initializing Pi SDK:", error);
+                alert("Failed to initialize Pi SDK: " + error.message);
             });
 
         // Global variables for payment
@@ -1425,8 +1436,7 @@
                 `<i class="fas fa-check-circle"></i> Signed in as ${authResult.user.username}`;
             document.getElementById('pi-auth-btn').disabled = true;
             
-            document.getElementById('pi-actions').style.display = 'flex';
-            
+            document.getElementById('pi-actions').style.display = 'flex';            
             document.getElementById('piPayBtn').disabled = false;
             
             if (authResult.user.username) {
@@ -1447,7 +1457,7 @@
                 return;
             }
             
-            const walletAddress = "GBT4ZU7H5NJINYKPNDXTTQFXKK7BHBYAQBQEG4C2JWN5EX3I62K3OXOW";
+            const walletAddress = "GCJZEOVAODSADUFWNEYFBYFASNUFASPZOLR53CIU54SQZIJT6WF62SPE";
             alert(`Your Pi Wallet Address:\n${walletAddress}`);
         }
 
@@ -1548,9 +1558,22 @@
 
         // Process Pi Payment
         function processPiPayment() {
+            if (!currentUser) {
+                alert("Please authenticate with Pi Network first");
+                return;
+            }
+
             const piAmount = parseFloat(document.getElementById('piAmount').value);
             if (!piAmount || piAmount < 0) {
                 document.getElementById('paymentStatus').textContent = "Please enter a valid PI amount (minimum 0)";
+                document.getElementById('paymentStatus').className = "payment-status payment-error";
+                document.getElementById('paymentStatus').style.display = "block";
+                return;
+            }
+
+            const userEmail = document.getElementById('userEmail').value;
+            if (!userEmail) {
+                document.getElementById('paymentStatus').textContent = "Please enter a valid email address";
                 document.getElementById('paymentStatus').className = "payment-status payment-error";
                 document.getElementById('paymentStatus').style.display = "block";
                 return;
@@ -1562,20 +1585,42 @@
                 metadata: {
                     product: currentPayment.product,
                     piUsername: document.getElementById('piUsername').value,
-                    userEmail: document.getElementById('userEmail').value,
+                    userEmail: userEmail,
                     type: currentPayment.type,
                     timestamp: new Date().toISOString()
                 }
             };
 
             if (currentPayment.type === 'social') {
-                paymentData.metadata.socialUrl = document.getElementById('socialUrl').value;
+                const socialUrl = document.getElementById('socialUrl').value;
+                if (!socialUrl) {
+                    document.getElementById('paymentStatus').textContent = "Please enter a valid social media URL";
+                    document.getElementById('paymentStatus').className = "payment-status payment-error";
+                    document.getElementById('paymentStatus').style.display = "block";
+                    return;
+                }
+                paymentData.metadata.socialUrl = socialUrl;
             } else if (currentPayment.type === 'pubg') {
-                paymentData.metadata.pubgId = document.getElementById('pubgId').value;
+                const pubgId = document.getElementById('pubgId').value;
+                if (!pubgId) {
+                    document.getElementById('paymentStatus').textContent = "Please enter a valid PUBG Mobile Player ID";
+                    document.getElementById('paymentStatus').className = "payment-status payment-error";
+                    document.getElementById('paymentStatus').style.display = "block";
+                    return;
+                }
+                paymentData.metadata.pubgId = pubgId;
                 paymentData.metadata.ucAmount = currentPayment.quantity;
             } else if (currentPayment.type === 'mlbb') {
-                paymentData.metadata.mlbbUserId = document.getElementById('mlbbUserId').value;
-                paymentData.metadata.mlbbZoneId = document.getElementById('mlbbZoneId').value;
+                const mlbbUserId = document.getElementById('mlbbUserId').value;
+                const mlbbZoneId = document.getElementById('mlbbZoneId').value;
+                if (!mlbbUserId || !mlbbZoneId) {
+                    document.getElementById('paymentStatus').textContent = "Please enter valid MLBB User ID and Zone ID";
+                    document.getElementById('paymentStatus').className = "payment-status payment-error";
+                    document.getElementById('paymentStatus').style.display = "block";
+                    return;
+                }
+                paymentData.metadata.mlbbUserId = mlbbUserId;
+                paymentData.metadata.mlbbZoneId = mlbbZoneId;
                 paymentData.metadata.diasAmount = currentPayment.quantity;
             }
 
@@ -1586,21 +1631,27 @@
                     document.getElementById('paymentStatus').className = "payment-status";
                     document.getElementById('paymentStatus').style.display = "block";
                     
+                    // Simulate server-side approval for sandbox
                     setTimeout(() => {
                         Pi.approvePayment(paymentId, paymentCallbacks)
                             .then(() => console.log("Payment approved"))
-                            .catch(error => console.error("Payment approval error:", error));
+                            .catch(error => {
+                                console.error("Payment approval error:", error);
+                                document.getElementById('paymentStatus').textContent = "Payment approval failed: " + error.message;
+                                document.getElementById('paymentStatus').className = "payment-status payment-error";
+                                document.getElementById('paymentStatus').style.display = "block";
+                            });
                     }, 2000);
                 },
                 onReadyForServerCompletion: function(paymentId, txid) {
                     console.log("Ready for server completion with paymentId and txid:", paymentId, txid);
                     document.getElementById('paymentStatus').textContent = "Completing payment...";
-   
                     
+                    // Simulate server-side completion for sandbox
                     setTimeout(() => {
                         Pi.completePayment(paymentId, txid, paymentCallbacks)
                             .then(() => {
-                                console.log("Payment completed");
+                                console.log("Payment completed successfully");
                                 document.getElementById('paymentStatus').textContent = "Payment successful! Please send the transaction screenshot to info@b4uesports.com or WhatsApp: +97517875099.";
                                 document.getElementById('paymentStatus').className = "payment-status payment-success";
                                 document.getElementById('paymentStatus').style.display = "block";
@@ -1620,8 +1671,7 @@
                     document.getElementById('paymentStatus').textContent = "Payment cancelled";
                     document.getElementById('paymentStatus').className = "payment-status payment-error";
                     document.getElementById('paymentStatus').style.display = "block";
-                },
-                onError: function(error, payment) {
+                },                onError: function(error, payment) {
                     console.error("Payment error:", error, payment);
                     document.getElementById('paymentStatus').textContent = "Error: " + error.message;
                     document.getElementById('paymentStatus').className = "payment-status payment-error";
@@ -1630,8 +1680,18 @@
             };
             
             Pi.createPayment(paymentData, paymentCallbacks)
-                .then(() => console.log("Payment created"))
-                .catch(error => console.error("Payment creation error:", error));
+                .then(() => {
+                    console.log("Payment creation initiated");
+                    document.getElementById('paymentStatus').textContent = "Initiating payment...";
+                    document.getElementById('paymentStatus').className = "payment-status";
+                    document.getElementById('paymentStatus').style.display = "block";
+                })
+                .catch(error => {
+                    console.error("Payment creation error:", error);
+                    document.getElementById('paymentStatus').textContent = "Payment creation failed: " + error.message;
+                    document.getElementById('paymentStatus').className = "payment-status payment-error";
+                    document.getElementById('paymentStatus').style.display = "block";
+                });
         }
 
         window.addEventListener('load', createSnowDrizzle);
