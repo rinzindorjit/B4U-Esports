@@ -496,7 +496,7 @@
 
         .package-buy-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(20, 241, 149, 0.4);
+            box-shadow: 0 4px 15px rgbasafesafesafe(20, 241, 149, 0.4);
         }
 
         .card-grid {
@@ -1360,8 +1360,6 @@
                 return;
             }
 
-            // In Testnet, wallet addresses are not directly accessible via SDK.
-            // Use a placeholder or fetch from server in production.
             const walletAddress = 'GCJZEOVAODSADUFWNEYFBYFASNUFASPZOLR53CIU54SQZIJT6WF62SPE';
             alert(`Your Pi Wallet Address:\n${walletAddress}`);
         }
@@ -1510,7 +1508,7 @@
                     } else if (error.message.includes('network')) {
                         errorMessage = 'Error: Network issue. Please check your connection and try again.';
                     } else if (error.message.includes('timeout')) {
-                        errorMessage = 'Error: Payment timed out. Please try again.';
+                        errorMessage = 'Error: Payment timed out. Please try again or check server connectivity.';
                     }
                     showPaymentStatus(errorMessage, 'error');
                     $.post('/payment/error', {
