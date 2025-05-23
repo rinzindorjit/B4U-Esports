@@ -1,12 +1,19 @@
-// frontend/package.json
+```json
 {
-  "name": "pi-testnet-frontend",
+  "name": "b4u-esports-server",
   "version": "1.0.0",
-  "description": "Frontend for Pi Testnet app",
+  "description": "Node.js server for B4U Esports Pi Network integration",
+  "main": "server.js",
   "scripts": {
-    "start": "http-server -p 8080"
+    "start": "node server.js",
+    "build": "echo \"No build required\" && exit 0",
+    "test": "echo \"No tests specified\" && exit 0"
   },
   "dependencies": {
-    "http-server": "^14.1.1"
+    "axios": "^1.6.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2"
   }
 }
+```
