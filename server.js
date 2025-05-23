@@ -1,14 +1,17 @@
+require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+// Environment variables
 const PI_API_BASE_URL = 'https://api.testnet.minepi.com';
-const PI_API_KEY = '9f5hgo2zonuxxjbteqbldd6getgsykewge603yu63thkeuh4uopgjlo6t6eo0mdl';
-const APP_WALLET_ADDRESS = 'GCJZEOVAODSADUFWNEYFBYFASNUFASPZOLR53CIU54SQZIJT6WF62SPE';
+const PI_API_KEY = process.env.PI_API_KEY;
+const APP_WALLET_ADDRESS = process.env.APP_WALLET_ADDRESS;
 const PORT = process.env.PORT || 3000;
 
 // Approve payment
@@ -59,8 +62,6 @@ app.post('/payment/complete', async (req, res) => {
         );
 
         console.log('Payment completed:', completeResponse.data);
-        // TODO: Update your database (e.g., credit UC, Diamonds, or tournament entry)
-        // TODO: Send confirmation email to the user
         res.status(200).json({ status: 'success', message: 'Payment completed' });
     } catch (error) {
         console.error('Completion error:', error.response?.data || error.message);
@@ -72,7 +73,6 @@ app.post('/payment/complete', async (req, res) => {
 app.post('/payment/error', (req, res) => {
     const { paymentId, error, debug } = req.body;
     console.error('Payment error:', error, 'Payment ID:', paymentId);
-    // Log error to your database or monitoring system
     res.status(200).json({ status: 'error', message: 'Error logged' });
 });
 
@@ -80,10 +80,13 @@ app.post('/payment/error', (req, res) => {
 app.post('/payment/cancel', (req, res) => {
     const { paymentId, debug } = req.body;
     console.log('Payment cancelled:', paymentId);
-    // Handle cancellation (e.g., log to database)
     res.status(200).json({ status: 'cancelled', message: 'Payment cancelled' });
 });
 
+// Start server (for local development; ignored in Vercel)
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+// Export for Vercel serverless functions
+module.exports = app;
