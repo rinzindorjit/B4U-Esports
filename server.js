@@ -7,9 +7,9 @@ app.use(cors());
 app.use(express.json());
 
 const PI_API_BASE_URL = 'https://api.testnet.minepi.com';
-const PI_API_KEY = '9f5hgo2zonuxxjbteqbldd6getgsykewge603yu63thkeuh4uopgjlo6t6eo0mdl'; // Your Pi API key
-const APP_WALLET_ADDRESS = 'YOUR_TESTNET_WALLET_ADDRESS'; // Replace with your Testnet wallet address
-const PORT = 3000;
+const PI_API_KEY = '9f5hgo2zonuxxjbteqbldd6getgsykewge603yu63thkeuh4uopgjlo6t6eo0mdl';
+const APP_WALLET_ADDRESS = 'GCJZEOVAODSADUFWNEYFBYFASNUFASPZOLR53CIU54SQZIJT6WF62SPE';
+const PORT = process.env.PORT || 3000;
 
 // Approve payment
 app.post('/payment/approve', async (req, res) => {
