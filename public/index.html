@@ -38,7 +38,7 @@
             width: 100%;
             height: 100%;
             background-image: 
-                radial-gradient(4px 4px at 50px 50px, #fff , transparent),
+                radial-gradient(4px 4px at 50px 50px, #fff, transparent),
                 radial-gradient(3px 3px at 150px 150px, #fff, transparent),
                 radial-gradient(4px 4px at 250px 250px, #fff 50%, transparent),
                 radial-gradient(3px 3px at 350px 350px, #fff 50%, transparent),
@@ -546,9 +546,9 @@
             text-decoration: none;
             font-weight: 600;
             transition: 0.3s;
-            margin: 1rem auto; /* Center buttons */
+            margin: 1rem auto;
             gap: 8px;
-            width: fit-content; /* Ensure button width fits content */
+            width: fit-content;
         }
 
         .primary-btn {
@@ -643,7 +643,6 @@
             gap: 10px;
         }
 
-        /* Enhanced Prize Pool Animation */
         .tournament-prize {
             background: linear-gradient(45deg, #2563eb, #7c3aed, #f43f5e, #10b981, #ffd700);
             background-size: 400%;
@@ -1003,7 +1002,7 @@
             </div>
 
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1266&q=80" alt="Social Media">
+                <img src="https://images.unsplash.com/photo-1611162618071-b39a2ec055f5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1266&q=80" alt="Social Media">
                 <h2><i class="fas fa-rocket"></i> Social Boosting</h2>
                 <p>Boost your online presence</p>
                 <button class="btn primary-btn" onclick="openPaymentModal('Social Boost', 15, 'social')">
@@ -1211,7 +1210,7 @@
             <div class="footer-section">
                 <h3>ABOUT US</h3>
                 <ul class="footer-links">
-                    <li><a href="https://b4uescasts.com/our-history/" target="_blank">Our History</a></li>
+                    <li><a href="https://b4uesports.com/our-history/" target="_blank">Our History</a></li>
                     <li><a href="https://b4uesports.com/privacy-policy/" target="_blank">Privacy Policy</a></li>
                     <li><a href="https://b4uesports.com/data-protection/" target="_blank">Data Protection</a></li>
                     <li><a href="https://b4uesports.com/cookie-policy/" target="_blank">Cookie Policy</a></li>
@@ -1281,6 +1280,40 @@
     <!-- Pi Network SDK -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <script>
+        // Simulated server-side logic (replace with actual server endpoints in production)
+        const simulatedServer = {
+            async approvePayment(paymentId, paymentData) {
+                // Simulate API call to Pi Server /approve endpoint
+                console.log(`Simulating server-side /approve for paymentId: ${paymentId}`);
+                // In production, make an HTTP POST request to https://api.minepi.com/v2/payments/{paymentId}/approve
+                // with headers: Authorization: Key your_api_key
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        // Simulate successful approval
+                        resolve({ status: 200, message: 'Payment approved' });
+                        // For testing failure, uncomment below
+                        // reject({ status: 400, message: 'Invalid payment data' });
+                    }, 1000);
+                });
+            },
+
+            async completePayment(paymentId, txid, paymentData) {
+                // Simulate API call to Pi Server /complete endpoint
+                console.log(`Simulating server-side /complete for paymentId: ${paymentId}, txid: ${txid}`);
+                // In production, make an HTTP POST request to https://api.minepi.com/v2/payments/{paymentId}/complete
+                // with headers: Authorization: Key your_api_key
+                // Body: { txid: txid }
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        // Simulate successful completion
+                        resolve({ status: 200, message: 'Payment completed' });
+                        // For testing failure, uncomment below
+                        // reject({ status: 400, message: 'Invalid transaction' });
+                    }, 1000);
+                });
+            }
+        };
+
         // Wait for SDK to load
         function waitForPiSDK() {
             return new Promise((resolve, reject) => {
@@ -1327,7 +1360,9 @@
             product: '',
             amount: 0,
             memo: '',
-            metadata: {}
+            metadata: {},
+            type: '',
+            quantity: null
         };
 
         let currentUser = null;
@@ -1360,7 +1395,7 @@
         // Setup Pi Network buttons
         function setupPiButtons() {
             const authBtn = document.getElementById('pi-auth-btn');
-            authBtn.removeEventListener('click', authenticatePiUser); // Prevent multiple bindings
+            authBtn.removeEventListener('click', authenticatePiUser);
             authBtn.addEventListener('click', authenticatePiUser);
 
             const walletBtn = document.getElementById('pi-wallet-btn');
@@ -1436,7 +1471,7 @@
                 link.setAttribute('target', '_blank');
                 link.setAttribute('rel', 'noopener noreferrer');
             }
-        });
+ khí
 
         // Enhanced snow/drizzle effect
         function createSnowDrizzle() {
@@ -1492,7 +1527,7 @@
                     attempts++;
                     if (attempts < maxAttempts) {
                         console.log(`Retrying authentication... Attempt ${attempts + 1}`);
-                        await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds before retry
+                        await new Promise(resolve => setTimeout(resolve, 2000));
                         return tryAuthenticate();
                     } else {
                         console.error("Max authentication attempts reached:", error);
@@ -1633,7 +1668,7 @@
         }
 
         // Process Pi Payment
-        function processPiPayment() {
+        async function processPiPayment() {
             if (!currentUser) {
                 alert("Please authenticate with Pi Network first");
                 return;
@@ -1701,46 +1736,58 @@
             }
 
             const paymentCallbacks = {
-                onReadyForServerApproval: function(paymentId) {
+                onReadyForServerApproval: async function(paymentId) {
                     console.log("Ready for server approval with paymentId:", paymentId);
-                    document.getElementById('paymentStatus').textContent = "Processing payment...";
+                    document.getElementById('paymentStatus').textContent = "Waiting for server approval...";
                     document.getElementById('paymentStatus').className = "payment-status";
                     document.getElementById('paymentStatus').style.display = "block";
-                    
-                    // Simulate server-side approval for sandbox
-                    setTimeout(() => {
-                        Pi.approvePayment(paymentId, paymentCallbacks)
-                            .then(() => console.log("Payment approved"))
-                            .catch(error => {
-                                console.error("Payment approval error:", error);
-                                document.getElementById('paymentStatus').textContent = "Payment approval failed: " + error.message;
-                                document.getElementById('paymentStatus').className = "payment-status payment-error";
-                                document.getElementById('paymentStatus').style.display = "block";
-                            });
-                    }, 2000);
+
+                    try {
+                        // Send PaymentID to your server for approval
+                        // In production, use fetch or axios to send to your server endpoint
+                        const response = await simulatedServer.approvePayment(paymentId, paymentData);
+                        if (response.status === 200) {
+                            console.log("Server approved payment");
+                            document.getElementById('paymentStatus').textContent = "Payment approved, please confirm transaction in Pi Browser";
+                        } else {
+                            throw new Error(response.message || "Server approval failed");
+                        }
+                    } catch (error) {
+                        console.error("Server approval error:", error);
+                        document.getElementById('paymentStatus').textContent = "Payment approval failed: " + error.message;
+                        document.getElementById('paymentStatus').className = "payment-status payment-error";
+                        document.getElementById('paymentStatus').style.display = "block";
+                    }
                 },
-                onReadyForServerCompletion: function(paymentId, txid) {
+                onReadyForServerCompletion: async function(paymentId, txid) {
                     console.log("Ready for server completion with paymentId and txid:", paymentId, txid);
                     document.getElementById('paymentStatus').textContent = "Completing payment...";
-                    
-                    // Simulate server-side completion for sandbox
-                    setTimeout(() => {
-                        Pi.completePayment(paymentId, txid, paymentCallbacks)
-                            .then(() => {
-                                console.log("Payment completed successfully");
-                                document.getElementById('paymentStatus').textContent = "Payment successful! Please send the transaction screenshot to info@b4uesports.com or WhatsApp: +97517875099.";
-                                document.getElementById('paymentStatus').className = "payment-status payment-success";
-                                document.getElementById('paymentStatus').style.display = "block";
-                                
-                                setTimeout(closePaymentModal, 5000);
-                            })
-                            .catch(error => {
-                                console.error("Payment completion error:", error);
-                                document.getElementById('paymentStatus').textContent = "Payment failed: " + error.message;
-                                document.getElementById('paymentStatus').className = "payment-status payment-error";
-                                document.getElementById('paymentStatus').style.display = "block";
-                            });
-                    }, 2000);
+
+                    try {
+                        // Send TxID to your server for completion
+                        // In production, use fetch or axios to send to your server endpoint
+                        const response = await simulatedServer.completePayment(paymentId, txid, paymentData);
+                        if (response.status === 200) {
+                            console.log("Payment completed successfully");
+                            document.getElementById('paymentStatus').textContent = 
+                                `Payment successful for ${currentPayment.product}! Please send the transaction screenshot to info@b4uesports.com or WhatsApp: +97517875099.`;
+                            document.getElementById('paymentStatus').className = "payment-status payment-success";
+                            document.getElementById('paymentStatus').style.display = "block";
+
+                            // Update UI to show confirmation
+                            updateUIAfterPayment(paymentData);
+
+                            // Close modal after 5 seconds
+                            setTimeout(closePaymentModal, 5000);
+                        } else {
+                            throw new Error(response.message || "Server completion failed");
+                        }
+                    } catch (error) {
+                        console.error("Payment completion error:", error);
+                        document.getElementById('paymentStatus').textContent = "Payment failed: " + error.message;
+                        document.getElementById('paymentStatus').className = "payment-status payment-error";
+                        document.getElementById('paymentStatus').style.display = "block";
+                    }
                 },
                 onCancel: function(paymentId) {
                     console.log("Payment cancelled with paymentId:", paymentId);
@@ -1755,20 +1802,40 @@
                     document.getElementById('paymentStatus').style.display = "block";
                 }
             };
-            
-            Pi.createPayment(paymentData, paymentCallbacks)
-                .then(() => {
-                    console.log("Payment creation initiated");
-                    document.getElementById('paymentStatus').textContent = "Initiating payment...";
-                    document.getElementById('paymentStatus').className = "payment-status";
-                    document.getElementById('paymentStatus').style.display = "block";
-                })
-                .catch(error => {
-                    console.error("Payment creation error:", error);
-                    document.getElementById('paymentStatus').textContent = "Payment creation failed: " + error.message;
-                    document.getElementById('paymentStatus').className = "payment-status payment-error";
-                    document.getElementById('paymentStatus').style.display = "block";
-                });
+
+            try {
+                document.getElementById('paymentStatus').textContent = "Initiating payment...";
+                document.getElementById('paymentStatus').className = "payment-status";
+                document.getElementById('paymentStatus').style.display = "block";
+
+                await Pi.createPayment(paymentData, paymentCallbacks);
+                console.log("Payment creation initiated");
+            } catch (error) {
+                console.error("Payment creation error:", error);
+                document.getElementById('paymentStatus').textContent = "Payment creation failed: " + error.message;
+                document.getElementById('paymentStatus').className = "payment-status payment-error";
+                document.getElementById('paymentStatus').style.display = "block";
+            }
+        }
+
+        // Update UI after successful payment
+        function updateUIAfterPayment(paymentData) {
+            // Example: Add a confirmation message to the hero section
+            const heroSection = document.querySelector('.hero-section');
+            const confirmationDiv = document.createElement('div');
+            confirmationDiv.className = 'payment-status payment-success';
+            confirmationDiv.style.marginTop = '1rem';
+            confirmationDiv.textContent = `Success! Purchased ${paymentData.metadata.product} for ${paymentData.amount} π. Check your email for details.`;
+            heroSection.appendChild(confirmationDiv);
+
+            // Remove confirmation message after 10 seconds
+            setTimeout(() => {
+                confirmationDiv.remove();
+            }, 10000);
+
+            // Additional UI updates (e.g., update user balance, transaction history, etc.)
+            // In production, fetch updated user data from your server
+            console.log("Updating UI with payment data:", paymentData);
         }
 
         window.addEventListener('load', () => {
