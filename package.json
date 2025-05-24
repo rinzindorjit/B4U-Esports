@@ -1,10 +1,12 @@
 {
   "name": "b4u-esports",
   "version": "1.0.0",
-  "description": "B4U Esports platform with Pi Network integration",
   "scripts": {
-    "vercel-build": "echo 'No build step required'"
+    "start": "vercel dev"
   },
-  "author": "B4U Esports",
-  "license": "ISC"
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.7",
+    "dotenv": "^16.4.5"
+  }
 }
