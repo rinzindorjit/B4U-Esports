@@ -741,7 +741,8 @@
             background: rgba(59, 130, 246, 0.2);
             border: 1px solid #3b82f6;
             border-radius: 4px;
-            padding: 0.3rem 0.6rem;
+            padding: 0.3rem  Orchid
+            .6rem;
             font-size: 0.9rem;
             display: inline-block;
             margin-top: 0.5rem;
@@ -1072,7 +1073,7 @@
                         <li>Top 3 teams by kills and placement will qualify</li>
                     </ul>
                     
-                    <button class="register-btn" onclick="openPaymentModal('Classic Tournament Entry', 5, 'tournament')">
+                    <button class="register-btn" onclick="openPaymentModal('Classic Tournament Entry, 5, 'tournament')">
                         <i class="fas fa-user-plus"></i> Register Now
                     </button>
                 </div>
@@ -1283,58 +1284,48 @@
         // Simulated server-side logic (replace with actual server endpoints in production)
         const simulatedServer = {
             async approvePayment(paymentId, paymentData) {
-                // Simulate API call to Pi Server /approve endpoint
                 console.log(`Simulating server-side /approve for paymentId: ${paymentId}`);
-                // In production, make an HTTP POST request to https://api.minepi.com/v2/payments/{paymentId}/approve
-                // with headers: Authorization: Key your_api_key
                 return new Promise((resolve, reject) => {
                     setTimeout(() => {
-                        // Simulate successful approval
                         resolve({ status: 200, message: 'Payment approved' });
-                        // For testing failure, uncomment below
-                        // reject({ status: 400, message: 'Invalid payment data' });
                     }, 1000);
                 });
             },
 
             async completePayment(paymentId, txid, paymentData) {
-                // Simulate API call to Pi Server /complete endpoint
                 console.log(`Simulating server-side /complete for paymentId: ${paymentId}, txid: ${txid}`);
-                // In production, make an HTTP POST request to https://api.minepi.com/v2/payments/{paymentId}/complete
-                // with headers: Authorization: Key your_api_key
-                // Body: { txid: txid }
                 return new Promise((resolve, reject) => {
                     setTimeout(() => {
-                        // Simulate successful completion
                         resolve({ status: 200, message: 'Payment completed' });
-                        // For testing failure, uncomment below
-                        // reject({ status: 400, message: 'Invalid transaction' });
                     }, 1000);
                 });
             }
         };
 
-        // Wait for SDK to load
+        // Wait for SDK to load with polling
         function waitForPiSDK() {
             return new Promise((resolve, reject) => {
-                if (typeof Pi !== 'undefined') {
-                    resolve();
-                } else {
-                    const timeout = setTimeout(() => {
-                        reject(new Error("Pi SDK failed to load within timeout"));
-                    }, 10000); // 10 seconds timeout
-                    window.addEventListener('load', () => {
-                        if (typeof Pi !== 'undefined') {
-                            clearTimeout(timeout);
-                            resolve();
-                        }
-                    });
-                }
+                const maxAttempts = 20;
+                let attempts = 0;
+                const interval = setInterval(() => {
+                    if (typeof Pi !== 'undefined') {
+                        clearInterval(interval);
+                        resolve();
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(interval);
+                        reject(new Error("Pi SDK failed to load after timeout"));
+                    }
+                    attempts++;
+                }, 500);
             });
         }
 
-        // Initialize Pi Network SDK in sandbox mode
+        // Initialize Pi Network SDK
         async function initializePiSDK() {
+            const authBtn = document.getElementById('pi-auth-btn');
+            authBtn.disabled = true;
+            authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading Pi SDK...';
+
             try {
                 await waitForPiSDK();
                 await Pi.init({
@@ -1345,13 +1336,15 @@
                     sandbox: true
                 });
                 console.log("Pi SDK initialized successfully in sandbox mode");
+                authBtn.disabled = false;
+                authBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In with Pi Network';
                 setupPiButtons();
             } catch (error) {
                 console.error("Error initializing Pi SDK:", error);
-                alert("Failed to initialize Pi SDK: " + error.message);
-                document.getElementById('pi-auth-btn').innerHTML = 
-                    '<i class="fas fa-exclamation-circle"></i> Retry Sign In';
-                document.getElementById('pi-auth-btn').disabled = false;
+                alert("Failed to initialize Pi Network: " + error.message + ". Please refresh the page or try again later.");
+                authBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Retry Sign In';
+                authBtn.disabled = false;
+                authBtn.onclick = () => window.location.reload(); // Force reload on retry
             }
         }
 
@@ -1392,27 +1385,37 @@
             { dias: 12000, price: 205, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' }
         ];
 
-        // Setup Pi Network buttons
+        // Setup Pi Network buttons with cleanup
         function setupPiButtons() {
             const authBtn = document.getElementById('pi-auth-btn');
+            const walletBtn = document.getElementById('pi-wallet-btn');
+            const shareBtn = document.getElementById('pi-share-btn');
+            const adBtn = document.getElementById('pi-ad-btn');
+            const payBtn = document.getElementById('piPayBtn');
+
+            // Remove existing listeners to prevent duplicates
             authBtn.removeEventListener('click', authenticatePiUser);
             authBtn.addEventListener('click', authenticatePiUser);
 
-            const walletBtn = document.getElementById('pi-wallet-btn');
-            walletBtn?.removeEventListener('click', showWalletAddress);
-            walletBtn?.addEventListener('click', showWalletAddress);
+            if (walletBtn) {
+                walletBtn.removeEventListener('click', showWalletAddress);
+                walletBtn.addEventListener('click', showWalletAddress);
+            }
 
-            const shareBtn = document.getElementById('pi-share-btn');
-            shareBtn?.removeEventListener('click', openShareDialog);
-            shareBtn?.addEventListener('click', openShareDialog);
+            if (shareBtn) {
+                shareBtn.removeEventListener('click', openShareDialog);
+                shareBtn.addEventListener('click', openShareDialog);
+            }
 
-            const adBtn = document.getElementById('pi-ad-btn');
-            adBtn?.removeEventListener('click', showRewardedAd);
-            adBtn?.addEventListener('click', showRewardedAd);
+            if (adBtn) {
+                adBtn.removeEventListener('click', showRewardedAd);
+                adBtn.addEventListener('click', showRewardedAd);
+            }
 
-            const payBtn = document.getElementById('piPayBtn');
-            payBtn?.removeEventListener('click', processPiPayment);
-            payBtn?.addEventListener('click', processPiPayment);
+            if (payBtn) {
+                payBtn.removeEventListener('click', processPiPayment);
+                payBtn.addEventListener('click', processPiPayment);
+            }
         }
 
         // Hamburger Menu Functionality
@@ -1471,7 +1474,7 @@
                 link.setAttribute('target', '_blank');
                 link.setAttribute('rel', 'noopener noreferrer');
             }
- khí
+        });
 
         // Enhanced snow/drizzle effect
         function createSnowDrizzle() {
@@ -1506,32 +1509,38 @@
             }
         }
 
-        // Pi Network Authentication with retry logic
+        // Pi Network Authentication with enhanced retry and error handling
         async function authenticatePiUser() {
             const authBtn = document.getElementById('pi-auth-btn');
+            if (authBtn.disabled) return; // Prevent multiple clicks
+            
             authBtn.disabled = true;
             authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
 
             const scopes = ['username', 'payments', 'wallet_address'];
             let attempts = 0;
             const maxAttempts = 3;
+            const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
             async function tryAuthenticate() {
                 try {
+                    if (typeof Pi === 'undefined') {
+                        throw new Error("Pi SDK not loaded");
+                    }
                     const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound);
                     console.log("Pi user authenticated:", authResult);
                     currentUser = authResult.user;
                     handleSuccessfulAuth(authResult);
                 } catch (error) {
-                    console.error("Authentication attempt failed:", error);
+                    console.error(`Authentication attempt ${attempts + 1} failed:`, error);
                     attempts++;
                     if (attempts < maxAttempts) {
                         console.log(`Retrying authentication... Attempt ${attempts + 1}`);
-                        await new Promise(resolve => setTimeout(resolve, 2000));
+                        await delay(2000 * attempts); // Exponential backoff
                         return tryAuthenticate();
                     } else {
                         console.error("Max authentication attempts reached:", error);
-                        alert("Authentication failed after multiple attempts: " + error.message);
+                        alert("Failed to sign in with Pi Network: " + error.message + ". Please ensure you're using the Pi Browser and try again.");
                         authBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Retry Sign In';
                         authBtn.disabled = false;
                     }
@@ -1743,8 +1752,6 @@
                     document.getElementById('paymentStatus').style.display = "block";
 
                     try {
-                        // Send PaymentID to your server for approval
-                        // In production, use fetch or axios to send to your server endpoint
                         const response = await simulatedServer.approvePayment(paymentId, paymentData);
                         if (response.status === 200) {
                             console.log("Server approved payment");
@@ -1764,8 +1771,6 @@
                     document.getElementById('paymentStatus').textContent = "Completing payment...";
 
                     try {
-                        // Send TxID to your server for completion
-                        // In production, use fetch or axios to send to your server endpoint
                         const response = await simulatedServer.completePayment(paymentId, txid, paymentData);
                         if (response.status === 200) {
                             console.log("Payment completed successfully");
@@ -1774,10 +1779,7 @@
                             document.getElementById('paymentStatus').className = "payment-status payment-success";
                             document.getElementById('paymentStatus').style.display = "block";
 
-                            // Update UI to show confirmation
                             updateUIAfterPayment(paymentData);
-
-                            // Close modal after 5 seconds
                             setTimeout(closePaymentModal, 5000);
                         } else {
                             throw new Error(response.message || "Server completion failed");
@@ -1820,7 +1822,6 @@
 
         // Update UI after successful payment
         function updateUIAfterPayment(paymentData) {
-            // Example: Add a confirmation message to the hero section
             const heroSection = document.querySelector('.hero-section');
             const confirmationDiv = document.createElement('div');
             confirmationDiv.className = 'payment-status payment-success';
@@ -1828,13 +1829,10 @@
             confirmationDiv.textContent = `Success! Purchased ${paymentData.metadata.product} for ${paymentData.amount} π. Check your email for details.`;
             heroSection.appendChild(confirmationDiv);
 
-            // Remove confirmation message after 10 seconds
             setTimeout(() => {
                 confirmationDiv.remove();
             }, 10000);
 
-            // Additional UI updates (e.g., update user balance, transaction history, etc.)
-            // In production, fetch updated user data from your server
             console.log("Updating UI with payment data:", paymentData);
         }
 
