@@ -3,7 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const config = require('./config');
 
-// Approve payment endpoint: POST /api/payments/approve
+// Approve payment: POST /api/payments/approve
 router.post('/payments/approve', async (req, res) => {
   try {
     const { paymentId } = req.body;
@@ -29,7 +29,7 @@ router.post('/payments/approve', async (req, res) => {
   }
 });
 
-// Complete payment endpoint: POST /api/payments/complete
+// Complete payment: POST /api/payments/complete
 router.post('/payments/complete', async (req, res) => {
   try {
     const { paymentId, txid } = req.body;
