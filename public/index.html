@@ -32,16 +32,29 @@
             z-index: -1;
         }
 
-        .snow div {
+        .snow:after {
+            content: "";
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            animation: fall linear infinite;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(4px 4px at 50px 50px, #fff , transparent),
+                radial-gradient(3px 3px at 150px 150px, #fff, transparent),
+                radial-gradient(4px 4px at 250px 250px, #fff 50%, transparent),
+                radial-gradient(3px 3px at 350px 350px, #fff 50%, transparent),
+                radial-gradient(4px 4px at 450px 100px, #fff 50%, transparent),
+                radial-gradient(3px 3px at 100px 400px, #fff 50%, transparent),
+                radial-gradient(4px 4px at 200px 300px, #fff 50%, transparent),
+                radial-gradient(3px 3px at 300px 200px, #fff 50%, transparent),
+                radial-gradient(4px 4px at 400px 50px, #fff 50%, transparent),
+                radial-gradient(3px 3px at 500px 450px, #fff 50%, transparent),
+                radial-gradient(4px 4px at 50px 300px, #fff 50%, transparent),
+                radial-gradient(3px 3px at 150px 200px, #fff 50%, transparent);
+            animation: snowAnim 8s linear infinite;
         }
 
-        @keyframes fall {
+        @keyframes snowAnim {
+            from { transform: translateY(-100vh); }
             to { transform: translateY(100vh); }
         }
 
@@ -80,7 +93,9 @@
         }
 
         @media (min-width: 992px) {
-            .hamburger { display: none; }
+            .hamburger {
+                display: none;
+            }
         }
 
         .sidebar {
@@ -226,6 +241,7 @@
             color: #ffd700;
             text-decoration: none;
             font-weight: 700;
+            transition: all 0.3s;
             border-bottom: 2px dotted #ffd700;
         }
 
@@ -252,9 +268,8 @@
             box-shadow: 0 6px 20px rgba(20, 241, 149, 0.4);
         }
 
-        .pi-auth-btn:disabled {
-            background: #94a3b8;
-            cursor: not-allowed;
+        .pi-auth-btn i {
+            font-size: 1.2rem;
         }
 
         /* Pi Network Actions */
@@ -276,6 +291,7 @@
             cursor: pointer;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             transition: all 0.3s;
         }
@@ -319,6 +335,7 @@
             font-size: 1.5rem;
             color: #94a3b8;
             cursor: pointer;
+            transition: color 0.3s;
         }
 
         .close-modal:hover {
@@ -375,6 +392,7 @@
             justify-content: center;
             gap: 10px;
             margin-top: 1rem;
+            transition: all 0.3s;
         }
 
         .pi-pay-btn:hover {
@@ -385,6 +403,8 @@
         .pi-pay-btn:disabled {
             background: #94a3b8;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         .payment-status {
@@ -407,14 +427,15 @@
             color: #ef4444;
         }
 
-        .token-selection, .packages {
+        /* Token Selection Modal */
+        .token-selection {
             display: flex;
             flex-direction: column;
             gap: 1rem;
             margin-top: 1rem;
         }
 
-        .token-btn, .package-buy-btn {
+        .token-btn {
             background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
             color: #fff;
             border: none;
@@ -422,16 +443,20 @@
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .token-btn:hover, .package-buy-btn:hover {
+        .token-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
         }
 
+        /* Package Selection Modal */
         .packages {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
         }
 
         .package {
@@ -440,6 +465,7 @@
             padding: 1rem;
             text-align: center;
             cursor: pointer;
+            transition: all 0.3s;
         }
 
         .package:hover {
@@ -459,6 +485,24 @@
             margin-bottom: 1rem;
         }
 
+        .package-buy-btn {
+            background: linear-gradient(135deg, #14f195 0%, #14bff1 100%);
+            color: #000;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .package-buy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(20, 241, 149, 0.4);
+        }
+
+        /* Card Grid */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -502,9 +546,9 @@
             text-decoration: none;
             font-weight: 600;
             transition: 0.3s;
-            margin: 1rem auto;
+            margin: 1rem auto; /* Center buttons */
             gap: 8px;
-            width: fit-content;
+            width: fit-content; /* Ensure button width fits content */
         }
 
         .primary-btn {
@@ -532,6 +576,13 @@
             color: #ffd700;
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
             margin-bottom: 1rem;
+        }
+
+        .tournament-header p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            color: #94a3b8;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .tournament-types {
@@ -592,6 +643,7 @@
             gap: 10px;
         }
 
+        /* Enhanced Prize Pool Animation */
         .tournament-prize {
             background: linear-gradient(45deg, #2563eb, #7c3aed, #f43f5e, #10b981, #ffd700);
             background-size: 400%;
@@ -599,13 +651,39 @@
             padding: 0.8rem;
             margin-bottom: 1rem;
             text-align: center;
-            animation: gradientShift 8s ease infinite;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid transparent;
+            animation: gradientShift 8s ease infinite, prizeGlow 6s infinite alternate;
         }
 
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 400% 50%; }
             100% { background-position: 0% 50%; }
+        }
+
+        @keyframes prizeGlow {
+            0% { 
+                border-color: #ffd700;
+                box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+            }
+            25% { 
+                border-color: #38bdf8;
+                box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+            }
+            50% { 
+                border-color: #7c3aed;
+                box-shadow: 0 0 10px rgba(124, 58, 237, 0.3);
+            }
+            75% { 
+                border-color: #f43f5e;
+                box-shadow: 0 0 10px rgba(244, 63, 94, 0.3);
+            }
+            100% { 
+                border-color: #10b981;
+                box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+            }
         }
 
         .prize-label {
@@ -621,6 +699,16 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            animation: prizePulse 2s infinite alternate;
+        }
+
+        @keyframes prizePulse {
+            from { text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+            to { text-shadow: 0 0 15px rgba(255, 215, 0, 0.8); }
+        }
+
+        .tournament-details {
+            margin-bottom: 1.5rem;
         }
 
         .tournament-details p {
@@ -742,6 +830,7 @@
         .footer-links a {
             color: #94a3b8;
             text-decoration: none;
+            transition: color 0.3s;
         }
 
         .footer-links a:hover {
@@ -758,6 +847,7 @@
         .social-links a {
             color: #fff;
             font-size: 1.5rem;
+            transition: color 0.3s;
         }
 
         .social-links a:hover {
@@ -791,6 +881,32 @@
 
             .footer-section {
                 text-align: center;
+            }
+            
+            .social-links {
+                justify-content: center;
+            }
+            
+            .tournament-title {
+                font-size: 1.3rem;
+            }
+            
+            .prize-amount {
+                font-size: 1.2rem;
+            }
+
+            .ad-container {
+                margin: 1rem auto;
+            }
+
+            .ad-container#middle-ad {
+                margin: 2rem auto;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                padding: 1.5rem;
             }
         }
     </style>
@@ -841,10 +957,12 @@
                 </p>
             </div>
 
+            <!-- Pi Network Auth Button -->
             <button id="pi-auth-btn" class="pi-auth-btn">
                 <i class="fas fa-sign-in-alt"></i> Sign In with Pi Network
             </button>
 
+            <!-- Pi Network Actions (shown after auth) -->
             <div id="pi-actions" class="pi-actions" style="display: none;">
                 <button id="pi-wallet-btn" class="pi-action-btn">
                     <i class="fas fa-wallet"></i> Wallet Address
@@ -875,7 +993,7 @@
 
             <div class="card">
                 <img src="https://b4uesports.com/wp-content/uploads/2025/05/ucandmlbb-dias.png" 
-                     alt="In-game Tokens" 
+                     alt="In-game Tokens"
                      class="token-img">
                 <h2><i class="fas fa-coins"></i> In-game Tokens</h2>
                 <p>Purchase various game currencies instantly</p>
@@ -885,10 +1003,7 @@
             </div>
 
             <div class="card">
-                <img src="https://images.pexels.com/photos/270360/pexels-photo-270360.jpeg?auto=compress&cs=tinysrgb&w=1266&h=750&dpr=1" 
-                     onerror="this.src Friendship
-                    src='https://b4uesports.com/wp-content/uploads/2025/04/fallback-social-media.jpg'" 
-                     alt="Social Media">
+                <img src="https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1266&q=80" alt="Social Media">
                 <h2><i class="fas fa-rocket"></i> Social Boosting</h2>
                 <p>Boost your online presence</p>
                 <button class="btn primary-btn" onclick="openPaymentModal('Social Boost', 15, 'social')">
@@ -897,35 +1012,40 @@
             </div>
         </div>
 
+        <!-- Middle Ad Container -->
         <div class="ad-container" id="middle-ad">
             <script type="text/javascript">
                 atOptions = {
-                    'key': '71e8bc5e4f46d4cf2a0214ad18d11df0',
-                    'format': 'iframe',
-                    'height': 50,
-                    'width': 320,
-                    'params': {}
+                    'key' : '71e8bc5e4f46d4cf2a0214ad18d11df0',
+                    'format' : 'iframe',
+                    'height' : 50,
+                    'width' : 320,
+                    'params' : {}
                 };
             </script>
             <script type="text/javascript" src="//www.highperformanceformat.com/71e8bc5e4f46d4cf2a0214ad18d11df0/invoke.js"></script>
         </div>
 
+        <!-- PUBG Tournaments Section -->
         <div class="tournament-header" id="tournaments">
             <h1><i class="fas fa-trophy"></i> PUBG Mobile Tournaments</h1>
             <p>Compete in our professional tournaments and win amazing prizes</p>
         </div>
 
         <div class="tournament-types">
+            <!-- Classic Tournament -->
             <div class="tournament-card">
                 <div class="tournament-banner classic-banner"></div>
                 <div class="tournament-content">
                     <h2 class="tournament-title">
                         <i class="fas fa-map-marked-alt"></i> Classic Tournament
                     </h2>
+                    
                     <div class="tournament-prize">
                         <div class="prize-label">Total Prize Pool</div>
                         <div class="prize-amount">NU 50,000</div>
                     </div>
+                    
                     <div class="tournament-details">
                         <p><i class="fas fa-users"></i> <strong>Squad Mode:</strong> 4-6 players per team</p>
                         <p><i class="fas fa-tag"></i> <strong>Team Tag:</strong> [B4U] required in team name</p>
@@ -933,6 +1053,7 @@
                         <p><i class="fas fa-map"></i> <strong>Maps:</strong> Erangel, Miramar, Sanhok</p>
                         <p><i class="fas fa-calendar-alt"></i> <strong>Schedule:</strong> Weekly tournaments</p>
                     </div>
+                    
                     <div class="tournament-modes">
                         <h3><i class="fas fa-gamepad"></i> Tournament Format:</h3>
                         <div class="mode-item">
@@ -941,56 +1062,64 @@
                             <span class="team-tag">Team Tag: [B4U]YourTeamName</span>
                         </div>
                     </div>
+                    
                     <h3><i class="fas fa-gavel"></i> Rules & Regulations:</h3>
                     <ul class="rules-list">
-                        <li>Team name must include [B4U] tag</li>
-                        <li>No hacking or cheating</li>
-                        <li>Players must use real PUBG IDs</li>
+                        <li>Team name must include [B4U] tag (e.g. [B4U]Legends)</li>
+                        <li>No hacking or cheating of any kind</li>
+                        <li>Players must use their real PUBG IDs</li>
                         <li>Teams must register 30 minutes before match</li>
                         <li>Disconnections will not pause the game</li>
-                        <li>Top 3 teams qualify by kills and placement</li>
+                        <li>Top 3 teams by kills and placement will qualify</li>
                     </ul>
+                    
                     <button class="register-btn" onclick="openPaymentModal('Classic Tournament Entry', 5, 'tournament')">
                         <i class="fas fa-user-plus"></i> Register Now
                     </button>
                 </div>
             </div>
             
+            <!-- TDM Tournament -->
             <div class="tournament-card">
                 <div class="tournament-banner tdm-banner"></div>
                 <div class="tournament-content">
                     <h2 class="tournament-title">
                         <i class="fas fa-crosshairs"></i> TDM Tournament
                     </h2>
+                    
                     <div class="tournament-prize">
                         <div class="prize-label">Total Prize Pool</div>
                         <div class="prize-amount">NU 30,000</div>
                     </div>
+                    
                     <div class="tournament-details">
                         <p><i class="fas fa-user"></i> <strong>Modes:</strong> 1v1 Duel & 4v4 Team Battle</p>
                         <p><i class="fas fa-map"></i> <strong>Maps:</strong> Warehouse, Ruins, Town</p>
                         <p><i class="fas fa-calendar-alt"></i> <strong>Schedule:</strong> Daily quick matches</p>
                     </div>
+                    
                     <div class="tournament-modes">
                         <h3><i class="fas fa-gamepad"></i> Tournament Modes:</h3>
                         <div class="mode-item">
                             <h4><i class="fas fa-user"></i> 1v1 Duel</h4>
-                            <p>First to 20 kills wins</p>
+                            <p>First player to reach 20 kills wins the match</p>
                         </div>
                         <div class="mode-item">
                             <h4><i class="fas fa-users"></i> 4v4 Team Battle</h4>
-                            <p>First team to 40 kills wins</p>
+                            <p>First team to reach 40 kills wins the match</p>
                         </div>
                     </div>
+                    
                     <h3><i class="fas fa-gavel"></i> Rules & Regulations:</h3>
                     <ul class="rules-list">
                         <li>No holding position for more than 5 seconds</li>
                         <li>No camping in spawn areas</li>
                         <li>Only designated weapons allowed</li>
-                        <li>Maintain sportsmanship</li>
-                        <li>Disconnections result in loss</li>
-                        <li>No grenades in 1v1 mode</li>
+                        <li>Players must maintain sportsmanship</li>
+                        <li>Disconnections result in automatic loss</li>
+                        <li>No grenades or throwables in 1v1 mode</li>
                     </ul>
+                    
                     <button class="register-btn" onclick="openPaymentModal('TDM Tournament Entry', 3, 'tournament')">
                         <i class="fas fa-user-plus"></i> Register Now
                     </button>
@@ -1025,42 +1154,52 @@
         <div class="modal-content">
             <span class="close-modal" onclick="closePaymentModal()">×</span>
             <h2 class="modal-title" id="modalTitle">Payment</h2>
+            
             <div id="paymentForm" class="payment-form">
                 <div class="form-group">
                     <label for="productName">Product:</label>
                     <input type="text" id="productName" readonly>
                 </div>
+                
                 <div class="form-group">
                     <label for="piAmount">Amount (π):</label>
                     <input type="number" id="piAmount" min="0" step="0.01" placeholder="Enter PI amount">
                 </div>
+                
                 <div class="form-group">
                     <label for="piUsername">Pi Username:</label>
                     <input type="text" id="piUsername" placeholder="Enter your Pi username" readonly>
                 </div>
+                
                 <div class="form-group">
                     <label for="userEmail">Your Email:</label>
                     <input type="email" id="userEmail" placeholder="Enter your email" required>
                 </div>
+                
                 <div class="form-group" id="urlGroup" style="display: none;">
                     <label for="socialUrl">Social Media URL:</label>
                     <input type="url" id="socialUrl" placeholder="Enter your social media URL">
                 </div>
+                
                 <div class="form-group" id="pubgIdGroup" style="display: none;">
                     <label for="pubgId">PUBG Mobile Player ID:</label>
-                    <input type="number" id="pubgId" placeholder="Enter your PUBG Mobile Player ID">
+                    <input type="number" id="pubgId" placeholder="Enter your PUBG Mobile Player ID" pattern="[0-9]*">
                 </div>
+                
                 <div class="form-group" id="mlbbUserIdGroup" style="display: none;">
                     <label for="mlbbUserId">MLBB User ID:</label>
-                    <input type="number" id="mlbbUserId" placeholder="Enter your MLBB User ID">
+                    <input type="number" id="mlbbUserId" placeholder="Enter your MLBB User ID" pattern="[0-9]*">
                 </div>
+                
                 <div class="form-group" id="mlbbZoneIdGroup" style="display: none;">
                     <label for="mlbbZoneId">MLBB Zone ID:</label>
-                    <input type="number" id="mlbbZoneId" placeholder="Enter your MLBB Zone ID">
+                    <input type="number" id="mlbbZoneId" placeholder="Enter your MLBB Zone ID" pattern="[0-9]*">
                 </div>
+                
                 <button id="piPayBtn" class="pi-pay-btn" disabled>
                     <i class="fas fa-coins"></i> Pay with Pi
                 </button>
+                
                 <div id="paymentStatus" class="payment-status"></div>
             </div>
         </div>
@@ -1072,12 +1211,13 @@
             <div class="footer-section">
                 <h3>ABOUT US</h3>
                 <ul class="footer-links">
-                    <li><a href="https://b4uesports.com/our-history/" target="_blank">Our History</a></li>
+                    <li><a href="https://b4uescasts.com/our-history/" target="_blank">Our History</a></li>
                     <li><a href="https://b4uesports.com/privacy-policy/" target="_blank">Privacy Policy</a></li>
                     <li><a href="https://b4uesports.com/data-protection/" target="_blank">Data Protection</a></li>
                     <li><a href="https://b4uesports.com/cookie-policy/" target="_blank">Cookie Policy</a></li>
                 </ul>
             </div>
+
             <div class="footer-section">
                 <h3>TERMS & CONDITIONS</h3>
                 <ul class="footer-links">
@@ -1086,6 +1226,7 @@
                     <li><a href="https://b4uesports.com/refund_returns/" target="_blank">Refund & Returns</a></li>
                 </ul>
             </div>
+
             <div class="footer-section">
                 <h3>CONTACT US</h3>
                 <ul class="footer-links">
@@ -1093,29 +1234,45 @@
                     <li><a href="https://b4uesports.com/faqs/" target="_blank">FAQs</a></li>
                 </ul>
             </div>
+
             <div class="footer-section">
                 <h3>FOLLOW US</h3>
                 <div class="social-links">
-                    <a href="https://www.facebook.com/b4uesports" target="_blank"><i class="fab fa-facebook"></i></a>
-                    <a href="https://youtube.com/@b4uesports" target="_blank"><i class="fab fa-youtube"></i></a>
-                    <a href="https://www.tiktok.com/b4uesports" target="_blank"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://www.instagram.com/b4uesports" target="_blank"><i class="fab fa-instagram"></i></a>
-                    <a href="https://discord.gg/m2EcGPx" target="_blank"><i class="fab fa-discord"></i></a>
-                    <a href="https://t.me/b4uesport" target="_blank"><i class="fab fa-telegram"></i></a>
-                    <a href="https://www.linkedin.com/company/b4uesports/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://www.facebook.com/b4uesports" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="https://youtube.com/@b4uesports" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/b4uesports" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    <a href="https://www.instagram.com/b4uesports" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://discord.gg/m2EcGPx" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                    <a href="https://t.me/b4uesport" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-telegram"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/company/b4uesports/" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
                 </div>
             </div>
         </div>
     </footer>
 
+    <!-- Bottom Ad Container -->
     <div class="ad-container" id="bottom-ad">
         <script type="text/javascript">
             atOptions = {
-                'key': '71e8bc5e4f46d4cf2a0214ad18d11df0',
-                'format': 'iframe',
-                'height': 50,
-                'width': 320,
-                'params': {}
+                'key' : '71e8bc5e4f46d4cf2a0214ad18d11df0',
+                'format' : 'iframe',
+                'height' : 50,
+                'width' : 320,
+                'params' : {}
             };
         </script>
         <script type="text/javascript" src="//www.highperformanceformat.com/71e8bc5e4f46d4cf2a0214ad18d11df0/invoke.js"></script>
@@ -1124,71 +1281,29 @@
     <!-- Pi Network SDK -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <script>
-        // Simulated server-side logic for testing (replace with actual server endpoints in production)
-        const simulatedServer = {
-            async approvePayment(paymentId, paymentData) {
-                console.log(`Approving payment: ${paymentId}`, paymentData);
-                // Simulate validation logic
-                if (!paymentData.amount || paymentData.amount <= 0) {
-                    throw new Error("Invalid payment amount");
-                }
-                // In a real implementation, validate payment details against your database
-                try {
-                    // Example: Check if user has sufficient balance (mock)
-                    const response = await fetch('https://your-backend-api/approve-payment', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ paymentId, ...paymentData })
+        // Wait for SDK to load
+        function waitForPiSDK() {
+            return new Promise((resolve, reject) => {
+                if (typeof Pi !== 'undefined') {
+                    resolve();
+                } else {
+                    const timeout = setTimeout(() => {
+                        reject(new Error("Pi SDK failed to load within timeout"));
+                    }, 10000); // 10 seconds timeout
+                    window.addEventListener('load', () => {
+                        if (typeof Pi !== 'undefined') {
+                            clearTimeout(timeout);
+                            resolve();
+                        }
                     });
-                    const result = await response.json();
-                    if (result.status !== 200) {
-                        throw new Error(result.message || "Payment approval failed");
-                    }
-                    return result;
-                } catch (error) {
-                    throw new Error(`Server approval error: ${error.message}`);
                 }
-            },
-            async completePayment(paymentId, txid, paymentData) {
-                console.log(`Completing payment: ${paymentId}, txid: ${txid}`, paymentData);
-                try {
-                    // Example: Verify transaction with Pi Network blockchain (mock)
-                    const response = await fetch('https://your-backend-api/complete-payment', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ paymentId, txid, ...paymentData })
-                    });
-                    const result = await response.json();
-                    if (result.status !== 200) {
-                        throw new Error(result.message || "Payment completion failed");
-                    }
-                    return result;
-                } catch (error) {
-                    throw new Error(`Server completion error: ${error.message}`);
-                }
-            }
-        };
+            });
+        }
 
         // Initialize Pi Network SDK
         async function initializePiSDK() {
-            const authBtn = document.getElementById('pi-auth-btn');
-            authBtn.disabled = true;
-            authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-
             try {
-                await new Promise((resolve, reject) => {
-                    const checkPi = setInterval(() => {
-                        if (typeof Pi !== 'undefined') {
-                            clearInterval(checkPi);
-                            resolve();
-                        }
-                    }, 100);
-                    setTimeout(() => {
-                        clearInterval(checkPi);
-                        reject(new Error("Pi SDK failed to load"));
-                    }, 5000);
-                });
-
+                await waitForPiSDK();
                 await Pi.init({
                     version: "2.0",
                     appId: "b4u-esports",
@@ -1196,19 +1311,27 @@
                     apiKey: "9f5hgo2zonuxxjbteqbldd6getgsykewge603yu63thkeuh4uopgjlo6t6eo0mdl",
                     sandbox: true
                 });
-
-                authBtn.disabled = false;
-                authBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In with Pi Network';
+                console.log("Pi SDK initialized successfully in sandbox mode");
+                setupPiButtons();
             } catch (error) {
-                console.error("Pi SDK initialization failed:", error);
-                authBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Retry';
-                authBtn.disabled = false;
-                authBtn.onclick = () => window.location.reload();
+                console.error("Error initializing Pi SDK:", error);
+                alert("Failed to initialize Pi SDK: " + error.message);
+                document.getElementById('pi-auth-btn').innerHTML = 
+                    '<i class="fas fa-exclamation-circle"></i> Retry Sign In';
+                document.getElementById('pi-auth-btn').disabled = false;
             }
         }
 
-        // Global payment data
-        let currentPayment = { product: '', amount: 0, memo: '', metadata: {}, type: '', quantity: null };
+        // Global variables for payment
+        let currentPayment = {
+            product: '',
+            amount: 0,
+            memo: '',
+            metadata: {},
+            paymentId: null,
+            txid: null
+        };
+
         let currentUser = null;
 
         // Package data
@@ -1239,38 +1362,49 @@
         // Setup Pi Network buttons
         function setupPiButtons() {
             const authBtn = document.getElementById('pi-auth-btn');
-            const walletBtn = document.getElementById('pi-wallet-btn');
-            const shareBtn = document.getElementById('pi-share-btn');
-            const adBtn = document.getElementById('pi-ad-btn');
-            const payBtn = document.getElementById('piPayBtn');
-
+            authBtn.removeEventListener('click', authenticatePiUser);
             authBtn.addEventListener('click', authenticatePiUser);
-            walletBtn.addEventListener('click', showWalletAddress);
-            shareBtn.addEventListener('click', openShareDialog);
-            adBtn.addEventListener('click', showRewardedAd);
-            payBtn.addEventListener('click', processPiPayment);
+
+            const walletBtn = document.getElementById('pi-wallet-btn');
+            walletBtn?.removeEventListener('click', showWalletAddress);
+            walletBtn?.addEventListener('click', showWalletAddress);
+
+            const shareBtn = document.getElementById('pi-share-btn');
+            shareBtn?.removeEventListener('click', openShareDialog);
+            shareBtn?.addEventListener('click', openShareDialog);
+
+            const adBtn = document.getElementById('pi-ad-btn');
+            adBtn?.removeEventListener('click', showRewardedAd);
+            adBtn?.addEventListener('click', showRewardedAd);
+
+            const payBtn = document.getElementById('piPayBtn');
+            payBtn?.removeEventListener('click', processPiPayment);
+            payBtn?.addEventListener('click', processPiPayment);
         }
 
-        // Hamburger Menu
+        // Hamburger Menu Functionality
         const hamburger = document.getElementById('hamburger');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
-
-        hamburger.addEventListener('click', () => {
+        
+        hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
             hamburger.innerHTML = sidebar.classList.contains('active') ? 
                 '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
         });
 
-        overlay.addEventListener('click', () => {
+        overlay.addEventListener('click', function() {
             sidebar.classList.remove('active');
             overlay.classList.remove('active');
             hamburger.innerHTML = '<i class="fas fa-bars"></i>';
         });
 
         function showDashboard() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
             sidebar.classList.remove('active');
             overlay.classList.remove('active');
             hamburger.innerHTML = '<i class="fas fa-bars"></i>';
@@ -1280,14 +1414,17 @@
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
+                
                 const targetId = this.getAttribute('href');
                 if (targetId === '#') return;
+                
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
                     window.scrollTo({
                         top: targetElement.offsetTop - 80,
                         behavior: 'smooth'
                     });
+                    
                     sidebar.classList.remove('active');
                     overlay.classList.remove('active');
                     hamburger.innerHTML = '<i class="fas fa-bars"></i>';
@@ -1295,66 +1432,138 @@
             });
         });
 
-        // Snow effect
+        // Force external links to open in new tab
+        document.querySelectorAll('a[href^="http"]').forEach(link => {
+            if (link.hostname !== window.location.hostname) {
+                link.setAttribute('target', '_blank');
+                link.setAttribute('rel', 'noopener noreferrer');
+            }
+        });
+
+        // Enhanced snow/drizzle effect
         function createSnowDrizzle() {
             const container = document.querySelector('.snow');
             const snowCount = window.innerWidth < 768 ? 30 : 50;
+            
             for (let i = 0; i < snowCount; i++) {
                 const snow = document.createElement('div');
+                snow.style.position = 'absolute';
+                snow.style.width = Math.random() * 3 + 2 + 'px';
+                snow.style.height = snow.style.width;
+                snow.style.backgroundColor = 'rgba(255,255,255,' + (Math.random() * 0.7 + 0.3) + ')';
+                snow.style.borderRadius = '50%';
+                snow.style.top = '-10px';
                 snow.style.left = Math.random() * 100 + 'vw';
-                snow.style.animationDuration = Math.random() * 5 + 5 + 's';
                 snow.style.opacity = Math.random() * 0.5 + 0.5;
+                snow.style.animation = `fall ${Math.random() * 5 + 5}s linear ${Math.random() * 5}s infinite`;
+                
+                const keyframes = `
+                    @keyframes fall {
+                        to {
+                            transform: translateY(100vh) translateX(${Math.random() * 100 - 50}px);
+                        }
+                    }
+                `;
+                
+                const style = document.createElement('style');
+                style.innerHTML = keyframes;
+                document.head.appendChild(style);
+                
                 container.appendChild(snow);
             }
         }
 
-        // Pi Network Authentication
+        // Pi Network Authentication with retry logic
         async function authenticatePiUser() {
             const authBtn = document.getElementById('pi-auth-btn');
             authBtn.disabled = true;
             authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
 
-            try {
-                const authResult = await Pi.authenticate(['username', 'payments', 'wallet_address'], onIncompletePaymentFound);
-                currentUser = authResult.user;
-                authBtn.innerHTML = `<i class="fas fa-check-circle"></i> Signed in as ${authResult.user.username}`;
-                document.getElementById('pi-actions').style.display = 'flex';
-                document.getElementById('piPayBtn').disabled = false;
+            const scopes = ['username', 'payments', 'wallet_address'];
+            let attempts = 0;
+            const maxAttempts = 3;
+
+            async function tryAuthenticate() {
+                try {
+                    const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound);
+                    console.log("Pi user authenticated:", authResult);
+                    currentUser = authResult.user;
+                    handleSuccessfulAuth(authResult);
+                } catch (error) {
+                    console.error("Authentication attempt failed:", error);
+                    attempts++;
+                    if (attempts < maxAttempts) {
+                        console.log(`Retrying authentication... Attempt ${attempts + 1}`);
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                        return tryAuthenticate();
+                    } else {
+                        console.error("Max authentication attempts reached:", error);
+                        alert("Authentication failed after multiple attempts: " + error.message);
+                        authBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Retry Sign In';
+                        authBtn.disabled = false;
+                    }
+                }
+            }
+
+            await tryAuthenticate();
+        }
+
+        function handleSuccessfulAuth(authResult) {
+            const authBtn = document.getElementById('pi-auth-btn');
+            authBtn.innerHTML = `<i class="fas fa-check-circle"></i> Signed in as ${authResult.user.username}`;
+            authBtn.disabled = true;
+            
+            document.getElementById('pi-actions').style.display = 'flex';
+            
+            document.getElementById('piPayBtn').disabled = false;
+            
+            if (authResult.user.username) {
                 document.getElementById('piUsername').value = authResult.user.username;
-            } catch (error) {
-                console.error("Authentication failed:", error);
-                alert("Authentication failed: " + error.message);
-                authBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Retry';
-                authBtn.disabled = false;
+                document.getElementById('piUsername').setAttribute('readonly', true);
             }
         }
 
         function onIncompletePaymentFound(payment) {
-            return confirm("You have an incomplete payment. Continue?");
+            console.log("Incomplete payment found:", payment);
+            return confirm("You have an incomplete payment. Do you want to continue with this payment?");
         }
 
+        // Show wallet address
         function showWalletAddress() {
-            if (!currentUser) return alert("Please authenticate first");
-            alert(`Your Pi Wallet Address:\nGCJZEOVAODSADUFWNEYFBYFASNUFASPZOLR53CIU54SQZIJT6WF62SPE`);
+            if (!currentUser) {
+                alert("Please authenticate first");
+                return;
+            }
+            
+            const walletAddress = "GCJZEOVAODSADUFWNEYFBYFASNUFASPZOLR53CIU54SQZIJT6WF62SPE";
+            alert(`Your Pi Wallet Address:\n${walletAddress}`);
         }
 
+        // Open share dialog
         function openShareDialog() {
-            Pi.openShareDialog("B4U Esports", "Join the ultimate gaming marketplace with Pi Network integration!");
+            const title = "B4U Esports";
+            const message = "Check out B4U Esports - The ultimate gaming marketplace with Pi Network integration!";
+            Pi.openShareDialog(title, message);
         }
 
+        // Show rewarded ad
         function showRewardedAd() {
             Pi.Ads.showAd("rewarded")
                 .then(response => {
+                    console.log("Ad response:", response);
                     if (response.result === "AD_REWARDED") {
-                        alert("Thanks for watching! Reward earned.");
+                        alert("Thanks for watching the ad! You've earned a reward.");
                     } else {
-                        alert("Ad completed without reward.");
+                        alert("Ad completed without reward");
                     }
                 })
-                .catch(error => alert("Ad error: " + error.message));
+                .catch(error => {
+                    console.error("Ad error:", error);
+                    alert("Failed to show ad: " + error.message);
+                });
         }
 
-        // Modal Functions
+        // Token Selection Modal Functions
         function openTokenSelectionModal() {
             document.getElementById('tokenSelectionModal').style.display = 'flex';
         }
@@ -1363,19 +1572,21 @@
             document.getElementById('tokenSelectionModal').style.display = 'none';
         }
 
+        // Package Modal Functions
         function openPackageModal(type) {
             const packageModal = document.getElementById('packageModal');
             const packageList = document.getElementById('packageList');
             const packageModalTitle = document.getElementById('packageModalTitle');
+            
             packageList.innerHTML = '';
-            const packages = type === 'pubg' ? pubgPackages : mlbbPackages;
+            let packages = type === 'pubg' ? pubgPackages : mlbbPackages;
             packageModalTitle.textContent = type === 'pubg' ? 'Select PUBG Mobile UC Package' : 'Select MLBB Diamonds Package';
-
+            
             packages.forEach(pkg => {
                 const packageDiv = document.createElement('div');
                 packageDiv.className = 'package';
                 packageDiv.innerHTML = `
-                    <img src="${pkg.img}" alt="${type === 'pubg' ? pkg.uc + ' UC' : pkg.dias + ' DIAS'}">
+                    <img src="${pkg.img}" alt="${type === 'pubg' ? pkg.uc + ' UC' : pkg.dias + ' DIAS'}" style="width: 100%; height: 100px; object-fit: contain;">
                     <div class="package-title">${type === 'pubg' ? pkg.uc + ' UC' : pkg.dias + ' DIAS'}</div>
                     <div class="package-price">${pkg.price} PI</div>
                     <button class="package-buy-btn" onclick="openPaymentModal('${type === 'pubg' ? pkg.uc + ' UC' : pkg.dias + ' DIAS'}', ${pkg.price}, '${type}', ${type === 'pubg' ? pkg.uc : pkg.dias}); closePackageModal()">
@@ -1384,7 +1595,7 @@
                 `;
                 packageList.appendChild(packageDiv);
             });
-
+            
             packageModal.style.display = 'flex';
             closeTokenSelectionModal();
         }
@@ -1393,27 +1604,96 @@
             document.getElementById('packageModal').style.display = 'none';
         }
 
+        // Payment Modal Functions
         function openPaymentModal(product, amount, type, quantity = null) {
-            currentPayment = { product, amount, memo: `Payment for ${product}`, metadata: {}, type, quantity };
+            currentPayment.product = product;
+            currentPayment.amount = amount;
+            currentPayment.memo = `Payment for ${product}`;
+            currentPayment.type = type;
+            currentPayment.quantity = quantity;
+            
             document.getElementById('productName').value = product;
             document.getElementById('piAmount').value = amount;
+            
             document.getElementById('urlGroup').style.display = type === 'social' ? 'block' : 'none';
             document.getElementById('pubgIdGroup').style.display = type === 'pubg' ? 'block' : 'none';
             document.getElementById('mlbbUserIdGroup').style.display = type === 'mlbb' ? 'block' : 'none';
             document.getElementById('mlbbZoneIdGroup').style.display = type === 'mlbb' ? 'block' : 'none';
+            
             document.getElementById('userEmail').value = '';
             document.getElementById('socialUrl').value = '';
             document.getElementById('pubgId').value = '';
             document.getElementById('mlbbUserId').value = '';
             document.getElementById('mlbbZoneId').value = '';
             document.getElementById('paymentStatus').style.display = 'none';
+            
             document.getElementById('paymentModal').style.display = 'flex';
         }
 
         function closePaymentModal() {
             document.getElementById('paymentModal').style.display = 'none';
+            currentPayment.paymentId = null;
+            currentPayment.txid = null;
         }
 
+        // Server-side API calls
+        async function approvePaymentOnServer(paymentId, paymentData) {
+            try {
+                const response = await fetch('https://your-server-api.com/api/payments/approve', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer your_server_api_key', // Replace with your actual API key
+                        'X-Pi-App-Id': 'b4u-esports'
+                    },
+                    body: JSON.stringify({
+                        paymentId: paymentId,
+                        paymentData: paymentData,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+
+                if (response.status !== 200) {
+                    throw new Error(`Server approval failed with status ${response.status}`);
+                }
+
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('Server approval error:', error);
+                throw error;
+            }
+        }
+
+        async function completePaymentOnServer(paymentId, txid) {
+            try {
+                const response = await fetch('https://your-server-api.com/api/payments/complete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer your_server_api_key', // Replace with your actual API key
+                        'X-Pi-App-Id': 'b4u-esports'
+                    },
+                    body: JSON.stringify({
+                        paymentId: paymentId,
+                        txid: txid,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+
+                if (response.status !== 200) {
+                    throw new Error(`Server completion failed with status ${response.status}`);
+                }
+
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('Server completion error:', error);
+                throw error;
+            }
+        }
+
+        // Process Pi Payment
         async function processPiPayment() {
             if (!currentUser) {
                 alert("Please authenticate with Pi Network first");
@@ -1421,17 +1701,16 @@
             }
 
             const piAmount = parseFloat(document.getElementById('piAmount').value);
-            const userEmail = document.getElementById('userEmail').value;
-
-            if (!piAmount || piAmount <= 0) {
-                document.getElementById('paymentStatus').textContent = "Invalid PI amount";
+            if (!piAmount || piAmount < 0) {
+                document.getElementById('paymentStatus').textContent = "Please enter a valid PI amount (minimum 0)";
                 document.getElementById('paymentStatus').className = "payment-status payment-error";
                 document.getElementById('paymentStatus').style.display = "block";
                 return;
             }
 
+            const userEmail = document.getElementById('userEmail').value;
             if (!userEmail) {
-                document.getElementById('paymentStatus').textContent = "Valid email required";
+                document.getElementById('paymentStatus').textContent = "Please enter a valid email address";
                 document.getElementById('paymentStatus').className = "payment-status payment-error";
                 document.getElementById('paymentStatus').style.display = "block";
                 return;
@@ -1442,7 +1721,7 @@
                 memo: currentPayment.memo,
                 metadata: {
                     product: currentPayment.product,
-                    piUsername: currentUser.username,
+                    piUsername: document.getElementById('piUsername').value,
                     userEmail: userEmail,
                     type: currentPayment.type,
                     timestamp: new Date().toISOString()
@@ -1452,7 +1731,7 @@
             if (currentPayment.type === 'social') {
                 const socialUrl = document.getElementById('socialUrl').value;
                 if (!socialUrl) {
-                    document.getElementById('paymentStatus').textContent = "Valid social media URL required";
+                    document.getElementById('paymentStatus').textContent = "Please enter a valid social media URL";
                     document.getElementById('paymentStatus').className = "payment-status payment-error";
                     document.getElementById('paymentStatus').style.display = "block";
                     return;
@@ -1461,7 +1740,7 @@
             } else if (currentPayment.type === 'pubg') {
                 const pubgId = document.getElementById('pubgId').value;
                 if (!pubgId || isNaN(pubgId)) {
-                    document.getElementById('paymentStatus').textContent = "Valid PUBG Mobile Player ID required";
+                    document.getElementById('paymentStatus').textContent = "Please enter a valid numeric PUBG Mobile Player ID";
                     document.getElementById('paymentStatus').className = "payment-status payment-error";
                     document.getElementById('paymentStatus').style.display = "block";
                     return;
@@ -1472,7 +1751,7 @@
                 const mlbbUserId = document.getElementById('mlbbUserId').value;
                 const mlbbZoneId = document.getElementById('mlbbZoneId').value;
                 if (!mlbbUserId || isNaN(mlbbUserId) || !mlbbZoneId || isNaN(mlbbZoneId)) {
-                    document.getElementById('paymentStatus').textContent = "Valid MLBB User ID and Zone ID required";
+                    document.getElementById('paymentStatus').textContent = "Please enter valid numeric MLBB User ID and Zone ID";
                     document.getElementById('paymentStatus').className = "payment-status payment-error";
                     document.getElementById('paymentStatus').style.display = "block";
                     return;
@@ -1483,75 +1762,124 @@
             }
 
             const paymentCallbacks = {
-                onReadyForServerApproval: async (paymentId) => {
+                onReadyForServerApproval: async function(paymentId) {
+                    console.log("Ready for server approval with paymentId:", paymentId);
+                    currentPayment.paymentId = paymentId;
                     document.getElementById('paymentStatus').textContent = "Awaiting server approval...";
                     document.getElementById('paymentStatus').className = "payment-status";
                     document.getElementById('paymentStatus').style.display = "block";
+
                     try {
-                        await simulatedServer.approvePayment(paymentId, paymentData);
-                        document.getElementById('paymentStatus').textContent = "Payment approved, confirm in Pi Browser";
+                        // Send paymentId to server for approval
+                        await approvePaymentOnServer(paymentId, paymentData);
+                        console.log("Server approval successful");
+                        // The Pi SDK will automatically show the payment UI to the user
                     } catch (error) {
-                        document.getElementById('paymentStatus').textContent = `Approval failed: ${error.message}`;
+                        console.error("Server approval failed:", error);
+                        document.getElementById('paymentStatus').textContent = "Payment approval failed: " + error.message;
                         document.getElementById('paymentStatus').className = "payment-status payment-error";
                         document.getElementById('paymentStatus').style.display = "block";
                     }
                 },
-                onReadyForServerCompletion: async (paymentId, txid) => {
+
+                onReadyForServerCompletion: async function(paymentId, txid) {
+                    console.log("Ready for server completion with paymentId and txid:", paymentId, txid);
+                    currentPayment.txid = txid;
                     document.getElementById('paymentStatus').textContent = "Completing payment...";
+
                     try {
-                        await simulatedServer.completePayment(paymentId, txid, paymentData);
-                        document.getElementById('paymentStatus').textContent = 
-                            `Success! Purchased ${currentPayment.product} for ${paymentData.amount} π. Send screenshot to info@b4uesports.com or WhatsApp: +97517875099.`;
-                        document.getElementById('paymentStatus').className = "payment-status payment-success";
-                        document.getElementById('paymentStatus').style.display = "block";
-                        updateUIAfterPayment(paymentData);
-                        setTimeout(closePaymentModal, 5000);
+                        // Verify transaction with server
+                        const completionResult = await completePaymentOnServer(paymentId, txid);
+                        
+                        if (completionResult.status === 200) {
+                            // Only complete the payment if server verification is successful
+                            document.getElementById('paymentStatus').textContent = 
+                                "Payment successful! Please send the transaction screenshot to info@b4uesports.com or WhatsApp: +97517875099.";
+                            document.getElementById('paymentStatus').className = "payment-status payment-success";
+                            document.getElementById('paymentStatus').style.display = "block";
+                            
+                            // Update UI to show confirmation
+                            updatePurchaseConfirmation(paymentData.metadata);
+                            
+                            setTimeout(closePaymentModal, 5000);
+                        } else {
+                            throw new Error("Server verification failed: Invalid transaction");
+                        }
                     } catch (error) {
-                        document.getElementById('paymentStatus').textContent = `Completion failed: ${error.message}`;
+                        console.error("Payment completion error:", error);
+                        document.getElementById('paymentStatus').textContent = 
+                            "Payment verification failed: " + error.message + ". Please contact support.";
                         document.getElementById('paymentStatus').className = "payment-status payment-error";
                         document.getElementById('paymentStatus').style.display = "block";
                     }
                 },
-                onCancel: (paymentId) => {
+
+                onCancel: function(paymentId) {
+                    console.log("Payment cancelled with paymentId:", paymentId);
                     document.getElementById('paymentStatus').textContent = "Payment cancelled";
                     document.getElementById('paymentStatus').className = "payment-status payment-error";
                     document.getElementById('paymentStatus').style.display = "block";
+                    currentPayment.paymentId = null;
+                    currentPayment.txid = null;
                 },
-                onError: (error, payment) => {
-                    document.getElementById('paymentStatus').textContent = `Error: ${error.message}`;
+
+                onError: function(error, payment) {
+                    console.error("Payment error:", error, payment);
+                    document.getElementById('paymentStatus').textContent = "Error: " + error.message;
                     document.getElementById('paymentStatus').className = "payment-status payment-error";
                     document.getElementById('paymentStatus').style.display = "block";
+                    currentPayment.paymentId = null;
+                    currentPayment.txid = null;
                 }
             };
 
             try {
+                // Initiate payment with Pi SDK
+                await Pi.createPayment(paymentData, paymentCallbacks);
+                console.log("Payment creation initiated");
                 document.getElementById('paymentStatus').textContent = "Initiating payment...";
                 document.getElementById('paymentStatus').className = "payment-status";
                 document.getElementById('paymentStatus').style.display = "block";
-                await Pi.createPayment(paymentData, paymentCallbacks);
             } catch (error) {
-                document.getElementById('paymentStatus').textContent = `Payment creation failed: ${error.message}`;
+                console.error("Payment creation error:", error);
+                document.getElementById('paymentStatus').textContent = "Payment creation failed: " + error.message;
                 document.getElementById('paymentStatus').className = "payment-status payment-error";
                 document.getElementById('paymentStatus').style.display = "block";
             }
         }
 
-        function updateUIAfterPayment(paymentData) {
-            const heroSection = document.querySelector('.hero-section');
-            const confirmationDiv = document.createElement('div');
-            confirmationDiv.className = 'payment-status payment-success';
-            confirmationDiv.style.marginTop = '1rem';
-            confirmationDiv.textContent = `Success! Purchased ${paymentData.metadata.product} for ${paymentData.amount} π. Check your email for details.`;
-            heroSection.appendChild(confirmationDiv);
-            setTimeout(() => confirmationDiv.remove(), 10000);
+        // Update UI after successful payment
+        function updatePurchaseConfirmation(metadata) {
+            // This function would update your app's UI to reflect the successful purchase
+            // For example, you could update user inventory, show confirmation message, etc.
+            console.log("Purchase confirmed:", metadata);
+            
+            // Example: Add purchased item to user's account (client-side representation)
+            let confirmationMessage = `Successfully purchased ${metadata.product}! `;
+            
+            if (metadata.type === 'pubg') {
+                confirmationMessage += `You will receive ${metadata.ucAmount} UC in your PUBG account (ID: ${metadata.pubgId}).`;
+            } else if (metadata.type === 'mlbb') {
+                confirmationMessage += `You will receive ${metadata.diasAmount} Diamonds in your MLBB account (User ID: ${metadata.mlbbUserId}, Zone ID: ${metadata.mlbbZoneId}).`;
+            } else if (metadata.type === 'social') {
+                confirmationMessage += `Social boost will be applied to ${metadata.socialUrl}.`;
+            } else if (metadata.type === 'tournament') {
+                confirmationMessage += `You are now registered for the tournament!`;
+            }
+
+            // You might want to update your UI here, for example:
+            // - Show a confirmation popup
+            // - Update user's purchase history
+            // - Refresh relevant UI components
+            console.log("UI Update:", confirmationMessage);
         }
 
         window.addEventListener('load', () => {
             createSnowDrizzle();
-            initializePiSDK().then(setupPiButtons);
+            initializePiSDK();
         });
 
-        window.addEventListener('resize', () => {
+        window.addEventListener('resize', function() {
             document.querySelectorAll('.snow div').forEach(el => el.remove());
             createSnowDrizzle();
         });
