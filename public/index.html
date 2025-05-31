@@ -31,22 +31,18 @@
             z-index: -1;
         }
 
-        .snow:after {
-            content: "";
+        .snow div {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(4px 4px at 50px 50px, #14f195, transparent),
-                radial-gradient(3px 3px at 150px 150px, #14bff1, transparent),
-                radial-gradient(4px 4px at 250px 250px, #3B1C63 50%, transparent),
-                radial-gradient(3px 3px at 350px 350px, #4B2C7C 50%, transparent);
-            animation: snowAnim 8s linear infinite;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(20, 241, 149, 0.5) 50%, transparent 100%);
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fall linear infinite;
         }
 
-        @keyframes snowAnim {
-            from { transform: translateY(-100vh); }
-            to { transform: translateY(100vh); }
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0.5; }
         }
 
         .header {
@@ -203,13 +199,6 @@
             flex-wrap: wrap;
         }
 
-        .registration-note a {
-            color: #ffd700;
-            text-decoration: none;
-            font-weight: 700;
-            border-bottom: 2px dotted #ffd700;
-        }
-
         .pi-auth-btn {
             background: linear-gradient(135deg, #14f195 0%, #14bff1 100%);
             color: #000;
@@ -218,11 +207,11 @@
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            margin: 1rem auto;
+            margin-left: 10px;
             transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(20, 241, 149, 0.3);
         }
@@ -234,6 +223,18 @@
 
         .pi-auth-btn i {
             font-size: 1.2rem;
+        }
+
+        .dev-note {
+            background: rgba(234, 179, 8, 0.2);
+            border: 1px solid #eab308;
+            color: #eab308;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem auto;
+            max-width: 600px;
+            text-align: center;
+            display: none;
         }
 
         .pi-actions {
@@ -831,17 +832,16 @@
             <div class="registration-note">
                 <p>
                     <i class="fas fa-exclamation-circle"></i>
-                    New users: Please 
-                    <a href="https://b4uesports.com/my-account/" target="_blank">
-                        REGISTER HERE
-                    </a> 
-                    to access all services!
+                    New users: Sign in below.
+                    <button id="pi-auth-btn" class="pi-auth-btn">
+                        <i class="fas fa-sign-in-alt"></i> Sign In with Pi
+                    </button>
                 </p>
             </div>
 
-            <button id="pi-auth-btn" class="pi-auth-btn">
-                <i class="fas fa-sign-in-alt"></i> Sign In with Pi Network
-            </button>
+            <div id="dev-note" class="dev-note">
+                This is for development purposes only; no real Pi will be used, only Pi Testnet.
+            </div>
 
             <div id="pi-actions" class="pi-actions" style="display: none;">
                 <button id="pi-wallet-btn" class="pi-action-btn">
@@ -1111,40 +1111,51 @@
     <script src="https://sdk.minepi.com/pi.js"></script>
     <script>
         function waitForPiSDK() {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 if (typeof Pi !== 'undefined') {
                     resolve();
                 } else {
-                    const timeout = setTimeout(() => {
-                        reject(new Error("Pi SDK failed to load within timeout"));
-                    }, 10000);
                     window.addEventListener('load', () => {
                         if (typeof Pi !== 'undefined') {
-                            clearTimeout(timeout);
                             resolve();
+                        } else {
+                            document.addEventListener('PiSDKLoaded', () => resolve(), { once: true });
                         }
-                    });
+                    }, { once: true });
                 }
             });
+        }
+
+        async function fetchConfig() {
+            try {
+                const response = await fetch('https://b4-u-esports.vercel.app/api/config');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const config = await response.json();
+                return config.appId || 'b4uesports';
+            } catch (error) {
+                console.error('Failed to fetch config:', error);
+                return 'b4uesports';
+            }
         }
 
         async function initializePiSDK() {
             try {
                 await waitForPiSDK();
+                const appId = await fetchConfig();
                 await Pi.init({
                     version: "2.0",
-                    appId: "b4uesports",
+                    appId: appId,
                     network: "testnet",
                     sandbox: true
                 });
-                console.log("Pi SDK initialized successfully in sandbox mode");
+                console.log("Pi SDK initialized successfully in testnet mode");
                 setupPiButtons();
             } catch (error) {
                 console.error("Error initializing Pi SDK:", error);
                 alert("Failed to initialize Pi SDK: " + error.message);
-                document.getElementById('pi-auth-btn').innerHTML = 
-                    '<i class="fas fa-exclamation-circle"></i> Retry Sign In';
-                document.getElementById('pi-auth-btn').disabled = false;
+                const authBtn = document.getElementById('pi-auth-btn');
+                authBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Retry Sign In';
+                authBtn.disabled = false;
             }
         }
 
@@ -1254,32 +1265,17 @@
 
         function createSnowDrizzle() {
             const container = document.querySelector('.snow');
-            const snowCount = window.innerWidth < 768 ? 30 : 50;
+            const snowCount = window.innerWidth < 768 ? 50 : 100;
             
             for (let i = 0; i < snowCount; i++) {
                 const snow = document.createElement('div');
-                snow.style.position = 'absolute';
-                snow.style.width = Math.random() * 3 + 2 + 'px';
-                snow.style.height = snow.style.width;
-                snow.style.backgroundColor = 'rgba(59, 28, 99, ' + (Math.random() * 0.7 + 0.3) + ')';
-                snow.style.borderRadius = '50%';
-                snow.style.top = '-10px';
+                const size = Math.random() * 6 + 2;
+                snow.style.width = size + 'px';
+                snow.style.height = size + 'px';
                 snow.style.left = Math.random() * 100 + 'vw';
-                snow.style.opacity = Math.random() * 0.5 + 0.5;
-                snow.style.animation = `fall${i} ${Math.random() * 5 + 5}s linear`;
-                
-                const keyframes = `
-                    @keyframes fall${i} {
-                        to {
-                            transform: translateY(100vh) translateX(${Math.random() * 100 - 50}px);
-                        }
-                    }
-                `;
-                
-                const style = document.createElement('style');
-                style.innerHTML = keyframes;
-                document.head.appendChild(style);
-                
+                snow.style.animationDuration = Math.random() * 5 + 3 + 's';
+                snow.style.animationDelay = Math.random() * 2 + 's';
+                snow.style.background = `radial-gradient(circle, rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5}) 0%, rgba(${Math.random() * 55 + 200}, ${Math.random() * 241}, ${Math.random() * 149}, ${Math.random() * 0.5 + 0.3}) 50%, transparent 100%)`;
                 container.appendChild(snow);
             }
         }
@@ -1311,6 +1307,7 @@
             
             document.getElementById('pi-actions').style.display = 'flex';
             document.getElementById('piPayBtn').disabled = false;
+            document.getElementById('dev-note').style.display = 'block';
             
             if (authResult.user.username) {
                 document.getElementById('piUsername').value = authResult.user.username;
@@ -1490,7 +1487,7 @@
                     document.getElementById('paymentStatus').style.display = "block";
 
                     try {
-                        const response = await fetch('https://b4-u-esports.vercel.app/api/pi-payment', {
+                        const response = await fetch('https://b4-u-esports.vercel.app/api/approve-payment', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
@@ -1519,7 +1516,7 @@
                     document.getElementById('paymentStatus').style.display = "block";
 
                     try {
-                        const response = await fetch('https://b4-u-esports.vercel.app/api/pi-payment', {
+                        const response = await fetch('https://b4-u-esports.vercel.app/api/approve-payment', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
@@ -1556,8 +1553,8 @@
                     setTimeout(closePaymentModal, 3000);
                 },
                 onError: function(error, payment) {
-                    console.error("Payment error:", error, payment);
-                    document.getElementById('paymentStatus').textContent = "Payment failed: " + error.message;
+                    console.error("Payment failed:", error, payment);
+                    document.getElementById('paymentStatus').textContent = "Payment error: " + error.message;
                     document.getElementById('paymentStatus').className = "payment-status payment-error";
                     document.getElementById('paymentStatus').style.display = "block";
                 }
@@ -1571,7 +1568,7 @@
                 console.log("Payment creation initiated");
             } catch (error) {
                 console.error("Payment creation error:", error);
-                document.getElementById('paymentStatus').textContent = "Payment creation failed: " + error.message;
+                document.getElementById('paymentStatus').textContent = "Payment failed: " + error.message;
                 document.getElementById('paymentStatus').className = "payment-status payment-error";
                 document.getElementById('paymentStatus').style.display = "block";
             }
