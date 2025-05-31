@@ -1,7 +1,8 @@
-require('dotenv').config();
-
-module.exports = {
-  piApiEndpoint: process.env.PI_API_ENDPOINT || 'https://api.testnet.minepi.com',
-  piTestnetApiKey: process.env.PI_TESTNET_API_KEY || 'your_testnet_api_key_here',
-  piWalletAddress: process.env.PI_WALLET_ADDRESS || 'your_wallet_address_here'
-};
+export default function handler(req, res) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') return res.status(200).end();
+    
+    res.status(200).json({ appId: 'b4uesports' });
+}
