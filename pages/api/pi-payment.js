@@ -1,12 +1,19 @@
 export default async function handler(req, res) {
-    const { action, paymentId, txid, paymentData } = req.body;
-    if (action === 'approve') {
-        console.log('Approving payment:', paymentId, paymentData);
-        res.status(200).json({ success: true });
-    } else if (action === 'complete') {
-        console.log('Completing payment:', paymentId, txid, paymentData);
-        res.status(200).json({ success: true });
-    } else {
-        res.status(400).json({ error: 'Invalid action' });
-    }
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    const { paymentData } = req.body;
+    // Here you can add validation or preprocessing logic for paymentData
+    // For example, verify the payment amount, product, etc.
+
+    // In a real application, you might store the paymentData in a database
+    // and return a payment ID or other relevant information
+
+    res.status(200).json({ success: true, message: 'Payment request received', paymentData });
+  } catch (error) {
+    console.error('Error processing payment request:', error);
+    res.status(500).json({ error: 'Failed to process payment request' });
+  }
 }
