@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Your original CSS remains unchanged */
         * {
             margin: 0;
             padding: 0;
@@ -24,7 +23,6 @@
             flex-direction: column;
         }
 
-        /* Header Styles */
         .header {
             background: rgba(59, 28, 99, 0.9);
             padding: 1rem;
@@ -132,7 +130,6 @@
             visibility: visible;
         }
 
-        /* Main Content */
         .container {
             max-width: 1200px;
             margin: 80px auto 0;
@@ -140,7 +137,6 @@
             flex: 1;
         }
 
-        /* Hero Section */
         .hero-section {
             text-align: center;
             padding: 4rem 1rem;
@@ -194,7 +190,6 @@
             border-bottom: 2px dotted #fff;
         }
 
-        /* Pi Network Auth Button */
         .pi-auth-btn {
             background: linear-gradient(135deg, #14f195 0%, #14bff1 100%);
             color: #000;
@@ -221,7 +216,6 @@
             font-size: 1.2rem;
         }
 
-        /* Pi Network Actions */
         .pi-actions {
             display: flex;
             gap: 10px;
@@ -251,7 +245,6 @@
             background: rgba(255,255,255,0.3);
         }
 
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -379,7 +372,6 @@
             border: 1px solid #ef4444;
         }
 
-        /* Token Selection Modal */
         .token-selection {
             display: flex;
             flex-direction: column;
@@ -404,7 +396,6 @@
             background: rgba(255,255,255,0.3);
         }
 
-        /* Package Selection Modal */
         .packages {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -456,7 +447,6 @@
             box-shadow: 0 4px 15px rgba(20, 241, 149, 0.4);
         }
 
-        /* Card Grid */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -493,7 +483,6 @@
             padding: 10px;
         }
 
-        /* Tournament Section */
         .tournament-header {
             text-align: center;
             margin: 4rem 0 2rem;
@@ -572,7 +561,6 @@
             gap: 10px;
         }
 
-        /* Enhanced Prize Pool Animation */
         .tournament-prize {
             background: linear-gradient(45deg, #3B1C63, #14F195, #3B1C63);
             background-size: 400%;
@@ -682,7 +670,7 @@
         .register-btn {
             display: block;
             text-align: center;
-            background: linear-gradient(135deg, #14f195 0%, #14bff1 100%);
+            background: linear-gradient(135deg, #14f195 0%, #14bff1);
             color: #000;
             font-weight: 700;
             padding: 1rem;
@@ -698,10 +686,10 @@
             box-shadow: 0 5px 15px rgba(20, 241, 149, 0.3);
         }
 
-        /* Footer Styles */
         footer {
             background: rgba(59, 28, 99, 0.9);
-            padding: 3rem 2rem;
+            padding: #fff;
+            3rem 2rem;
             margin-top: auto;
             backdrop-filter: blur(10px);
         }
@@ -710,7 +698,7 @@
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, px1fr));
             gap: 2rem;
         }
 
@@ -728,14 +716,17 @@
             list-style: none;
         }
 
-        .footer-links li {
-            margin: 0.7rem 0;
+        .footer-links {
+            list-style: none;
+            li {
+                margin: 0.7rem 0;
+            }
         }
 
         .footer-links a {
-            color: rgba(255,255,255,0.8);
+            color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
-            transition: color 0.3s;
+            transition: all 0.3s;
         }
 
         .footer-links a:hover {
@@ -752,15 +743,14 @@
         .social-links a {
             color: #fff;
             font-size: 1.5rem;
-            transition: color 0.3s;
+            margin: 0 0.5rem;
         }
 
         .social-links a:hover {
             color: #ddd;
         }
 
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
+        @media screen(max-width: 768px) {
             .container {
                 padding: 1rem;
                 margin-top: 70px;
@@ -779,11 +769,13 @@
                 grid-template-columns: 1fr;
             }
             
+            .content {
+                margin-bottom: 4rem;
+            }
+            
             .footer-content {
                 grid-template-columns: 1fr;
-                text-align: center;
             }
-
             .footer-section {
                 text-align: center;
             }
@@ -801,9 +793,9 @@
             }
         }
 
-        @media (min-width: 769px) and (max-width: 1024px) {
+        @media screen(min-width: 769px) and (max-width: 1024px) {
             .container {
-                padding: 1.5rem;
+                padding-bottom: 1.5rem;
             }
         }
     </style>
@@ -1151,6 +1143,8 @@
 
         let currentUser = null;
         let piConfig = {};
+        let retryCount = 0;
+        const maxRetries = 3;
 
         // Package data
         const pubgPackages = [
@@ -1177,55 +1171,75 @@
             { dias: 12000, price: 205, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' }
         ];
 
+        // Logging helper for debugging
+        function log(message, type = 'info') {
+            console[type](`[${new Date().toISOString()}] ${message}`);
+        }
+
         // Fetch Pi Network configuration from backend
         async function fetchPiConfig() {
             try {
-                const response = await fetch('/api/config');
-                if (!response.ok) throw new Error('Failed to fetch Pi config');
-                piConfig = await response.json();
-                return piConfig;
+                log('Fetching Pi Network configuration...');
+                const response = await fetch('/api/config', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                const config = await response.json();
+                if (!config.appId || !config.network || !config.apiKey) {
+                    throw new Error('Invalid configuration: Missing required fields');
+                }
+                log('Configuration fetched successfully');
+                return config;
             } catch (error) {
-                console.error('Error fetching Pi config:', error);
-                alert('Failed to load configuration. Please try again later.');
-                return null;
+                log(`Error fetching Pi config: ${error.message}`, 'error');
+                throw error;
             }
         }
 
         // Initialize Pi Network SDK
         async function initializePiSDK() {
+            const authBtn = document.getElementById('pi-auth-btn');
+            authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Initializing...';
+            authBtn.disabled = true;
+
             try {
-                // Wait for SDK to load
+                // Wait for Pi SDK to load
                 await new Promise((resolve, reject) => {
                     if (typeof Pi !== 'undefined') {
+                        log('Pi SDK is loaded');
                         resolve();
                     } else {
+                        log('Waiting for Pi SDK to load...');
                         const timeout = setTimeout(() => {
-                            reject(new Error('Pi SDK failed to load within timeout'));
+                            reject(new Error('Pi SDK failed to load within 10 seconds'));
                         }, 10000);
                         window.addEventListener('load', () => {
                             if (typeof Pi !== 'undefined') {
                                 clearTimeout(timeout);
+                                log('Pi SDK loaded successfully');
                                 resolve();
                             }
                         });
                     }
                 });
 
-                // Fetch configuration from backend
-                const config = await fetchPiConfig();
-                if (!config) return;
+                // Fetch configuration
+                piConfig = await fetchPiConfig();
 
-                // Initialize SDK with dynamic configuration
+                // Initialize Pi SDK
                 await Pi.init({
                     version: '2.0',
-                    appId: config.appId,
-                    network: config.network,
-                    apiKey: config.apiKey,
-                    sandbox: config.sandbox,
-                    redirectUri: 'https://wallet.pinet.com' // Ensure redirection to wallet
+                    appId: piConfig.appId,
+                    network: piConfig.network,
+                    apiKey: piConfig.apiKey,
+                    sandbox: piConfig.sandbox,
+                    redirectUri: 'https://wallet.pinet.com' // Ensure this matches Pi app settings
                 });
 
-                console.log('Pi SDK initialized successfully');
+                log('Pi SDK initialized successfully');
+
+                // Setup buttons
                 setupPiButtons();
 
                 // Check if user is already authenticated
@@ -1233,12 +1247,20 @@
                     const authResult = await Pi.authenticate(['username', 'payments', 'wallet_address'], onIncompletePaymentFound);
                     currentUser = authResult.user;
                     handleSuccessfulAuth(authResult);
+                } else {
+                    authBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In with Pi Network';
+                    authBtn.disabled = false;
                 }
             } catch (error) {
-                console.error('Error initializing Pi SDK:', error);
-                document.getElementById('pi-auth-btn').innerHTML = 
-                    '<i class="fas fa-exclamation-circle"></i> Retry Sign In';
-                document.getElementById('pi-auth-btn').disabled = false;
+                log(`Error initializing Pi SDK: ${error.message}`, 'error');
+                authBtn.innerHTML = `<i class="fas fa-exclamation-circle"></i> Retry Sign In (${retryCount + 1}/${maxRetries})`;
+                authBtn.disabled = retryCount >= maxRetries;
+                if (retryCount < maxRetries) {
+                    retryCount++;
+                    setTimeout(initializePiSDK, 5000); // Retry after 5 seconds
+                } else {
+                    alert('Failed to initialize Pi Network. Please check your network and try again later.');
+                }
             }
         }
 
@@ -1287,6 +1309,12 @@
 
         // Pi Network Authentication
         async function authenticatePiUser() {
+            if (!Pi) {
+                log('Pi SDK not loaded', 'error');
+                alert('Pi Network SDK is not loaded. Please try again later.');
+                return;
+            }
+
             const authBtn = document.getElementById('pi-auth-btn');
             authBtn.disabled = true;
             authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
@@ -1294,18 +1322,21 @@
             try {
                 const scopes = ['username', 'payments', 'wallet_address'];
                 const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound);
-                console.log('Pi user authenticated:', authResult);
+                log(`Pi user authenticated: ${authResult.user.username}`);
                 currentUser = authResult.user;
                 handleSuccessfulAuth(authResult);
             } catch (error) {
-                console.error('Authentication error:', error);
-                authBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Retry Sign In';
-                authBtn.disabled = false;
+                log(`Authentication error: ${error.message}`, 'error');
+                authBtn.innerHTML = `<i class="fas fa-exclamation-circle"></i> Retry Sign In (${retryCount + 1}/${maxRetries})`;
+                authBtn.disabled = retryCount >= maxRetries;
+                if (retryCount < maxRetries) {
+                    retryCount++;
+                }
                 
                 if (error.message.includes('User cancelled')) {
                     alert('You cancelled the authentication process. Please try again.');
                 } else {
-                    alert('Authentication failed: ' + error.message);
+                    alert(`Authentication failed: ${error.message}`);
                 }
             }
         }
@@ -1325,7 +1356,7 @@
         }
 
         function onIncompletePaymentFound(payment) {
-            console.log('Incomplete payment found:', payment);
+            log(`Incomplete payment found: ${payment.paymentId}`);
             return confirm('You have an incomplete payment. Do you want to continue with this payment?');
         }
 
@@ -1337,10 +1368,11 @@
             }
             
             Pi.getWalletAddress().then(address => {
+                log(`Wallet address retrieved: ${address}`);
                 alert(`Your Pi Wallet Address:\n${address}`);
             }).catch(error => {
-                console.error('Error getting wallet address:', error);
-                alert('Failed to get wallet address: ' + error.message);
+                log(`Error getting wallet address: ${error.message}`, 'error');
+                alert(`Failed to get wallet address: ${error.message}`);
             });
         }
 
@@ -1349,6 +1381,7 @@
             const title = 'B4U Esports';
             const message = 'Check out B4U Esports - The ultimate gaming marketplace with Pi Network integration!';
             Pi.openShareDialog(title, message);
+            log('Share dialog opened');
         }
 
         // Token Selection Modal Functions
@@ -1358,10 +1391,12 @@
                 return;
             }
             document.getElementById('tokenSelectionModal').style.display = 'flex';
+            log('Token selection modal opened');
         }
 
         function closeTokenSelectionModal() {
             document.getElementById('tokenSelectionModal').style.display = 'none';
+            log('Token selection modal closed');
         }
 
         // Package Modal Functions
@@ -1390,10 +1425,12 @@
             
             packageModal.style.display = 'flex';
             closeTokenSelectionModal();
+            log(`Package modal opened for ${type}`);
         }
 
         function closePackageModal() {
             document.getElementById('packageModal').style.display = 'none';
+            log('Package modal closed');
         }
 
         // Payment Modal Functions
@@ -1425,12 +1462,14 @@
             document.getElementById('paymentStatus').style.display = 'none';
             
             document.getElementById('paymentModal').style.display = 'flex';
+            log(`Payment modal opened for ${product}`);
         }
 
         function closePaymentModal() {
             document.getElementById('paymentModal').style.display = 'none';
             currentPayment.paymentId = null;
             currentPayment.txid = null;
+            log('Payment modal closed');
         }
 
         // Process Pi Payment with Server-Side Approval and Completion
@@ -1441,18 +1480,20 @@
             }
 
             const piAmount = parseFloat(document.getElementById('piAmount').value);
-            if (!piAmount || piAmount < 0) {
-                document.getElementById('paymentStatus').textContent = 'Please enter a valid PI amount (minimum 0)';
+            if (!piAmount || piAmount <= 0) {
+                document.getElementById('paymentStatus').textContent = 'Please enter a valid PI amount (minimum 0.001)';
                 document.getElementById('paymentStatus').className = 'payment-status payment-error';
                 document.getElementById('paymentStatus').style.display = 'block';
+                log('Invalid PI amount entered', 'error');
                 return;
             }
 
             const userEmail = document.getElementById('userEmail').value;
-            if (!userEmail) {
+            if (!userEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userEmail)) {
                 document.getElementById('paymentStatus').textContent = 'Please enter a valid email address';
                 document.getElementById('paymentStatus').className = 'payment-status payment-error';
                 document.getElementById('paymentStatus').style.display = 'block';
+                log('Invalid email address', 'error');
                 return;
             }
 
@@ -1470,10 +1511,11 @@
 
             if (currentPayment.type === 'social') {
                 const socialUrl = document.getElementById('socialUrl').value;
-                if (!socialUrl) {
+                if (!socialUrl || !/^https?:\/\/[^\s/$.?#].[^\s]*$/.test(socialUrl)) {
                     document.getElementById('paymentStatus').textContent = 'Please enter a valid social media URL';
                     document.getElementById('paymentStatus').className = 'payment-status payment-error';
                     document.getElementById('paymentStatus').style.display = 'block';
+                    log('Invalid social media URL', 'error');
                     return;
                 }
                 paymentData.metadata.socialUrl = socialUrl;
@@ -1483,6 +1525,7 @@
                     document.getElementById('paymentStatus').textContent = 'Please enter a valid numeric PUBG Mobile Player ID';
                     document.getElementById('paymentStatus').className = 'payment-status payment-error';
                     document.getElementById('paymentStatus').style.display = 'block';
+                    log('Invalid PUBG Mobile Player ID', 'error');
                     return;
                 }
                 paymentData.metadata.pubgId = parseInt(pubgId);
@@ -1494,6 +1537,7 @@
                     document.getElementById('paymentStatus').textContent = 'Please enter valid numeric MLBB User ID and Zone ID';
                     document.getElementById('paymentStatus').className = 'payment-status payment-error';
                     document.getElementById('paymentStatus').style.display = 'block';
+                    log('Invalid MLBB User ID or Zone ID', 'error');
                     return;
                 }
                 paymentData.metadata.mlbbUserId = parseInt(mlbbUserId);
@@ -1503,7 +1547,7 @@
 
             const paymentCallbacks = {
                 onReadyForServerApproval: async function(paymentId) {
-                    console.log('Ready for server approval with paymentId:', paymentId);
+                    log(`Ready for server approval with paymentId: ${paymentId}`);
                     currentPayment.paymentId = paymentId;
                     document.getElementById('paymentStatus').textContent = 'Waiting for server approval...';
                     document.getElementById('paymentStatus').className = 'payment-status';
@@ -1527,16 +1571,16 @@
                         }
                         
                         const result = await response.json();
-                        console.log('Payment approved:', result);
+                        log(`Payment approved: ${JSON.stringify(result)}`);
                     } catch (error) {
-                        console.error('Server approval error:', error);
-                        document.getElementById('paymentStatus').textContent = 'Server approval failed: ' + error.message;
+                        log(`Server approval error: ${error.message}`, 'error');
+                        document.getElementById('paymentStatus').textContent = `Server approval failed: ${error.message}`;
                         document.getElementById('paymentStatus').className = 'payment-status payment-error';
                         document.getElementById('paymentStatus').style.display = 'block';
                     }
                 },
                 onReadyForServerCompletion: async function(paymentId, txid) {
-                    console.log('Ready for server completion with paymentId and txid:', paymentId, txid);
+                    log(`Ready for server completion with paymentId: ${paymentId}, txid: ${txid}`);
                     currentPayment.txid = txid;
                     document.getElementById('paymentStatus').textContent = 'Completing payment...';
 
@@ -1559,7 +1603,7 @@
                         }
                         
                         const result = await response.json();
-                        console.log('Payment completed successfully:', result);
+                        log(`Payment completed successfully: ${JSON.stringify(result)}`);
                         document.getElementById('paymentStatus').textContent = 
                             'Payment successful! Please send the transaction screenshot to info@b4uesports.com or WhatsApp: +97517875099.';
                         document.getElementById('paymentStatus').className = 'payment-status payment-success';
@@ -1567,23 +1611,23 @@
                         
                         setTimeout(closePaymentModal, 5000);
                     } catch (error) {
-                        console.error('Payment completion error:', error);
+                        log(`Payment completion error: ${error.message}`, 'error');
                         document.getElementById('paymentStatus').textContent = 
-                            'Payment completion failed: ' + error.message;
+                            `Payment completion failed: ${error.message}`;
                         document.getElementById('paymentStatus').className = 'payment-status payment-error';
                         document.getElementById('paymentStatus').style.display = 'block';
                     }
                 },
                 onCancel: function(paymentId) {
-                    console.log('Payment cancelled with paymentId:', paymentId);
+                    log(`Payment cancelled with paymentId: ${paymentId}`, 'warn');
                     document.getElementById('paymentStatus').textContent = 'Payment cancelled';
                     document.getElementById('paymentStatus').className = 'payment-status payment-error';
                     document.getElementById('paymentStatus').style.display = 'block';
                     setTimeout(closePaymentModal, 3000);
                 },
                 onError: function(error, payment) {
-                    console.error('Payment error:', error, payment);
-                    document.getElementById('paymentStatus').textContent = 'Error: ' + error.message;
+                    log(`Payment error: ${error.message}`, 'error');
+                    document.getElementById('paymentStatus').textContent = `Error: ${error.message}`;
                     document.getElementById('paymentStatus').className = 'payment-status payment-error';
                     document.getElementById('paymentStatus').style.display = 'block';
                 }
@@ -1591,13 +1635,13 @@
 
             try {
                 await Pi.createPayment(paymentData, paymentCallbacks);
-                console.log('Payment creation initiated');
+                log('Payment creation initiated');
                 document.getElementById('paymentStatus').textContent = 'Initiating payment...';
                 document.getElementById('paymentStatus').className = 'payment-status';
                 document.getElementById('paymentStatus').style.display = 'block';
             } catch (error) {
-                console.error('Payment creation error:', error);
-                document.getElementById('paymentStatus').textContent = 'Payment creation failed: ' + error.message;
+                log(`Payment creation error: ${error.message}`, 'error');
+                document.getElementById('paymentStatus').textContent = `Payment creation failed: ${error.message}`;
                 document.getElementById('paymentStatus').className = 'payment-status payment-error';
                 document.getElementById('paymentStatus').style.display = 'block';
             }
