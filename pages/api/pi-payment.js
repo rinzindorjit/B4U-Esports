@@ -1,19 +1,23 @@
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+import mongoose from 'mongoose';
 
-  try {
-    const { paymentData } = req.body;
-    // Here you can add validation or preprocessing logic for paymentData
-    // For example, verify the payment amount, product, etc.
+const paymentSchema = new mongoose.Schema({
+  paymentId: { type: String, required: true, unique: true },
+  userId: { type: String, required: true },
+  username: { type: String, required: true },
+  amount: { type: Number, required: true },
+  memo: { type: String },
+  product: { type: String, required: true },
+  type: { type: String, enum: ['marketplace', 'social', 'pubg', 'mlbb', 'tournament'], required: true },
+  userEmail: { type: String, required: true },
+  socialUrl: { type: String },
+  pubgId: { type: Number },
+  ucAmount: { type: Number },
+  mlbbUserId: { type: Number },
+  mlbbZoneId: { type: Number },
+  diasAmount: { type: Number },
+  status: { type: String, enum: ['pending', 'approved', 'completed', 'failed'], default: 'pending' },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
 
-    // In a real application, you might store the paymentData in a database
-    // and return a payment ID or other relevant information
-
-    res.status(200).json({ success: true, message: 'Payment request received', paymentData });
-  } catch (error) {
-    console.error('Error processing payment request:', error);
-    res.status(500).json({ error: 'Failed to process payment request' });
-  }
-}
+export default mongoose.models.Payment || mongoose.model('Payment', paymentSchema);
