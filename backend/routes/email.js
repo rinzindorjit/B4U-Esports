@@ -5,7 +5,7 @@ const nodemailer = require('nodemailer');
 // Create email transporter
 const createTransporter = () => {
   return nodemailer.createTransporter({
-    host: process.env.EMAIL_HOST || 'mail.b4uesports.com',
+    host: process.env.EMAIL_HOST,
     port: parseInt(process.env.EMAIL_PORT) || 465,
     secure: process.env.EMAIL_SECURE === 'true',
     auth: {
@@ -59,46 +59,6 @@ const emailTemplates = {
         </div>
       `
     };
-  },
-
-  adminNotification: (userData, paymentData, txid = null) => {
-    return {
-      subject: `New Payment ${txid ? 'Completion' : 'Approval'} - B4U Esports`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
-          <div style="text-align: center; margin-bottom: 20px;">
-            <h1 style="color: #3B1E5E; margin: 0;">B4U ESPORTS</h1>
-            <p style="color: #666; margin: 5px 0 0 0;">Admin Notification</p>
-          </div>
-          
-          <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ffeaa7;">
-            <h2 style="color: #856404; margin-top: 0;">New Payment ${txid ? 'Completed' : 'Approved'}</h2>
-            <p>A new payment has been ${txid ? 'completed' : 'approved'} on B4U Esports.</p>
-            
-            <div style="background: white; padding: 15px; border-radius: 5px; margin: 15px 0;">
-              <h3 style="margin-top: 0; color: #3B1E5E;">Payment Details</h3>
-              <p><strong>Product:</strong> ${paymentData.product}</p>
-              <p><strong>Amount:</strong> ${paymentData.amount} π</p>
-              <p><strong>Status:</strong> ${txid ? 'Completed' : 'Approved'}</p>
-              ${txid ? `<p><strong>Transaction ID:</strong> ${txid}</p>` : ''}
-              <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
-            </div>
-            
-            <div style="background: white; padding: 15px; border-radius: 5px; margin: 15px 0;">
-              <h3 style="margin-top: 0; color: #3B1E5E;">User Details</h3>
-              <p><strong>Username:</strong> ${userData.username}</p>
-              <p><strong>Email:</strong> ${userData.email}</p>
-              <p><strong>Wallet Address:</strong> ${userData.walletAddress}</p>
-              <p><strong>Pi Username:</strong> ${paymentData.metadata.piUsername}</p>
-            </div>
-          </div>
-          
-          <div style="text-align: center; color: #666; font-size: 14px;">
-            <p>This is an automated notification from B4U Esports.</p>
-          </div>
-        </div>
-      `
-    };
   }
 };
 
@@ -142,11 +102,11 @@ const sendPaymentEmails = async (payment, user, status, txid = null) => {
   );
   
   // Send to admin
-  const adminTemplate = emailTemplates.adminNotification(user, payment, txid);
+  const adminTemplate = emailTemplates.paymentConfirmation(user, payment, txid);
   results.admin = await sendEmail(
     process.env.EMAIL_ADMIN || process.env.EMAIL_USER,
-    adminTemplate.subject,
-    adminTemplate.html
+    'Admin Notification: ' + userTemplate.subject,
+    userTemplate.html.replace('Payment Received', 'ADMIN NOTIFICATION: New Payment Received')
   );
   
   return results;
@@ -172,7 +132,7 @@ router.post('/test', async (req, res) => {
           <h2 style="color: #3B1E5E;">B4U Esports - Test Email</h2>
           <p>This is a test email to verify your email configuration.</p>
           <p>If you received this email, your SMTP settings are working correctly!</p>
-          <p><strong>Timestamp:</strong> ${new Date().toLocaleString()}</p
+          <p><strong>Timestamp:</strong> ${new Date().toLocaleString()}</p>
         </div>
       `
     );
