@@ -1,11 +1,11 @@
 // Backend API URL - Update this to your actual domain
 const API_BASE_URL = 'https://b4-u-esports.vercel.app/api';
 
-// Pi Network SDK configuration
+// Pi Network SDK configuration - TESTNET
 const PI_CONFIG = {
     version: "2.0", 
-    sandbox: true, // Set to true for Testnet, false for Mainnet
-    network: "mainnet" // Change to "testnet" for testing
+    sandbox: true, // TRUE for Testnet
+    network: "testnet" // TESTNET for testing
 };
 
 // Global variables
@@ -19,34 +19,28 @@ let currentPayment = {
 
 let currentUser = null;
 let isPiBrowser = false;
+let piInitialized = false;
 
 // Package data
 const pubgPackages = [
-    { uc: 60, price: 2, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
-    { uc: 325, price: 8, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
-    { uc: 660, price: 15, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
-    { uc: 1800, price: 25, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
-    { uc: 3850, price: 50, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
-    { uc: 8100, price: 92, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
-    { uc: 16200, price: 185, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
-    { uc: 24300, price: 275, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
-    { uc: 32400, price: 365, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
-    { uc: 45000, price: 455, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' }
+    { uc: 60, price: 0.1, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
+    { uc: 325, price: 0.5, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
+    { uc: 660, price: 1, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
+    { uc: 1800, price: 2, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
+    { uc: 3850, price: 4, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' }
 ];
 
 const mlbbPackages = [
-    { dias: 55, price: 2, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
-    { dias: 275, price: 8, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
-    { dias: 565, price: 12, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
-    { dias: 1155, price: 25, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
-    { dias: 1765, price: 35, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
-    { dias: 2975, price: 55, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
-    { dias: 6000, price: 105, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
-    { dias: 12000, price: 205, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' }
+    { dias: 55, price: 0.1, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
+    { dias: 275, price: 0.5, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
+    { dias: 565, price: 1, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
+    { dias: 1155, price: 2, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
+    { dias: 1765, price: 3, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' }
 ];
 
 // Initialize application
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing app...');
     initializeApp();
     setupEventListeners();
     createSnowDrizzle();
@@ -54,31 +48,73 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Initialize the application
 function initializeApp() {
+    console.log('Initializing app...');
+    
     // Check if we're in Pi Browser
     isPiBrowser = window.location.hostname === 'app-cdn.minepi.com' || 
                   navigator.userAgent.includes('PiBrowser') ||
                   window.location.protocol === 'pi:';
     
+    console.log('Pi Browser detected:', isPiBrowser);
+    console.log('User Agent:', navigator.userAgent);
+    console.log('Hostname:', window.location.hostname);
+    console.log('Protocol:', window.location.protocol);
+    
     const authBtn = document.getElementById('pi-auth-btn');
     
     if (!isPiBrowser) {
+        console.log('Not in Pi Browser, showing warning but allowing testing');
         if (authBtn) {
-            authBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Please use Pi Browser to sign in';
-            authBtn.disabled = true;
-            authBtn.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)';
+            authBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Use Pi Browser for real Pi';
+            authBtn.style.background = 'linear-gradient(135deg, #ffa726 0%, #ff9800 100%)';
+            // Still allow clicking for testing purposes
+            authBtn.disabled = false;
         }
+        
+        // Show test mode notification
+        showTestModeNotification();
         return;
     }
     
+    // Enable the button for manual click
+    if (authBtn) {
+        authBtn.disabled = false;
+        authBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In with Pi Network';
+        console.log('Pi Browser detected, sign-in button enabled');
+    }
+    
     // Initialize Pi SDK but don't auto-authenticate
+    initializePiSDK();
+}
+
+// Show test mode notification
+function showTestModeNotification() {
+    const notification = document.createElement('div');
+    notification.style.position = 'fixed';
+    notification.style.top = '70px';
+    notification.style.right = '20px';
+    notification.style.background = 'linear-gradient(135deg, #ffa726 0%, #ff9800 100%)';
+    notification.style.color = 'white';
+    notification.style.padding = '10px 15px';
+    notification.style.borderRadius = '5px';
+    notification.style.zIndex = '10000';
+    notification.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
+    notification.innerHTML = '<i class="fas fa-flask"></i> TESTNET MODE - Using Test Pi';
+    document.body.appendChild(notification);
+    
+    // Remove after 5 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+
+// Initialize Pi SDK separately
+function initializePiSDK() {
+    console.log('Initializing Pi SDK for Testnet...');
+    
     Pi.init(PI_CONFIG).then(() => {
-        console.log("Pi SDK initialized successfully");
-        
-        // Enable the sign-in button
-        if (authBtn) {
-            authBtn.disabled = false;
-            authBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In with Pi Network';
-        }
+        console.log("Pi SDK initialized successfully for Testnet");
+        piInitialized = true;
         
         // Check if user was previously authenticated
         const savedUser = localStorage.getItem('pi_user');
@@ -94,6 +130,7 @@ function initializeApp() {
         }
     }).catch(error => {
         console.error("Error initializing Pi SDK:", error);
+        const authBtn = document.getElementById('pi-auth-btn');
         if (authBtn) {
             authBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Pi SDK Error - Refresh Page';
             authBtn.disabled = true;
@@ -139,6 +176,8 @@ function signInWithNewAccount() {
 
 // Setup event listeners
 function setupEventListeners() {
+    console.log('Setting up event listeners...');
+    
     const hamburger = document.getElementById('hamburger');
     const overlay = document.getElementById('overlay');
     const authBtn = document.getElementById('pi-auth-btn');
@@ -158,8 +197,11 @@ function setupEventListeners() {
     }
 
     // Pi actions buttons
-    if (authBtn && isPiBrowser) {
-        authBtn.addEventListener('click', () => authenticatePiUser());
+    if (authBtn) {
+        console.log('Setting up auth button listener');
+        // Remove any existing listeners first
+        authBtn.onclick = null;
+        authBtn.addEventListener('click', handleAuthButtonClick);
     }
 
     if (walletBtn) {
@@ -202,6 +244,67 @@ function setupEventListeners() {
             link.setAttribute('rel', 'noopener noreferrer');
         }
     });
+    
+    console.log('Event listeners setup complete');
+}
+
+// Handle auth button click
+function handleAuthButtonClick() {
+    console.log('Auth button clicked');
+    
+    if (!isPiBrowser) {
+        // Simulate test authentication for non-Pi Browser
+        simulateTestAuthentication();
+        return;
+    }
+    
+    if (!piInitialized) {
+        console.log('Pi SDK not initialized yet');
+        alert('Pi SDK is still initializing. Please wait a moment and try again.');
+        return;
+    }
+    
+    const savedUser = localStorage.getItem('pi_user');
+    if (savedUser) {
+        // User has saved session, ask if they want to continue
+        try {
+            const user = JSON.parse(savedUser);
+            showContinueWithSavedUser(user);
+        } catch (e) {
+            console.error('Error parsing saved user:', e);
+            localStorage.removeItem('pi_user');
+            authenticatePiUser();
+        }
+    } else {
+        // No saved session, start new authentication
+        authenticatePiUser();
+    }
+}
+
+// Simulate test authentication for non-Pi Browser
+function simulateTestAuthentication() {
+    const authBtn = document.getElementById('pi-auth-btn');
+    if (!authBtn) return;
+    
+    authBtn.disabled = true;
+    authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Simulating Sign In...';
+    
+    // Simulate authentication delay
+    setTimeout(() => {
+        const testUser = {
+            username: 'testuser',
+            uid: 'test_uid_12345',
+            walletAddress: 'test_wallet_address'
+        };
+        
+        currentUser = testUser;
+        localStorage.setItem('pi_user', JSON.stringify(testUser));
+        
+        handleSuccessfulAuth(testUser);
+        
+        // Show test mode warning
+        alert('TEST MODE: You are using simulated Pi authentication. Use Pi Browser for real Pi transactions.');
+    }, 1500);
 }
 
 // Sidebar functions
@@ -240,6 +343,7 @@ function showDashboard() {
 
 // Pi Authentication
 async function authenticatePiUser(attempt = 1, maxAttempts = 3) {
+    console.log('Starting Pi authentication...');
     const authBtn = document.getElementById('pi-auth-btn');
     if (!authBtn) return;
     
@@ -249,6 +353,7 @@ async function authenticatePiUser(attempt = 1, maxAttempts = 3) {
     const scopes = ['username', 'payments', 'wallet_address'];
     
     try {
+        console.log('Calling Pi.authenticate...');
         const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound);
         console.log("Pi user authenticated:", authResult);
         currentUser = authResult.user;
@@ -288,6 +393,7 @@ function onIncompletePaymentFound(payment) {
 }
 
 function handleSuccessfulAuth(authResult) {
+    console.log('Handling successful authentication');
     const authBtn = document.getElementById('pi-auth-btn');
     if (!authBtn) return;
     
@@ -311,6 +417,13 @@ function handleSuccessfulAuth(authResult) {
             piUsername.setAttribute('readonly', true);
         }
     }
+    
+    console.log('Authentication successful, user:', authResult.username);
+    
+    // Show testnet notification if in testnet
+    if (PI_CONFIG.sandbox) {
+        showTestModeNotification();
+    }
 }
 
 // Pi Actions
@@ -320,7 +433,7 @@ function showWalletAddress() {
         return;
     }
     const walletAddress = currentUser.walletAddress || "Not available";
-    alert(`Your Pi Wallet Address:\n${walletAddress}`);
+    alert(`Your Pi Wallet Address:\n${walletAddress}\n\nNetwork: ${PI_CONFIG.network.toUpperCase()}`);
 }
 
 function openShareDialog() {
@@ -330,7 +443,11 @@ function openShareDialog() {
     }
     const title = "B4U Esports";
     const message = "Check out B4U Esports - The ultimate gaming marketplace with Pi Network integration!";
-    Pi.share(title, message);
+    if (isPiBrowser && piInitialized) {
+        Pi.share(title, message);
+    } else {
+        alert("Sharing is only available in Pi Browser");
+    }
 }
 
 function showRewardedAd() {
@@ -338,19 +455,23 @@ function showRewardedAd() {
         alert("Please authenticate first");
         return;
     }
-    Pi.Ads.showAd("rewarded")
-        .then(response => {
-            console.log("Ad response:", response);
-            if (response.result === "AD_REWARDED") {
-                alert("Thanks for watching the ad! You've earned a reward.");
-            } else {
-                alert("Ad completed without reward");
-            }
-        })
-        .catch(error => {
-            console.error("Ad error:", error);
-            alert("Failed to show ad: " + error.message);
-        });
+    if (isPiBrowser && piInitialized) {
+        Pi.Ads.showAd("rewarded")
+            .then(response => {
+                console.log("Ad response:", response);
+                if (response.result === "AD_REWARDED") {
+                    alert("Thanks for watching the ad! You've earned a reward.");
+                } else {
+                    alert("Ad completed without reward");
+                }
+            })
+            .catch(error => {
+                console.error("Ad error:", error);
+                alert("Failed to show ad: " + error.message);
+            });
+    } else {
+        alert("Ads are only available in Pi Browser");
+    }
 }
 
 // Modal Functions
@@ -394,9 +515,9 @@ function openPackageModal(type) {
         packageDiv.innerHTML = `
             <img src="${pkg.img}" alt="${type === 'pubg' ? pkg.uc + ' UC' : pkg.dias + ' DIAS'}" style="width: 100%; height: 100px; object-fit: contain;">
             <div class="package-title">${type === 'pubg' ? pkg.uc + ' UC' : pkg.dias + ' DIAS'}</div>
-            <div class="package-price">${pkg.price} PI</div>
+            <div class="package-price">${pkg.price} Test π</div>
             <button class="package-buy-btn" onclick="openPaymentModal('${type === 'pubg' ? pkg.uc + ' UC' : pkg.dias + ' DIAS'}', ${pkg.price}, '${type}', ${type === 'pubg' ? pkg.uc : pkg.dias}); closePackageModal()">
-                <i class="fas fa-coins"></i> Buy Now
+                <i class="fas fa-coins"></i> Buy Now (Testnet)
             </button>
         `;
         packageList.appendChild(packageDiv);
@@ -459,6 +580,12 @@ function openPaymentModal(product, amount, type, quantity = null) {
     if (paymentModal) {
         paymentModal.style.display = 'flex';
     }
+    
+    // Update modal title for testnet
+    const modalTitle = document.getElementById('modalTitle');
+    if (modalTitle) {
+        modalTitle.innerHTML = 'Payment (Testnet) <i class="fas fa-flask"></i>';
+    }
 }
 
 function closePaymentModal() {
@@ -495,7 +622,8 @@ async function processPiPayment() {
             piUsername: document.getElementById('piUsername').value,
             userEmail: userEmail,
             type: currentPayment.type,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            network: PI_CONFIG.network // Include network info
         }
     };
 
@@ -524,6 +652,12 @@ async function processPiPayment() {
         paymentData.metadata.mlbbUserId = mlbbUserId;
         paymentData.metadata.mlbbZoneId = mlbbZoneId;
         paymentData.metadata.diasAmount = currentPayment.quantity;
+    }
+
+    // If not in Pi Browser, simulate payment
+    if (!isPiBrowser || !piInitialized) {
+        simulateTestPayment(paymentData);
+        return;
     }
 
     const paymentCallbacks = {
@@ -608,6 +742,20 @@ async function processPiPayment() {
         console.error("Payment creation error:", error);
         showPaymentError("Payment creation failed: " + error.message);
     }
+        }
+
+// Simulate test payment for non-Pi Browser
+function simulateTestPayment(paymentData) {
+    showPaymentStatus("Simulating test payment...", false);
+    
+    setTimeout(() => {
+        showPaymentSuccess("TEST PAYMENT: Simulation complete! This was a test transaction using Testnet π.");
+        
+        // Simulate email sending
+        setTimeout(() => {
+            alert("TEST: Email confirmation would be sent to " + paymentData.metadata.userEmail);
+        }, 1000);
+    }, 2000);
 }
 
 // Utility Functions
