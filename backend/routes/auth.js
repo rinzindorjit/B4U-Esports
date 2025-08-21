@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// Mock user database (replace with real database in production)
+// Mock user database
 const users = new Map();
 
 // User registration
@@ -81,47 +81,6 @@ router.get('/profile/:email', (req, res) => {
     });
   } catch (error) {
     console.error('Profile error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error'
-    });
-  }
-});
-
-// Update user profile
-router.put('/profile/:email', (req, res) => {
-  try {
-    const { email } = req.params;
-    const { username, walletAddress } = req.body;
-    
-    if (!users.has(email)) {
-      return res.status(404).json({
-        success: false,
-        error: 'User not found'
-      });
-    }
-    
-    const user = users.get(email);
-    
-    if (username) user.username = username;
-    if (walletAddress) user.walletAddress = walletAddress;
-    user.updatedAt = new Date().toISOString();
-    
-    users.set(email, user);
-    
-    res.json({
-      success: true,
-      message: 'Profile updated successfully',
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        walletAddress: user.walletAddress,
-        updatedAt: user.updatedAt
-      }
-    });
-  } catch (error) {
-    console.error('Update profile error:', error);
     res.status(500).json({
       success: false,
       error: 'Internal server error'
