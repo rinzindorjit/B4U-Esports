@@ -1,10 +1,8 @@
 // Database configuration file
-// This can be expanded to use a real database like MongoDB, PostgreSQL, etc.
-
 // In-memory storage for development (replace with real database in production)
+
 const users = new Map();
 const payments = new Map();
-const sessions = new Map();
 
 // User functions
 const userDB = {
@@ -17,28 +15,12 @@ const userDB = {
       updatedAt: new Date().toISOString()
     };
     users.set(id, user);
-    users.set(userData.email, user); // Also index by email
+    users.set(userData.email, user);
     return user;
   },
   
   findByEmail: (email) => {
     return users.get(email);
-  },
-  
-  findById: (id) => {
-    return users.get(id);
-  },
-  
-  update: (id, updates) => {
-    const user = users.get(id);
-    if (!user) return null;
-    
-    Object.assign(user, updates);
-    user.updatedAt = new Date().toISOString();
-    users.set(id, user);
-    users.set(user.email, user);
-    
-    return user;
   }
 };
 
@@ -57,12 +39,6 @@ const paymentDB = {
     return payments.get(id);
   },
   
-  findByUserEmail: (email) => {
-    return Array.from(payments.values())
-      .filter(payment => payment.userEmail === email)
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  },
-  
   update: (id, updates) => {
     const payment = payments.get(id);
     if (!payment) return null;
@@ -74,24 +50,7 @@ const paymentDB = {
   }
 };
 
-// Session functions (for future authentication)
-const sessionDB = {
-  create: (sessionData) => {
-    sessions.set(sessionData.token, sessionData);
-    return sessionData;
-  },
-  
-  findByToken: (token) => {
-    return sessions.get(token);
-  },
-  
-  delete: (token) => {
-    return sessions.delete(token);
-  }
-};
-
 module.exports = {
   userDB,
-  paymentDB,
-  sessionDB
+  paymentDB
 };
