@@ -6,7 +6,7 @@
 }
 
 body {
-    background: #3B1E5E; /* Pi Network purple */
+    background: #3B1E5E;
     color: #fff;
     overflow-x: hidden;
     min-height: 100vh;
@@ -22,34 +22,8 @@ body {
     z-index: -1;
 }
 
-.snow:after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        radial-gradient(4px 4px at 50px 50px, #fff , transparent),
-        radial-gradient(3px 3px at 150px 150px, #fff, transparent),
-        radial-gradient(4px 4px at 250px 250px, #fff 50%, transparent),
-        radial-gradient(3px 3px at 350px 350px, #fff 50%, transparent),
-        radial-gradient(4px 4px at 450px 100px, #fff 50%, transparent),
-        radial-gradient(3px 3px at 100px 400px, #fff 50%, transparent),
-        radial-gradient(4px 4px at 200px 300px, #fff 50%, transparent),
-        radial-gradient(3px 3px at 300px 200px, #fff 50%, transparent),
-        radial-gradient(4px 4px at 400px 50px, #fff 50%, transparent),
-        radial-gradient(3px 3px at 500px 450px, #fff 50%, transparent),
-        radial-gradient(4px 4px at 50px 300px, #fff 50%, transparent),
-        radial-gradient(3px 3px at 150px 200px, #fff 50%, transparent);
-    animation: snowAnim 8s linear infinite;
-}
-
-@keyframes snowAnim {
-    from { transform: translateY(-100vh); }
-    to { transform: translateY(100vh); }
-}
-
 .header {
-    background: #2A0D45; /* Darker purple */
+    background: #2A0D45;
     padding: 1rem;
     position: fixed;
     width: 100%;
@@ -93,7 +67,7 @@ body {
     left: -100%;
     width: 280px;
     height: 100%;
-    background: #2A0D45; /* Darker purple */
+    background: #2A0D45;
     transition: 0.3s ease;
     padding: 20px;
     z-index: 999;
@@ -175,7 +149,7 @@ body {
 
 .ad-container#bottom-ad {
     margin-bottom: 0;
-    background: #2A0D45; /* Darker purple */
+    background: #2A0D45;
     padding: 20px 0;
 }
 
@@ -190,7 +164,7 @@ body {
 
 .welcome-text {
     font-size: clamp(1.8rem, 4vw, 2.5rem);
-    color: #14F195; /* Pi Network green */
+    color: #14F195;
     text-shadow: 0 0 15px rgba(20, 241, 149, 0.5);
     margin-bottom: 1rem;
 }
@@ -306,7 +280,7 @@ body {
 }
 
 .modal-content {
-    background: #2A0D45; /* Darker purple */
+    background: #2A0D45;
     padding: 2rem;
     border-radius: 12px;
     width: 90%;
@@ -332,7 +306,7 @@ body {
 }
 
 .modal-title {
-    color: #14F195; /* Pi Network green */
+    color: #14F195;
     margin-bottom: 1.5rem;
     text-align: center;
 }
@@ -386,7 +360,7 @@ body {
 
 .pi-pay-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(20, 241, 149, 0.4);
+    box-shadow: 极 4px 15px rgba(20, 241, 149, 0.4);
 }
 
 .pi-pay-btn:disabled {
@@ -431,7 +405,7 @@ body {
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 极.3s;
 }
 
 .token-btn:hover {
@@ -642,7 +616,7 @@ body {
 
 @keyframes prizeGlow {
     0% { border-color: #FFD700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
-    25% { border-color: #14F195; box-shadow: 0 0 10px rgba(20, 241, 149, 0.3); }
+    25% { border-color: #14F195; box-shadow: 0 极 10px rgba(20, 241, 149, 0.3); }
     50% { border-color: #7C3AED; box-shadow: 0 0 10px rgba(124, 58, 237, 0.3); }
     75% { border-color: #F43F5E; box-shadow: 0 0 10px rgba(244, 63, 94, 0.3); }
     100% { border-color: #10B981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
@@ -667,74 +641,6 @@ body {
 @keyframes prizePulse {
     from { text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
     to { text-shadow: 0 0 15px rgba(255, 215, 0, 0.8); }
-}
-
-.tournament-details {
-    margin-bottom: 1.5rem;
-}
-
-.tournament-details p {
-    margin-bottom: 0.8rem;
-    color: #e2e8f0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.tournament-modes {
-    margin-bottom: 1.5rem;
-}
-
-.mode-item {
-    background: #3B1E5E;
-    border-radius: 8px;
-    padding: 0.8rem;
-    margin-bottom: 0.8rem;
-}
-
-.mode-item h4 {
-    color: #14F195;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.team-tag {
-    background: rgba(91, 33, 182, 0.2);
-    border: 1px solid #5B21B6;
-    border-radius: 4px;
-    padding: 0.3rem 0.6rem;
-    font-size: 0.9rem;
-    display: inline-block;
-    margin-top: 0.5rem;
-}
-
-.team-tag-example {
-    font-size: 0.8rem;
-    color: #94a3b8;
-    margin-top: 0.3rem;
-    display: block;
-}
-
-.rules-list {
-    list-style: none;
-    margin-bottom: 1.5rem;
-}
-
-.rules-list li {
-    margin-bottom: 0.5rem;
-    padding-left: 1.5rem;
-    position: relative;
-    color: #cbd5e1;
-}
-
-.rules-list li::before {
-    content: '•';
-    color: #14F195;
-    font-weight: bold;
-    position: absolute;
-    left: 0;
 }
 
 .register-btn {
@@ -770,7 +676,7 @@ footer {
 }
 
 .footer-section {
-    text-align: left;
+    text-align: center;
 }
 
 .footer-section h3 {
@@ -814,6 +720,35 @@ footer {
     color: #14F195;
 }
 
+.user-message {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    border-radius: 8px;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    max-width: 90%;
+    text-align: center;
+    font-weight: 500;
+}
+
+.user-message-error {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    color: white;
+}
+
+.user-message-success {
+    background: linear-gradient(135deg, #14F195 0%, #10b981 100%);
+    color: black;
+}
+
+.user-message-info {
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+    color: white;
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 1rem;
@@ -853,10 +788,15 @@ footer {
     .ad-container#middle-ad {
         margin: 2rem auto;
     }
+
+    .pi-actions {
+        flex-direction: column;
+        align-items: center;
+    }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
     .container {
         padding: 1.5rem;
     }
-                        }
+    }
