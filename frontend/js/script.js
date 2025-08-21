@@ -4,7 +4,7 @@ const API_BASE_URL = 'https://b4-u-esports.vercel.app/api';
 // Pi Network SDK configuration - TESTNET
 const PI_CONFIG = {
     version: "2.0", 
-    sandbox: true, // TRUE for Testnet
+    sandbox: false, // TRUE for Testnet
     network: "testnet" // TESTNET for testing
 };
 
