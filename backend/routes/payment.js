@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { sendPaymentEmails } = require('./email');
 
-// Mock payment database (replace with real database in production)
+// Mock payment database
 const payments = new Map();
 
 // Process payment approval
@@ -108,74 +108,6 @@ router.post('/complete', async (req, res) => {
     });
   } catch (error) {
     console.error('Payment completion error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error'
-    });
-  }
-});
-
-// Get payment history for user
-router.get('/history/:email', (req, res) => {
-  try {
-    const { email } = req.params;
-    
-    const userPayments = Array.from(payments.values())
-      .filter(payment => payment.userEmail === email)
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    
-    res.json({
-      success: true,
-      payments: userPayments.map(payment => ({
-        id: payment.id,
-        status: payment.status,
-        amount: payment.amount,
-        product: payment.product,
-        type: payment.type,
-        createdAt: payment.createdAt,
-        completedAt: payment.completedAt
-      }))
-    });
-  } catch (error) {
-    console.error('Payment history error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error'
-    });
-  }
-});
-
-// Get payment by ID
-router.get('/:paymentId', (req, res) => {
-  try {
-    const { paymentId } = req.params;
-    
-    if (!payments.has(paymentId)) {
-      return res.status(404).json({
-        success: false,
-        error: 'Payment not found'
-      });
-    }
-    
-    const payment = payments.get(paymentId);
-    
-    res.json({
-      success: true,
-      payment: {
-        id: payment.id,
-        status: payment.status,
-        amount: payment.amount,
-        product: payment.product,
-        type: payment.type,
-        userEmail: payment.userEmail,
-        piUsername: payment.piUsername,
-        createdAt: payment.createdAt,
-        completedAt: payment.completedAt,
-        txid: payment.txid
-      }
-    });
-  } catch (error) {
-    console.error('Get payment error:', error);
     res.status(500).json({
       success: false,
       error: 'Internal server error'
