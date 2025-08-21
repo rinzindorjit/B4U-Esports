@@ -1,0 +1,26 @@
+{
+  "name": "b4u-esports",
+  "version": "1.0.0",
+  "description": "B4U Esports - Gaming Marketplace with Pi Network Integration",
+  "scripts": {
+    "dev": "cd backend && npm run dev",
+    "start": "cd backend && npm start",
+    "build": "cd backend && npm install",
+    "vercel-build": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/b4u-esports.git"
+  },
+  "keywords": [
+    "pi-network",
+    "esports",
+    "gaming",
+    "payments"
+  ],
+  "author": "B4U Esports",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
