@@ -20,6 +20,7 @@ let currentPayment = {
 let currentUser = null;
 let isPiBrowser = false;
 let piInitialized = false;
+let authInProgress = false;
 
 // Package data
 const pubgPackages = [
@@ -50,10 +51,8 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeApp() {
     console.log('Initializing app...');
     
-    // Check if we're in Pi Browser
-    isPiBrowser = window.location.hostname === 'app-cdn.minepi.com' || 
-                  navigator.userAgent.includes('PiBrowser') ||
-                  window.location.protocol === 'pi:';
+    // Enhanced Pi Browser detection
+    isPiBrowser = detectPiBrowser();
     
     console.log('Pi Browser detected:', isPiBrowser);
     console.log('User Agent:', navigator.userAgent);
@@ -67,11 +66,8 @@ function initializeApp() {
         if (authBtn) {
             authBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Use Pi Browser for real Pi';
             authBtn.style.background = 'linear-gradient(135deg, #ffa726 0%, #ff9800 100%)';
-            // Still allow clicking for testing purposes
             authBtn.disabled = false;
         }
-        
-        // Show test mode notification
         showTestModeNotification();
         return;
     }
@@ -85,6 +81,17 @@ function initializeApp() {
     
     // Initialize Pi SDK but don't auto-authenticate
     initializePiSDK();
+}
+
+// Enhanced Pi Browser detection
+function detectPiBrowser() {
+    return (
+        window.location.hostname === 'app-cdn.minepi.com' || 
+        navigator.userAgent.includes('PiBrowser') ||
+        window.location.protocol === 'pi:' ||
+        navigator.userAgent.includes('MinePi') ||
+        document.referrer.includes('minepi.com')
+    );
 }
 
 // Show test mode notification
@@ -102,7 +109,6 @@ function showTestModeNotification() {
     notification.innerHTML = '<i class="fas fa-flask"></i> TESTNET MODE - Using Test Pi';
     document.body.appendChild(notification);
     
-    // Remove after 5 seconds
     setTimeout(() => {
         notification.remove();
     }, 5000);
@@ -121,7 +127,6 @@ function initializePiSDK() {
         if (savedUser) {
             try {
                 const user = JSON.parse(savedUser);
-                // Show option to continue with saved user
                 showContinueWithSavedUser(user);
             } catch (e) {
                 console.error('Error parsing saved user:', e);
@@ -170,7 +175,7 @@ function signInWithNewAccount() {
     const authBtn = document.getElementById('pi-auth-btn');
     if (authBtn) {
         authBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In with Pi Network';
-        authBtn.onclick = () => authenticatePiUser();
+        authBtn.onclick = () => handleAuthButtonClick();
     }
 }
 
@@ -199,7 +204,6 @@ function setupEventListeners() {
     // Pi actions buttons
     if (authBtn) {
         console.log('Setting up auth button listener');
-        // Remove any existing listeners first
         authBtn.onclick = null;
         authBtn.addEventListener('click', handleAuthButtonClick);
     }
@@ -252,21 +256,24 @@ function setupEventListeners() {
 function handleAuthButtonClick() {
     console.log('Auth button clicked');
     
+    if (authInProgress) {
+        console.log('Authentication already in progress');
+        return;
+    }
+    
     if (!isPiBrowser) {
-        // Simulate test authentication for non-Pi Browser
         simulateTestAuthentication();
         return;
     }
     
     if (!piInitialized) {
         console.log('Pi SDK not initialized yet');
-        alert('Pi SDK is still initializing. Please wait a moment and try again.');
+        showMessage('Pi SDK is still initializing. Please wait a moment and try again.', 'error');
         return;
     }
     
     const savedUser = localStorage.getItem('pi_user');
     if (savedUser) {
-        // User has saved session, ask if they want to continue
         try {
             const user = JSON.parse(savedUser);
             showContinueWithSavedUser(user);
@@ -276,7 +283,6 @@ function handleAuthButtonClick() {
             authenticatePiUser();
         }
     } else {
-        // No saved session, start new authentication
         authenticatePiUser();
     }
 }
@@ -289,7 +295,6 @@ function simulateTestAuthentication() {
     authBtn.disabled = true;
     authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Simulating Sign In...';
     
-    // Simulate authentication delay
     setTimeout(() => {
         const testUser = {
             username: 'testuser',
@@ -302,9 +307,222 @@ function simulateTestAuthentication() {
         
         handleSuccessfulAuth(testUser);
         
-        // Show test mode warning
         alert('TEST MODE: You are using simulated Pi authentication. Use Pi Browser for real Pi transactions.');
     }, 1500);
+}
+
+// Pi Authentication
+async function authenticatePiUser(attempt = 1, maxAttempts = 3) {
+    console.log('Starting Pi authentication...');
+    
+    if (authInProgress) {
+        console.log('Authentication already in progress');
+        return;
+    }
+    
+    authInProgress = true;
+    const authBtn = document.getElementById('pi-auth-btn');
+    if (!authBtn) {
+        authInProgress = false;
+        return;
+    }
+    
+    authBtn.disabled = true;
+    authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Opening Pi Wallet...';
+
+    const scopes = ['username', 'payments', 'wallet_address'];
+    
+    try {
+        console.log('Calling Pi.authenticate with scopes:', scopes);
+        
+        // Show message that wallet will open
+        showMessage('Opening Pi Wallet... Please unlock your wallet with passphrase, fingerprint, or face ID.', 'info');
+        
+        const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound);
+        console.log("Pi user authenticated:", authResult);
+        
+        if (authResult && authResult.user) {
+            currentUser = authResult.user;
+            localStorage.setItem('pi_user', JSON.stringify(authResult.user));
+            handleSuccessfulAuth(authResult.user);
+        } else {
+            throw new Error('Authentication returned invalid user data');
+        }
+        
+    } catch (error) {
+        console.error(`Authentication attempt ${attempt} failed:`, error);
+        
+        if (attempt < maxAttempts) {
+            console.log(`Retrying authentication (attempt ${attempt + 1}/${maxAttempts})...`);
+            setTimeout(() => {
+                authInProgress = false;
+                authenticatePiUser(attempt + 1, maxAttempts);
+            }, 2000);
+        } else {
+            let errorMessage = "Authentication failed. Please try again.";
+            
+            if (error.message && error.message.includes('not authenticated')) {
+                errorMessage = "Please complete authentication in your Pi Wallet.";
+            } else if (error.message && error.message.includes('user cancelled')) {
+                errorMessage = "Authentication cancelled. Please try again.";
+            }
+            
+            authBtn.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${errorMessage}`;
+            authBtn.disabled = false;
+            
+            // Add retry button
+            setTimeout(() => {
+                authBtn.innerHTML = '<i class="fas fa-redo"></i> Retry Authentication';
+                authBtn.disabled = false;
+                authBtn.onclick = () => {
+                    authInProgress = false;
+                    authenticatePiUser();
+                };
+            }, 3000);
+            
+            showMessage(errorMessage, 'error');
+        }
+    } finally {
+        authInProgress = false;
+    }
+}
+
+function onIncompletePaymentFound(payment) {
+    console.log("Incomplete payment found:", payment);
+    return Promise.resolve();
+}
+
+function handleSuccessfulAuth(authResult) {
+    console.log('Handling successful authentication');
+    const authBtn = document.getElementById('pi-auth-btn');
+    if (!authBtn) return;
+    
+    authBtn.innerHTML = `<i class="fas fa-check-circle"></i> Signed in as ${authResult.username}`;
+    authBtn.disabled = true;
+    
+    const piActions = document.getElementById('pi-actions');
+    if (piActions) {
+        piActions.style.display = 'flex';
+        
+        // Add logout button
+        const logoutBtn = document.getElementById('pi-logout-btn') || createLogoutButton();
+        piActions.appendChild(logoutBtn);
+    }
+    
+    const payBtn = document.getElementById('piPayBtn');
+    if (payBtn) {
+        payBtn.disabled = false;
+    }
+    
+    // Auto-fill the Pi username in payment form
+    if (authResult.username) {
+        const piUsername = document.getElementById('piUsername');
+        if (piUsername) {
+            piUsername.value = authResult.username;
+            piUsername.setAttribute('readonly', true);
+        }
+    }
+    
+    console.log('Authentication successful, user:', authResult.username);
+    showMessage(`Welcome back, ${authResult.username}! You are connected to Pi Testnet.`, 'success');
+    
+    // Show testnet notification if in testnet
+    if (PI_CONFIG.sandbox) {
+        showTestModeNotification();
+    }
+}
+
+// Create logout button
+function createLogoutButton() {
+    const logoutBtn = document.createElement('button');
+    logoutBtn.id = 'pi-logout-btn';
+    logoutBtn.className = 'pi-action-btn';
+    logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+    logoutBtn.onclick = logoutUser;
+    return logoutBtn;
+}
+
+// Logout function
+function logoutUser() {
+    if (confirm('Are you sure you want to logout?')) {
+        currentUser = null;
+        localStorage.removeItem('pi_user');
+        
+        const authBtn = document.getElementById('pi-auth-btn');
+        if (authBtn) {
+            authBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In with Pi Network';
+            authBtn.disabled = false;
+        }
+        
+        const piActions = document.getElementById('pi-actions');
+        if (piActions) {
+            piActions.style.display = 'none';
+        }
+        
+        const payBtn = document.getElementById('piPayBtn');
+        if (payBtn) {
+            payBtn.disabled = true;
+        }
+        
+        // Clear Pi username field
+        const piUsername = document.getElementById('piUsername');
+        if (piUsername) {
+            piUsername.value = '';
+            piUsername.removeAttribute('readonly');
+        }
+        
+        // Remove logout button
+        const logoutBtn = document.getElementById('pi-logout-btn');
+        if (logoutBtn) {
+            logoutBtn.remove();
+        }
+        
+        showMessage('You have been logged out successfully.', 'success');
+    }
+}
+
+// Show message to user
+function showMessage(message, type = 'info') {
+    // Remove existing messages
+    const existingMessages = document.querySelectorAll('.user-message');
+    existingMessages.forEach(msg => msg.remove());
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `user-message user-message-${type}`;
+    messageDiv.style.position = 'fixed';
+    messageDiv.style.top = '80px';
+    messageDiv.style.left = '50%';
+    messageDiv.style.transform = 'translateX(-50%)';
+    messageDiv.style.padding = '12px 20px';
+    messageDiv.style.borderRadius = '8px';
+    messageDiv.style.zIndex = '10000';
+    messageDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+    messageDiv.style.maxWidth = '90%';
+    messageDiv.style.textAlign = 'center';
+    messageDiv.style.fontWeight = '500';
+    
+    if (type === 'error') {
+        messageDiv.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)';
+        messageDiv.style.color = 'white';
+    } else if (type === 'success') {
+        messageDiv.style.background = 'linear-gradient(135deg, #14F195 0%, #10b981 100%)';
+        messageDiv.style.color = 'black';
+    } else {
+        messageDiv.style.background = 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)';
+        messageDiv.style.color = 'white';
+    }
+    
+    messageDiv.innerHTML = `
+        <i class="fas fa-${type === 'error' ? 'exclamation-circle' : type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+        ${message}
+    `;
+    
+    document.body.appendChild(messageDiv);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        messageDiv.remove();
+    }, 5000);
 }
 
 // Sidebar functions
@@ -341,104 +559,19 @@ function showDashboard() {
     closeSidebar();
 }
 
-// Pi Authentication
-async function authenticatePiUser(attempt = 1, maxAttempts = 3) {
-    console.log('Starting Pi authentication...');
-    const authBtn = document.getElementById('pi-auth-btn');
-    if (!authBtn) return;
-    
-    authBtn.disabled = true;
-    authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
-
-    const scopes = ['username', 'payments', 'wallet_address'];
-    
-    try {
-        console.log('Calling Pi.authenticate...');
-        const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound);
-        console.log("Pi user authenticated:", authResult);
-        currentUser = authResult.user;
-        
-        // Store user data in localStorage
-        localStorage.setItem('pi_user', JSON.stringify(authResult.user));
-        
-        handleSuccessfulAuth(authResult);
-    } catch (error) {
-        console.error(`Authentication attempt ${attempt} failed:`, error);
-        if (attempt < maxAttempts) {
-            console.log(`Retrying authentication (attempt ${attempt + 1}/${maxAttempts})...`);
-            setTimeout(() => authenticatePiUser(attempt + 1, maxAttempts), 2000);
-        } else {
-            let errorMessage = "Authentication failed. Please try again.";
-            
-            if (error.message && error.message.includes('not authenticated')) {
-                errorMessage = "Please complete authentication in the Pi Browser.";
-            }
-            
-            authBtn.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${errorMessage}`;
-            authBtn.disabled = false;
-            
-            // Add retry button
-            setTimeout(() => {
-                authBtn.innerHTML = '<i class="fas fa-redo"></i> Retry Authentication';
-                authBtn.disabled = false;
-                authBtn.onclick = () => authenticatePiUser();
-            }, 3000);
-        }
-    }
-}
-
-function onIncompletePaymentFound(payment) {
-    console.log("Incomplete payment found:", payment);
-    return Promise.resolve();
-}
-
-function handleSuccessfulAuth(authResult) {
-    console.log('Handling successful authentication');
-    const authBtn = document.getElementById('pi-auth-btn');
-    if (!authBtn) return;
-    
-    authBtn.innerHTML = `<i class="fas fa-check-circle"></i> Signed in as ${authResult.username}`;
-    authBtn.disabled = true;
-    
-    const piActions = document.getElementById('pi-actions');
-    if (piActions) {
-        piActions.style.display = 'flex';
-    }
-    
-    const payBtn = document.getElementById('piPayBtn');
-    if (payBtn) {
-        payBtn.disabled = false;
-    }
-    
-    if (authResult.username) {
-        const piUsername = document.getElementById('piUsername');
-        if (piUsername) {
-            piUsername.value = authResult.username;
-            piUsername.setAttribute('readonly', true);
-        }
-    }
-    
-    console.log('Authentication successful, user:', authResult.username);
-    
-    // Show testnet notification if in testnet
-    if (PI_CONFIG.sandbox) {
-        showTestModeNotification();
-    }
-}
-
 // Pi Actions
 function showWalletAddress() {
     if (!currentUser) {
-        alert("Please authenticate first");
+        showMessage("Please authenticate first", "error");
         return;
     }
     const walletAddress = currentUser.walletAddress || "Not available";
     alert(`Your Pi Wallet Address:\n${walletAddress}\n\nNetwork: ${PI_CONFIG.network.toUpperCase()}`);
-}
+    }
 
 function openShareDialog() {
     if (!currentUser) {
-        alert("Please authenticate first");
+        showMessage("Please authenticate first", "error");
         return;
     }
     const title = "B4U Esports";
@@ -452,7 +585,7 @@ function openShareDialog() {
 
 function showRewardedAd() {
     if (!currentUser) {
-        alert("Please authenticate first");
+        showMessage("Please authenticate first", "error");
         return;
     }
     if (isPiBrowser && piInitialized) {
@@ -460,24 +593,24 @@ function showRewardedAd() {
             .then(response => {
                 console.log("Ad response:", response);
                 if (response.result === "AD_REWARDED") {
-                    alert("Thanks for watching the ad! You've earned a reward.");
+                    showMessage("Thanks for watching the ad! You've earned a reward.", "success");
                 } else {
-                    alert("Ad completed without reward");
+                    showMessage("Ad completed without reward", "info");
                 }
             })
             .catch(error => {
                 console.error("Ad error:", error);
-                alert("Failed to show ad: " + error.message);
+                showMessage("Failed to show ad: " + error.message, "error");
             });
     } else {
-        alert("Ads are only available in Pi Browser");
+        showMessage("Ads are only available in Pi Browser", "error");
     }
 }
 
 // Modal Functions
 function openTokenSelectionModal() {
     if (!currentUser) {
-        alert("Please sign in with Pi Network first.");
+        showMessage("Please sign in with Pi Network first.", "error");
         return;
     }
     const modal = document.getElementById('tokenSelectionModal');
@@ -495,7 +628,7 @@ function closeTokenSelectionModal() {
 
 function openPackageModal(type) {
     if (!currentUser) {
-        alert("Please sign in with Pi Network first.");
+        showMessage("Please sign in with Pi Network first.", "error");
         return;
     }
     
@@ -536,7 +669,7 @@ function closePackageModal() {
 
 function openPaymentModal(product, amount, type, quantity = null) {
     if (!currentUser) {
-        alert("Please sign in with Pi Network first.");
+        showMessage("Please sign in with Pi Network first.", "error");
         return;
     }
 
@@ -576,6 +709,11 @@ function openPaymentModal(product, amount, type, quantity = null) {
     if (mlbbZoneId) mlbbZoneId.value = '';
     if (paymentStatus) paymentStatus.style.display = 'none';
     
+    // Set placeholder examples for numeric IDs
+    if (pubgId) pubgId.placeholder = 'e.g., 5123456789 (Numeric only)';
+    if (mlbbUserId) mlbbUserId.placeholder = 'e.g., 123456789 (Numeric only)';
+    if (mlbbZoneId) mlbbZoneId.placeholder = 'e.g., 1234 (Numeric only)';
+    
     const paymentModal = document.getElementById('paymentModal');
     if (paymentModal) {
         paymentModal.style.display = 'flex';
@@ -598,19 +736,19 @@ function closePaymentModal() {
 // Payment Processing
 async function processPiPayment() {
     if (!currentUser) {
-        alert("Please authenticate with Pi Network first");
+        showMessage("Please authenticate with Pi Network first", "error");
         return;
     }
 
     const piAmount = parseFloat(document.getElementById('piAmount').value);
     if (!piAmount || piAmount < 0.01) {
-        showPaymentError("Please enter a valid PI amount (minimum 0.01)");
+        showMessage("Please enter a valid PI amount (minimum 0.01)", "error");
         return;
     }
 
     const userEmail = document.getElementById('userEmail').value;
     if (!userEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userEmail)) {
-        showPaymentError("Please enter a valid email address");
+        showMessage("Please enter a valid email address", "error");
         return;
     }
 
@@ -623,21 +761,23 @@ async function processPiPayment() {
             userEmail: userEmail,
             type: currentPayment.type,
             timestamp: new Date().toISOString(),
-            network: PI_CONFIG.network // Include network info
+            network: PI_CONFIG.network
         }
     };
 
+    // Add additional metadata based on payment type with numeric validation
     if (currentPayment.type === 'social') {
         const socialUrl = document.getElementById('socialUrl').value;
         if (!socialUrl || !/^(https?:\/\/)/.test(socialUrl)) {
-            showPaymentError("Please enter a valid social media URL");
+            showMessage("Please enter a valid social media URL", "error");
             return;
         }
         paymentData.metadata.socialUrl = socialUrl;
     } else if (currentPayment.type === 'pubg') {
         const pubgId = document.getElementById('pubgId').value;
-        if (!pubgId || !/^\d+$/.test(pubgId)) {
-            showPaymentError("Please enter a valid PUBG Mobile Player ID");
+        // Strict numeric validation for PUBG ID (numbers only)
+        if (!pubgId || !/^\d{6,12}$/.test(pubgId)) {
+            showMessage("Please enter a valid PUBG Mobile Player ID (6-12 digits numbers only)", "error");
             return;
         }
         paymentData.metadata.pubgId = pubgId;
@@ -645,8 +785,13 @@ async function processPiPayment() {
     } else if (currentPayment.type === 'mlbb') {
         const mlbbUserId = document.getElementById('mlbbUserId').value;
         const mlbbZoneId = document.getElementById('mlbbZoneId').value;
-        if (!mlbbUserId || !/^\d+$/.test(mlbbUserId) || !mlbbZoneId || !/^\d+$/.test(mlbbZoneId)) {
-            showPaymentError("Please enter valid MLBB User ID and Zone ID");
+        // Strict numeric validation for MLBB IDs (numbers only)
+        if (!mlbbUserId || !/^\d{6,12}$/.test(mlbbUserId)) {
+            showMessage("Please enter valid MLBB User ID (6-12 digits numbers only)", "error");
+            return;
+        }
+        if (!mlbbZoneId || !/^\d{3,6}$/.test(mlbbZoneId)) {
+            showMessage("Please enter valid MLBB Zone ID (3-6 digits numbers only)", "error");
             return;
         }
         paymentData.metadata.mlbbUserId = mlbbUserId;
@@ -665,7 +810,6 @@ async function processPiPayment() {
             showPaymentStatus("Processing payment... Awaiting server approval.", false);
             
             try {
-                // Send payment data to backend for approval
                 const response = await fetch(`${API_BASE_URL}/payments/approve`, {
                     method: 'POST',
                     headers: {
@@ -681,7 +825,6 @@ async function processPiPayment() {
                 const result = await response.json();
                 
                 if (result.success) {
-                    // Approve the payment
                     await Pi.approvePayment(paymentId);
                     showPaymentStatus("Payment approved by server. Completing transaction...", false);
                 } else {
@@ -696,7 +839,6 @@ async function processPiPayment() {
             showPaymentStatus("Completing payment...", false);
 
             try {
-                // Send completion data to backend
                 const response = await fetch(`${API_BASE_URL}/payments/complete`, {
                     method: 'POST',
                     headers: {
@@ -713,9 +855,8 @@ async function processPiPayment() {
                 const result = await response.json();
                 
                 if (result.success) {
-                    // Complete the payment
                     await Pi.completePayment(paymentId, txid);
-                    showPaymentSuccess("Payment successful! Please send the transaction screenshot to info@b4uesports.com or WhatsApp: +97517875099.");
+                    showThankYouMessage(paymentData);
                     setTimeout(closePaymentModal, 5000);
                 } else {
                     throw new Error(result.error || "Server completion failed");
@@ -737,23 +878,57 @@ async function processPiPayment() {
 
     try {
         Pi.createPayment(paymentData, paymentCallbacks);
-        showPaymentStatus("Initiating payment... Please approve the transaction in the Pi Browser.", false);
+        showPaymentStatus("Initiating payment... Please approve the transaction in your Pi Wallet.", false);
     } catch (error) {
         console.error("Payment creation error:", error);
         showPaymentError("Payment creation failed: " + error.message);
     }
-        }
+}
+
+// Show beautiful thank you message
+function showThankYouMessage(paymentData) {
+    const paymentStatus = document.getElementById('paymentStatus');
+    if (!paymentStatus) return;
+    
+    paymentStatus.innerHTML = `
+        <div style="text-align: center; padding: 20px;">
+            <div style="font-size: 48px; color: #14F195; margin-bottom: 15px;">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3 style="color: #14F195; margin-bottom: 10px;">Payment Successful!</h3>
+            <p style="margin-bottom: 15px; color: #333;">
+                Thank you for your purchase of <strong>${paymentData.metadata.product}</strong>.
+            </p>
+            <div style="background: rgba(20, 241, 149, 0.1); padding: 15px; border-radius: 8px; margin: 15px 0;">
+                <p style="margin: 5px 0; color: #333;">
+                    <strong>Amount:</strong> ${paymentData.amount} Test π
+                </p>
+                <p style="margin: 5px 0; color: #333;">
+                    <strong>Network:</strong> Pi Testnet
+                </p>
+                <p style="margin: 5px 0; color: #333;">
+                    <strong>Status:</strong> Completed
+                </p>
+            </div>
+            <p style="color: #666; font-size: 14px;">
+                Your Test Pi has been deducted from your wallet. You will receive a confirmation email shortly.
+            </p>
+        </div>
+    `;
+    paymentStatus.className = "payment-status payment-success";
+    paymentStatus.style.display = "block";
+}
 
 // Simulate test payment for non-Pi Browser
 function simulateTestPayment(paymentData) {
     showPaymentStatus("Simulating test payment...", false);
     
     setTimeout(() => {
-        showPaymentSuccess("TEST PAYMENT: Simulation complete! This was a test transaction using Testnet π.");
+        showThankYouMessage(paymentData);
         
         // Simulate email sending
         setTimeout(() => {
-            alert("TEST: Email confirmation would be sent to " + paymentData.metadata.userEmail);
+            showMessage(`TEST: Email confirmation would be sent to ${paymentData.metadata.userEmail}`, "info");
         }, 1000);
     }, 2000);
 }
@@ -825,3 +1000,4 @@ window.closePaymentModal = closePaymentModal;
 window.showDashboard = showDashboard;
 window.continueWithSavedUser = continueWithSavedUser;
 window.signInWithNewAccount = signInWithNewAccount;
+window.logoutUser = logoutUser;
