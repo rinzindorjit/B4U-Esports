@@ -4,7 +4,7 @@ const API_BASE_URL = 'https://b4-u-esports.vercel.app/api';
 // Pi Network SDK configuration - TESTNET
 const PI_CONFIG = {
     version: "2.0", 
-    sandbox: false, // TRUE for Testnet
+    sandbox: true, // TRUE for Testnet
     network: "testnet" // TESTNET for testing
 };
 
@@ -299,7 +299,7 @@ function simulateTestAuthentication() {
         const testUser = {
             username: 'testuser',
             uid: 'test_uid_12345',
-            walletAddress: 'test_wallet_address'
+            walletAddress: 'test_wallet_address_1234567890'
         };
         
         currentUser = testUser;
@@ -309,7 +309,7 @@ function simulateTestAuthentication() {
         
         alert('TEST MODE: You are using simulated Pi authentication. Use Pi Browser for real Pi transactions.');
     }, 1500);
-}
+     }
 
 // Pi Authentication
 async function authenticatePiUser(attempt = 1, maxAttempts = 3) {
@@ -557,7 +557,7 @@ function showDashboard() {
         behavior: 'smooth'
     });
     closeSidebar();
-}
+        }
 
 // Pi Actions
 function showWalletAddress() {
@@ -565,9 +565,16 @@ function showWalletAddress() {
         showMessage("Please authenticate first", "error");
         return;
     }
-    const walletAddress = currentUser.walletAddress || "Not available";
-    alert(`Your Pi Wallet Address:\n${walletAddress}\n\nNetwork: ${PI_CONFIG.network.toUpperCase()}`);
+    
+    // Check if wallet address is available
+    if (!currentUser.walletAddress) {
+        showMessage("Wallet address not available. Please try logging in again.", "error");
+        return;
     }
+    
+    const walletAddress = currentUser.walletAddress;
+    alert(`Your Pi Wallet Address:\n${walletAddress}\n\nNetwork: ${PI_CONFIG.network.toUpperCase()}\n\nYou can copy this address for transactions.`);
+}
 
 function openShareDialog() {
     if (!currentUser) {
@@ -810,6 +817,7 @@ async function processPiPayment() {
             showPaymentStatus("Processing payment... Awaiting server approval.", false);
             
             try {
+                // Send payment data to backend for approval
                 const response = await fetch(`${API_BASE_URL}/payments/approve`, {
                     method: 'POST',
                     headers: {
@@ -822,9 +830,14 @@ async function processPiPayment() {
                     })
                 });
 
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+                }
+
                 const result = await response.json();
                 
                 if (result.success) {
+                    // Immediately approve the payment to Pi Wallet
                     await Pi.approvePayment(paymentId);
                     showPaymentStatus("Payment approved by server. Completing transaction...", false);
                 } else {
@@ -839,6 +852,7 @@ async function processPiPayment() {
             showPaymentStatus("Completing payment...", false);
 
             try {
+                // Send completion data to backend
                 const response = await fetch(`${API_BASE_URL}/payments/complete`, {
                     method: 'POST',
                     headers: {
@@ -852,9 +866,14 @@ async function processPiPayment() {
                     })
                 });
 
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+                }
+
                 const result = await response.json();
                 
                 if (result.success) {
+                    // Complete the payment
                     await Pi.completePayment(paymentId, txid);
                     showThankYouMessage(paymentData);
                     setTimeout(closePaymentModal, 5000);
@@ -868,7 +887,7 @@ async function processPiPayment() {
         },
         onCancel: function(paymentId) {
             console.log("Payment cancelled with paymentId:", paymentId);
-            showPaymentError("Payment cancelled. Did you cancel the payment? Please try again.");
+            showPaymentError("Payment cancelled. Please try again.");
         },
         onError: function(error, payment) {
             console.error("Payment error:", error, payment);
@@ -877,6 +896,7 @@ async function processPiPayment() {
     };
 
     try {
+        // Create the payment with Pi SDK
         Pi.createPayment(paymentData, paymentCallbacks);
         showPaymentStatus("Initiating payment... Please approve the transaction in your Pi Wallet.", false);
     } catch (error) {
