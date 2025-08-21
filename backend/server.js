@@ -73,4 +73,4 @@ if (process.env.VERCEL !== '1') {
         console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
         console.log(`📧 Email notifications: ${process.env.EMAIL_USER ? 'Enabled' : 'Disabled'}`);
     });
-  }
+    }
