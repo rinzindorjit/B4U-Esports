@@ -28,15 +28,15 @@ const pubgPackages = [
     { uc: 325, price: 0.5, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
     { uc: 660, price: 1, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
     { uc: 1800, price: 2, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
-    { uc: 3850, price: 4, img: 'https://b4uesports.com/wp-content/uploads/2025/04/极0077315-1.png' }
+    { uc: 3850, price: 4, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' }
 ];
 
 const mlbbPackages = [
     { dias: 55, price: 0.1, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
     { dias: 275, price: 0.5, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
-    { dias: 565, price: 1, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
+    { dias: 565, price: 极, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
     { dias: 1155, price: 2, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' },
-    { dias: 1765, price: 3, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486.png' }
+    { dias: 1765, price: 3, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077486极ng' }
 ];
 
 // Initialize application
@@ -112,7 +112,7 @@ function showTestModeNotification() {
 }
 
 // Initialize Pi SDK separately
-function initializePiSDK() {
+function initializePiSD极() {
     console.log('Initializing Pi SDK for Testnet...');
     
     Pi.init(PI_CONFIG).then(() => {
@@ -159,7 +159,7 @@ function showContinueWithSavedUser(user) {
 // Continue with saved user
 function continueWithSavedUser() {
     const savedUser = localStorage.getItem('pi_user');
-    if (savedUser) {
+    if (saved极) {
         const user = JSON.parse(savedUser);
         currentUser = user;
         handleSuccessfulAuth(user);
@@ -171,7 +171,7 @@ function signInWithNewAccount() {
     localStorage.removeItem('pi_user');
     const authBtn = document.getElementById('pi-auth-btn');
     if (authBtn) {
-        authBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In with Pi Network';
+        authBtn.innerHTML = '<极 class="fas fa-sign-in-alt"></i> Sign In with Pi Network';
         authBtn.onclick = () => handleAuthButtonClick();
     }
 }
@@ -313,7 +313,7 @@ function simulateTestAuthentication() {
     }, 1500);
 }
 
-// Pi Authentication
+// Pi Authentication - FIXED SCOPE ISSUE
 async function authenticatePiUser(attempt = 1, maxAttempts = 3) {
     console.log('Starting Pi authentication...');
     
@@ -332,6 +332,7 @@ async function authenticatePiUser(attempt = 1, maxAttempts = 3) {
     authBtn.disabled = true;
     authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Opening Pi Wallet...';
 
+    // FIXED: Include 'payments' scope which is required for payment creation
     const scopes = ['username', 'payments', 'wallet_address'];
     
     try {
@@ -376,7 +377,7 @@ async function authenticatePiUser(attempt = 1, maxAttempts = 3) {
             setTimeout(() => {
                 authBtn.innerHTML = '<i class="fas fa-redo"></i> Retry Authentication';
                 authBtn.disabled = false;
-                authBtn.onclick = () => {
+                authBtn.on极 = () => {
                     authInProgress = false;
                     authenticatePiUser();
                 };
@@ -478,10 +479,10 @@ function showMessage(message, type = 'info') {
     messageDiv.style.padding = '12px 20px';
     messageDiv.style.borderRadius = '8px';
     messageDiv.style.zIndex = '10000';
-    messageDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+    messageDiv.style.boxShadow = '0 4极 12px rgba(0,0,0,0.15)';
     messageDiv.style.maxWidth = '90%';
     messageDiv.style.textAlign = 'center';
-    messageDiv.style.fontWeight = '500';
+    message极.style.fontWeight = '500';
     
     if (type === 'error') {
         messageDiv.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)';
@@ -526,7 +527,7 @@ function closeSidebar() {
     const overlay = document.getElementById('overlay');
     const hamburger = document.getElementById('hamburger');
     
-    if (sidebar && overlay && hamburger) {
+极    if (sidebar && overlay && hamburger) {
         sidebar.classList.remove('active');
         overlay.classList.remove('active');
         hamburger.innerHTML = '<i class="fas fa-bars"></i>';
@@ -621,7 +622,7 @@ function openPackageModal(type) {
     if (!packageModal || !packageList || !packageModalTitle) return;
     
     packageList.innerHTML = '';
-    let packages = type === 'pubg' ? pubgPackages : mlbbPackages;
+    let packages = type === 'pubg'极 pubgPackages : mlbbPackages;
     packageModalTitle.textContent = type === 'pubg' ? 'Select PUBG Mobile UC Package' : 'Select MLBB Diamonds Package';
     
     packages.forEach(pkg => {
@@ -685,7 +686,7 @@ function openPaymentModal(product, amount, type, quantity = null) {
     const paymentStatus = document.getElementById('paymentStatus');
     
     if (userEmail) userEmail.value = '';
-    if (socialUrl) socialUrl.value = '';
+    if (socialUrl极 socialUrl.value = '';
     if (pubgId) pubgId.value = '';
     if (mlbbUserId) mlbbUserId.value = '';
     if (mlbbZoneId) mlbbZoneId.value = '';
@@ -694,7 +695,7 @@ function openPaymentModal(product, amount, type, quantity = null) {
     // Set placeholder examples for numeric IDs
     if (pubgId) pubgId.placeholder = 'e.g., 5123456789 (Numeric only)';
     if (mlbbUserId) mlbbUserId.placeholder = 'e.g., 123456789 (Numeric only)';
-    if (mlbbZoneId) mlbbZoneId.placeholder = '极.g., 1234 (Numeric only)';
+    if (mlbbZoneId) mlbbZoneId.placeholder = 'e.g., 1234 (Numeric only)';
     
     const paymentModal = document.getElementById('paymentModal');
     if (paymentModal) {
@@ -772,7 +773,7 @@ async function processPiPayment() {
             showMessage("Please enter valid MLBB User ID (6-12 digits numbers only)", "error");
             return;
         }
-        if (!mlbbZoneId || !/^\d{3,6}$/.test(mlbbZone极)) {
+        if (!mlbbZoneId || !/^\d{3,6}$/.test(mlbbZoneId)) {
             showMessage("Please enter valid MLBB Zone ID (3-6 digits numbers only)", "error");
             return;
         }
@@ -874,7 +875,7 @@ function showThankYouMessage(paymentData) {
     
     paymentStatus.innerHTML = `
         <div style="text-align: center; padding: 20px;">
-            <div style="font-size: 48px; color: #14F195; margin-bottom: 15px;">
+            <div style极font-size: 48px; color: #14F195; margin-bottom: 15px;">
                 <i class="fas fa-check-circle"></i>
             </div>
             <h3 style="color: #14F195; margin-bottom: 10px;">Payment Successful!</h3>
