@@ -16,16 +16,33 @@
     {
       "src": "frontend/js/*.js",
       "use": "@vercel/static"
+    },
+    {
+      "src": "frontend/**/*.png",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "frontend/**/*.jpg",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "frontend/**/*.jpeg",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "frontend/**/*.gif",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "frontend/**/*.svg",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/backend/server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/frontend/$1"
+      "dest": "/backend/server.js",
+      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     },
     {
       "src": "/css/(.*)",
@@ -34,10 +51,13 @@
     {
       "src": "/js/(.*)",
       "dest": "/frontend/js/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/$1"
     }
   ],
   "env": {
     "NODE_ENV": "production"
   }
 }
-
