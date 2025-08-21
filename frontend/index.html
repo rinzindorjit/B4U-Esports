@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B4U Esports</title>
+    <title>B4U Esports - Pi Network Marketplace</title>
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="snow"></div>
@@ -14,8 +14,7 @@
     <header class="header">
         <div class="nav-container">
             <img src="https://b4uesports.com/wp-content/uploads/2025/04/cropped-Black_and_Blue_Simple_Creative_Illustrative_Dragons_E-Sport_Logo_20240720_103229_0000-removebg-preview.png" 
-                 alt="B4U Esports Logo" 
-                 class="logo">
+                 alt="B4U Esports Logo" class="logo">
             <button class="hamburger" id="hamburger">
                 <i class="fas fa-bars"></i>
             </button>
@@ -65,6 +64,9 @@
                 <button id="pi-ad-btn" class="pi-action-btn">
                     <i class="fas fa-ad"></i> Watch Ad
                 </button>
+                <button id="pi-logout-btn" class="pi-action-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
             </div>
 
             <p class="text-lg">Your Ultimate Gaming Marketplace</p>
@@ -105,16 +107,7 @@
         </div>
 
         <div class="ad-container" id="middle-ad">
-            <script type="text/javascript">
-                atOptions = {
-                    'key' : '71e8bc5e4f46d4cf2a0214ad18d11df0',
-                    'format' : 'iframe',
-                    'height' : 50,
-                    'width' : 320,
-                    'params' : {}
-                };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/71e8bc5e4f46d4cf2a0214ad18d11df0/invoke.js"></script>
+            <!-- Ad script will be loaded here -->
         </div>
 
         <div class="tournament-header" id="tournaments">
@@ -135,33 +128,6 @@
                         <div class="prize-amount">50,000 NU</div>
                     </div>
                     
-                    <div class="tournament-details">
-                        <p><i class="fas fa-users"></i> <strong>Squad Mode:</strong> 4-6 players per team</p>
-                        <p><i class="fas fa-tag"></i> <strong>Team Tag:</strong> [B4U] required in team name</p>
-                        <span class="team-tag-example">(e.g. [B4U]YourTeamName)</span>
-                        <p><i class="fas fa-map"></i> <strong>Maps:</strong> Erangel, Miramar, Sanhok</p>
-                        <p><i class="fas fa-calendar-alt"></i> <strong>Schedule:</strong> Weekly tournaments</p>
-                    </div>
-                    
-                    <div class="tournament-modes">
-                        <h3><i class="fas fa-gamepad"></i> Tournament Format:</h3>
-                        <div class="mode-item">
-                            <h4><i class="fas fa-users"></i> Squad Battle Royale</h4>
-                            <p>Classic PUBG rules with TPP perspective</p>
-                            <span class="team-tag">Team Tag: [B4U]YourTeamName</span>
-                        </div>
-                    </div>
-                    
-                    <h3><i class="fas fa-gavel"></i> Rules & Regulations:</h3>
-                    <ul class="rules-list">
-                        <li>Team name must include [B4U] tag (e.g. [B4U]Legends)</li>
-                        <li>No hacking or cheating of any kind</li>
-                        <li>Players must use their real PUBG IDs</li>
-                        <li>Teams must register 30 minutes before match</li>
-                        <li>Disconnections will not pause the game</li>
-                        <li>Top 3 teams by kills and placement will qualify</li>
-                    </ul>
-                    
                     <button class="register-btn" onclick="openPaymentModal('Classic Tournament Entry', 5, 'tournament')">
                         <i class="fas fa-user-plus"></i> Register Now
                     </button>
@@ -179,34 +145,6 @@
                         <div class="prize-label">Total Prize Pool</div>
                         <div class="prize-amount">30,000 NU</div>
                     </div>
-                    
-                    <div class="tournament-details">
-                        <p><i class="fas fa-user"></i> <strong>Modes:</strong> 1v1 Duel & 4v4 Team Battle</p>
-                        <p><i class="fas fa-map"></i> <strong>Maps:</strong> Warehouse, Ruins, Town</p>
-                        <p><i class="fas fa-calendar-alt"></i> <strong>Schedule:</strong> Daily quick matches</p>
-                    </div>
-                    
-                    <div class="tournament-modes">
-                        <h3><i class="fas fa-gamepad"></i> Tournament Modes:</h3>
-                        <div class="mode-item">
-                            <h4><i class="fas fa-user"></i> 1v1 Duel</h4>
-                            <p>First player to reach 20 kills wins the match</p>
-                        </div>
-                        <div class="mode-item">
-                            <h4><i class="fas fa-users"></i> 4v4 Team Battle</h4>
-                            <p>First team to reach 40 kills wins the match</p>
-                        </div>
-                    </div>
-                    
-                    <h3><i class="fas fa-gavel"></i> Rules & Regulations:</h3>
-                    <ul class="rules-list">
-                        <li>No holding position for more than 5 seconds</li>
-                        <li>No camping in spawn areas</li>
-                        <li>Only designated weapons allowed</li>
-                        <li>Players must maintain sportsmanship</li>
-                        <li>Disconnections result in automatic loss</li>
-                        <li>No grenades or throwables in 1v1 mode</li>
-                    </ul>
                     
                     <button class="register-btn" onclick="openPaymentModal('TDM Tournament Entry', 3, 'tournament')">
                         <i class="fas fa-user-plus"></i> Register Now
@@ -281,7 +219,7 @@
                     <input type="email" id="userEmail" placeholder="Enter your email" required>
                 </div>
                 
-                <button id="piPayBtn" class="pi-pay-btn" disabled>
+                <button id="piPayBtn" class="pi-pay-btn">
                     <i class="fas fa-coins"></i> Pay with Pi
                 </button>
                 
@@ -322,46 +260,21 @@
             <div class="footer-section">
                 <h3>FOLLOW US</h3>
                 <div class="social-links">
-                    <a href="https://www.facebook.com/b4uesports" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-facebook"></i>
-                    </a>
-                    <a href="https://youtube.com/@b4uesports" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                    <a href="https://www.tiktok.com/b4uesports" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-tiktok"></i>
-                    </a>
-                    <a href="https://www.instagram.com/b4uesports" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://discord.gg/m2EcGPx" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-discord"></i>
-                    </a>
-                    <a href="https://t.me/b4uesport" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-telegram"></i>
-                    </a>
-                    <a href="https://www.linkedin.com/company/b4uesports/" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-linkedin"></i>
-                    </a>
+                    <a href="https://www.facebook.com/b4uesports" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <a href="https://youtube.com/@b4uesports" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.tiktok.com/b4uesports" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com/b4uesports" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://discord.gg/m2EcGPx" target="_blank"><i class="fab fa-discord"></i></a>
                 </div>
             </div>
         </div>
     </footer>
 
     <div class="ad-container" id="bottom-ad">
-        <script type="text/javascript">
-            atOptions = {
-                'key': '71e8bc5e4f46d4cf2a0214ad18d11df0',
-                'format': 'iframe',
-                'height': 50,
-                'width': 320,
-                'params': {}
-            };
-        </script>
-        <script type="text/javascript" src="//www.highperformanceformat.com/71e8bc5e4f46d4cf2a0214ad18d11df0/invoke.js"></script>
+        <!-- Ad script will be loaded here -->
     </div>
 
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <script src="js/script.js"></script>
 </body>
-                                                                  </html>
+    </html>
