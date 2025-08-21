@@ -1,5 +1,5 @@
 // Backend API URL - Update this to your actual domain
-const API_BASE_URL = 'https://b4-u-esports.vercel.app/api';
+const API_BASE_URL = 'http://localhost:3000/api';
 
 // Pi Network SDK configuration - TESTNET
 const PI_CONFIG = {
@@ -28,7 +28,7 @@ const pubgPackages = [
     { uc: 325, price: 0.5, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
     { uc: 660, price: 1, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
     { uc: 1800, price: 2, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' },
-    { uc: 3850, price: 4, img: 'https://b4uesports.com/wp-content/uploads/2025/04/1000077315-1.png' }
+    { uc: 3850, price: 4, img: 'https://b4uesports.com/wp-content/uploads/2025/04/极0077315-1.png' }
 ];
 
 const mlbbPackages = [
@@ -55,9 +55,6 @@ function initializeApp() {
     isPiBrowser = detectPiBrowser();
     
     console.log('Pi Browser detected:', isPiBrowser);
-    console.log('User Agent:', navigator.userAgent);
-    console.log('Hostname:', window.location.hostname);
-    console.log('Protocol:', window.location.protocol);
     
     const authBtn = document.getElementById('pi-auth-btn');
     
@@ -189,6 +186,7 @@ function setupEventListeners() {
     const walletBtn = document.getElementById('pi-wallet-btn');
     const shareBtn = document.getElementById('pi-share-btn');
     const adBtn = document.getElementById('pi-ad-btn');
+    const logoutBtn = document.getElementById('pi-logout-btn');
     const payBtn = document.getElementById('piPayBtn');
 
     // Hamburger menu
@@ -218,6 +216,10 @@ function setupEventListeners() {
 
     if (adBtn) {
         adBtn.addEventListener('click', showRewardedAd);
+    }
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', logoutUser);
     }
 
     if (payBtn) {
@@ -299,7 +301,7 @@ function simulateTestAuthentication() {
         const testUser = {
             username: 'testuser',
             uid: 'test_uid_12345',
-            walletAddress: 'test_wallet_address_1234567890'
+            walletAddress: 'test_wallet_address'
         };
         
         currentUser = testUser;
@@ -309,7 +311,7 @@ function simulateTestAuthentication() {
         
         alert('TEST MODE: You are using simulated Pi authentication. Use Pi Browser for real Pi transactions.');
     }, 1500);
-     }
+}
 
 // Pi Authentication
 async function authenticatePiUser(attempt = 1, maxAttempts = 3) {
@@ -403,10 +405,6 @@ function handleSuccessfulAuth(authResult) {
     const piActions = document.getElementById('pi-actions');
     if (piActions) {
         piActions.style.display = 'flex';
-        
-        // Add logout button
-        const logoutBtn = document.getElementById('pi-logout-btn') || createLogoutButton();
-        piActions.appendChild(logoutBtn);
     }
     
     const payBtn = document.getElementById('piPayBtn');
@@ -430,16 +428,6 @@ function handleSuccessfulAuth(authResult) {
     if (PI_CONFIG.sandbox) {
         showTestModeNotification();
     }
-}
-
-// Create logout button
-function createLogoutButton() {
-    const logoutBtn = document.createElement('button');
-    logoutBtn.id = 'pi-logout-btn';
-    logoutBtn.className = 'pi-action-btn';
-    logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
-    logoutBtn.onclick = logoutUser;
-    return logoutBtn;
 }
 
 // Logout function
@@ -469,12 +457,6 @@ function logoutUser() {
         if (piUsername) {
             piUsername.value = '';
             piUsername.removeAttribute('readonly');
-        }
-        
-        // Remove logout button
-        const logoutBtn = document.getElementById('pi-logout-btn');
-        if (logoutBtn) {
-            logoutBtn.remove();
         }
         
         showMessage('You have been logged out successfully.', 'success');
@@ -557,7 +539,7 @@ function showDashboard() {
         behavior: 'smooth'
     });
     closeSidebar();
-        }
+}
 
 // Pi Actions
 function showWalletAddress() {
@@ -565,15 +547,8 @@ function showWalletAddress() {
         showMessage("Please authenticate first", "error");
         return;
     }
-    
-    // Check if wallet address is available
-    if (!currentUser.walletAddress) {
-        showMessage("Wallet address not available. Please try logging in again.", "error");
-        return;
-    }
-    
-    const walletAddress = currentUser.walletAddress;
-    alert(`Your Pi Wallet Address:\n${walletAddress}\n\nNetwork: ${PI_CONFIG.network.toUpperCase()}\n\nYou can copy this address for transactions.`);
+    const walletAddress = currentUser.walletAddress || "Not available";
+    alert(`Your Pi Wallet Address:\n${walletAddress}\n\nNetwork: ${PI_CONFIG.network.toUpperCase()}`);
 }
 
 function openShareDialog() {
@@ -719,7 +694,7 @@ function openPaymentModal(product, amount, type, quantity = null) {
     // Set placeholder examples for numeric IDs
     if (pubgId) pubgId.placeholder = 'e.g., 5123456789 (Numeric only)';
     if (mlbbUserId) mlbbUserId.placeholder = 'e.g., 123456789 (Numeric only)';
-    if (mlbbZoneId) mlbbZoneId.placeholder = 'e.g., 1234 (Numeric only)';
+    if (mlbbZoneId) mlbbZoneId.placeholder = '极.g., 1234 (Numeric only)';
     
     const paymentModal = document.getElementById('paymentModal');
     if (paymentModal) {
@@ -797,7 +772,7 @@ async function processPiPayment() {
             showMessage("Please enter valid MLBB User ID (6-12 digits numbers only)", "error");
             return;
         }
-        if (!mlbbZoneId || !/^\d{3,6}$/.test(mlbbZoneId)) {
+        if (!mlbbZoneId || !/^\d{3,6}$/.test(mlbbZone极)) {
             showMessage("Please enter valid MLBB Zone ID (3-6 digits numbers only)", "error");
             return;
         }
@@ -817,7 +792,6 @@ async function processPiPayment() {
             showPaymentStatus("Processing payment... Awaiting server approval.", false);
             
             try {
-                // Send payment data to backend for approval
                 const response = await fetch(`${API_BASE_URL}/payments/approve`, {
                     method: 'POST',
                     headers: {
@@ -830,14 +804,9 @@ async function processPiPayment() {
                     })
                 });
 
-                if (!response.ok) {
-                    throw new Error(`Server returned ${response.status}: ${response.statusText}`);
-                }
-
                 const result = await response.json();
                 
                 if (result.success) {
-                    // Immediately approve the payment to Pi Wallet
                     await Pi.approvePayment(paymentId);
                     showPaymentStatus("Payment approved by server. Completing transaction...", false);
                 } else {
@@ -852,7 +821,6 @@ async function processPiPayment() {
             showPaymentStatus("Completing payment...", false);
 
             try {
-                // Send completion data to backend
                 const response = await fetch(`${API_BASE_URL}/payments/complete`, {
                     method: 'POST',
                     headers: {
@@ -866,14 +834,9 @@ async function processPiPayment() {
                     })
                 });
 
-                if (!response.ok) {
-                    throw new Error(`Server returned ${response.status}: ${response.statusText}`);
-                }
-
                 const result = await response.json();
                 
                 if (result.success) {
-                    // Complete the payment
                     await Pi.completePayment(paymentId, txid);
                     showThankYouMessage(paymentData);
                     setTimeout(closePaymentModal, 5000);
@@ -887,7 +850,7 @@ async function processPiPayment() {
         },
         onCancel: function(paymentId) {
             console.log("Payment cancelled with paymentId:", paymentId);
-            showPaymentError("Payment cancelled. Please try again.");
+            showPaymentError("Payment cancelled. Did you cancel the payment? Please try again.");
         },
         onError: function(error, payment) {
             console.error("Payment error:", error, payment);
@@ -896,7 +859,6 @@ async function processPiPayment() {
     };
 
     try {
-        // Create the payment with Pi SDK
         Pi.createPayment(paymentData, paymentCallbacks);
         showPaymentStatus("Initiating payment... Please approve the transaction in your Pi Wallet.", false);
     } catch (error) {
