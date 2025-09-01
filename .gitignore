@@ -1,0 +1,11 @@
+# Create .gitignore file
+@"
+node_modules/
+.env
+.DS_Store
+*.log
+.vercel
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+"@ | Out-File -FilePath .gitignore -Encoding utf8
